@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id              String   @id @default(cuid())
+  name            String
+  description     String
+  longDescription String   @default("")
+  price           Float
+  category        String   @default("ebook") // ebook, software
+  image           String   @default("")
+  features        String   @default("[]") // JSON array of strings
+  badge           String   @default("")
+  isActive        Boolean  @default(true)
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Invoice {
+  id            String         @id @default(cuid())
+  invoiceNumber String         @unique
+  clientName    String
+  clientPhone   String?
+  clientEmail   String?
+  clientAddress String?
+  date          DateTime       @default(now())
+  dueDate       DateTime
+  status        String         @default("pending") // pending, paid, overdue
+  taxRate       Float          @default(15)
+  discount      Float          @default(0)
+  discountType  String         @default("fixed") // fixed, percentage
+  notes         String?
+  subtotal      Float          @default(0)
+  taxAmount     Float          @default(0)
+  total         Float          @default(0)
+  items         InvoiceItem[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Int
+  unitPrice   Float
+  total       Float
+  sortOrder   Int      @default(0)
+}
