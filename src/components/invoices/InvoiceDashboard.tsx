@@ -48,6 +48,7 @@ const statusBadge = (status: string) => {
 export function InvoiceDashboard({ onBack }: { onBack: () => void }) {
   const [adminKey, setAdminKey] = useState('');
   const [keyDialogOpen, setKeyDialogOpen] = useState(true);
+  const [verifying, setVerifying] = useState(false);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -144,12 +145,29 @@ export function InvoiceDashboard({ onBack }: { onBack: () => void }) {
           />
           <Button
             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-            onClick={() => {
-              if (adminKey.trim()) setKeyDialogOpen(false);
-              else toast.error('الرجاء إدخال المفتاح');
+            disabled={verifying}
+            onClick={async () => {
+              if (!adminKey.trim()) {
+                toast.error('الرجاء إدخال المفتاح');
+                return;
+              }
+              setVerifying(true);
+              try {
+                const res = await fetch('/api/auth/verify', {
+                  method: 'POST',
+                  headers: { 'x-api-key': adminKey.trim(), 'Content-Type': 'application/json' },
+                });
+                const data = await res.json();
+                if (data.success) setKeyDialogOpen(false);
+                else toast.error('المفتاح غير صحيح');
+              } catch {
+                toast.error('خطأ في الاتصال');
+              } finally {
+                setVerifying(false);
+              }
             }}
           >
-            دخول
+            {verifying ? 'جارٍ التحقق...' : 'دخول'}
           </Button>
         </div>
       </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useStore, type ProductCategory } from '@/lib/store';
-import { ShoppingCart, Menu, Store, Settings, Receipt } from 'lucide-react';
+import { ShoppingCart, Menu, Store, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -61,15 +61,6 @@ export function Header() {
               className="text-gray-600"
             >
               البرمجيات
-            </Button>
-            <Button
-              variant={currentView === 'invoices' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setCurrentView('invoices')}
-              className={currentView === 'invoices' ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'text-gray-600'}
-            >
-              <Receipt className="ml-1.5 h-4 w-4" />
-              نظام الفواتير
             </Button>
           </nav>
 
@@ -147,14 +138,6 @@ export function Header() {
                   >
                     <Settings className="ml-2 h-4 w-4" />
                     لوحة التحكم
-                  </Button>
-                  <Button
-                    variant={currentView === 'invoices' ? 'default' : 'ghost'}
-                    className="justify-end"
-                    onClick={() => setCurrentView('invoices')}
-                  >
-                    <Receipt className="ml-2 h-4 w-4" />
-                    نظام الفواتير
                   </Button>
                 </nav>
               </SheetContent>

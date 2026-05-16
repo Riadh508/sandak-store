@@ -46,7 +46,7 @@ sandak-v4/
 │   ├── app/
 │   │   ├── api/
 │   │   │   ├── products/          # GET (public), POST/PUT/DELETE (admin auth)
-│   │   │   │   └── seed/          # POST (admin auth) — seed 26 default products
+│   │   │   │   └── seed/          # POST (public) — seed 26 default products
 │   │   │   └── invoices/          # GET/POST/PUT (admin auth)
 │   │   ├── layout.tsx             # Root layout (RTL Arabic, Geist fonts)
 │   │   ├── page.tsx               # SPA-style store page (view switching)

@@ -65,6 +65,7 @@ interface ProductDB {
 export function AdminPanel({ onBack }: { onBack: () => void }) {
   const [adminKey, setAdminKey] = useState('');
   const [keyDialogOpen, setKeyDialogOpen] = useState(true);
+  const [verifying, setVerifying] = useState(false);
   const [products, setProducts] = useState<ProductDB[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -81,6 +82,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
   const [formBadge, setFormBadge] = useState('');
   const [formFeatures, setFormFeatures] = useState('');
   const [formActive, setFormActive] = useState(true);
+  const [formImage, setFormImage] = useState('');
 
   const adminHeaders = (): HeadersInit => {
     const h: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -121,6 +123,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     setFormBadge('');
     setFormFeatures('');
     setFormActive(true);
+    setFormImage('');
     setEditingProduct(null);
   };
 
@@ -139,6 +142,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     setFormBadge(product.badge || '');
     setFormFeatures((product.features || []).join('\n'));
     setFormActive(product.isActive);
+    setFormImage(product.image || '');
     setDialogOpen(true);
   };
 
@@ -167,6 +171,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
       badge: formBadge.trim(),
       features: featuresArray,
       isActive: formActive,
+      image: formImage.trim(),
     };
 
     try {
@@ -258,12 +263,29 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
           />
           <Button
             className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-            onClick={() => {
-              if (adminKey.trim()) setKeyDialogOpen(false);
-              else toast.error('الرجاء إدخال المفتاح');
+            disabled={verifying}
+            onClick={async () => {
+              if (!adminKey.trim()) {
+                toast.error('الرجاء إدخال المفتاح');
+                return;
+              }
+              setVerifying(true);
+              try {
+                const res = await fetch('/api/auth/verify', {
+                  method: 'POST',
+                  headers: { 'x-api-key': adminKey.trim(), 'Content-Type': 'application/json' },
+                });
+                const data = await res.json();
+                if (data.success) setKeyDialogOpen(false);
+                else toast.error('المفتاح غير صحيح');
+              } catch {
+                toast.error('خطأ في الاتصال');
+              } finally {
+                setVerifying(false);
+              }
             }}
           >
-            دخول
+            {verifying ? 'جارٍ التحقق...' : 'دخول'}
           </Button>
         </div>
       </div>
@@ -546,6 +568,19 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                 onChange={(e) => setFormBadge(e.target.value)}
                 placeholder="مثال: الأكثر مبيعاً، جديد، مميز"
                 className="text-right"
+              />
+            </div>
+
+            {/* Image URL */}
+            <div className="space-y-2">
+              <Label htmlFor="image">رابط الصورة (اختياري)</Label>
+              <Input
+                id="image"
+                value={formImage}
+                onChange={(e) => setFormImage(e.target.value)}
+                placeholder="https://example.com/image.jpg"
+                className="text-left"
+                dir="ltr"
               />
             </div>
 

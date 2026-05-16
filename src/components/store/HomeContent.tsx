@@ -24,7 +24,8 @@ export function HomeContent() {
             <h2 className="mb-3 text-2xl font-extrabold text-gray-900 md:text-3xl">
               مميز وشيء جديد
             </h2>
-            <p className="text-gray-500">المنتججات الأكثر طلباً والأحدث في متجرنا</p>
+            <p className="text-gray-500">المنتجات الأكثر طلباً والأحدث في متجرنا</p>
+			
           </div>
 
           {/* Featured Cards */}
