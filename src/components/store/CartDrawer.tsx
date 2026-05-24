@@ -99,7 +99,7 @@ export function CartDrawer() {
                         </p>
                         <div className="flex items-center justify-between mt-2">
                           <span className="text-sm font-bold text-emerald-600">
-                            ${item.product.price * item.quantity}
+                            $ {item.product.price * item.quantity}
                           </span>
                           <div className="flex items-center gap-1">
                             <Button
