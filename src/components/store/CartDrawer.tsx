@@ -34,10 +34,15 @@ export function CartDrawer() {
     setCurrentView('checkout');
   };
 
+  function getCategoryClass(category: string): string {
+    return category === 'ebook'
+      ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
+      : 'bg-gradient-to-br from-emerald-500 to-teal-600';
+  }
+
   return (
     <Sheet open={cartOpen} onOpenChange={setCartOpen}>
       <SheetContent side="left" className="w-full sm:max-w-md flex flex-col p-0">
-        {/* Header */}
         <SheetHeader className="p-6 pb-4 border-b">
           <SheetTitle className="flex items-center justify-between text-right">
             <div className="flex items-center gap-2">
@@ -52,7 +57,6 @@ export function CartDrawer() {
           </SheetTitle>
         </SheetHeader>
 
-        {/* Cart Items */}
         <ScrollArea className="flex-1">
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center px-6">
@@ -76,16 +80,13 @@ export function CartDrawer() {
                     className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm"
                   >
                     <div className="flex gap-3">
-                      {/* Product Icon */}
-                      <div className={"h-14 w-14 rounded-xl flex items-center justify-center shrink-0 " + (item.product.category === 'ebook' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 'bg-gradient-to-br from-emerald-500 to-teal-600')}>
+                      <div className={"h-14 w-14 rounded-xl flex items-center justify-center shrink-0 " + getCategoryClass(item.product.category)}>
                         {item.product.category === 'ebook' ? (
                           <ShoppingBag className="h-6 w-6 text-white" />
                         ) : (
                           <ShoppingBag className="h-6 w-6 text-white" />
                         )}
                       </div>
-
-                      {/* Info */}
                       <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-semibold text-gray-900 truncate">
                           {item.product.name}
@@ -118,8 +119,6 @@ export function CartDrawer() {
                           </div>
                         </div>
                       </div>
-
-                      {/* Remove */}
                       <Button
                         size="icon"
                         variant="ghost"
@@ -136,12 +135,11 @@ export function CartDrawer() {
           )}
         </ScrollArea>
 
-        {/* Footer */}
         {cart.length > 0 && (
           <div className="border-t p-4 space-y-3 bg-gray-50/50">
             <div className="flex items-center justify-between">
               <span className="text-gray-600 font-medium">المجموع الفرعي</span>
-<span className="font-bold text-gray-900">{"$"}{total}</span>
+              <span className="font-bold text-gray-900">{'$' + total}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-gray-600 font-medium">الضريبة</span>
@@ -151,7 +149,7 @@ export function CartDrawer() {
           <div className="border-t pt-4">
             <div className="flex items-center justify-between">
               <span className="text-base font-bold text-gray-900">المجموع:</span>
-              <span className="text-xl font-extrabold text-emerald-600">{"$"}{total}</span>
+              <span className="text-xl font-extrabold text-emerald-600">{'$' + total}</span>
             </div>
             <Button
               onClick={handleCheckout}
