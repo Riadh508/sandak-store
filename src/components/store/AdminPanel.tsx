@@ -77,7 +77,6 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
   const [editingProduct, setEditingProduct] = useState<ProductDB | null>(null);
   const [productToDelete, setProductToDelete] = useState<ProductDB | null>(null);
 
-  // Form state
   const [formName, setFormName] = useState('');
   const [formDesc, setFormDesc] = useState('');
   const [formLongDesc, setFormLongDesc] = useState('');
@@ -214,7 +213,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     if (!productToDelete) return;
 
     try {
-      const res = await fetch(`/api/products?id=${productToDelete.id}`, {
+      const res = await fetch('/api/products' + '?' + 'id=' + productToDelete.id, {
         method: 'DELETE',
         headers: adminHeaders(),
       });
@@ -257,9 +256,108 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
   const activeProducts = products.filter((p) => p.isActive);
   const inactiveProducts = products.filter((p) => !p.isActive);
 
+  function renderTab(tab: string) {
+    const list = tab === 'active' ? activeProducts : tab === 'inactive' ? inactiveProducts : products;
+    return (
+      <TabsContent key={tab} value={tab}>
+        {loading ? (
+          <div className="flex items-center justify-center py-16">
+            <RefreshCw className="h-8 w-8 text-emerald-600 animate-spin" />
+          </div>
+        ) : list.length === 0 ? (
+          <Card className="border-gray-100">
+            <CardContent className="py-16 text-center">
+              <Package className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-400">لا توجد منتجات</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-3">
+            <AnimatePresence mode="popLayout">
+              {list.map((product, index) => (
+                <motion.div
+                  key={product.id}
+                  layout
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2, delay: index * 0.03 }}
+                >
+                  <Card className={'border ' + (product.isActive ? 'border-gray-100' : 'border-gray-200 bg-gray-50/50')}>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-4">
+                        <div className={'h-14 w-14 rounded-xl flex items-center justify-center shrink-0 ' + (product.category === 'ebook' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 'bg-gradient-to-br from-emerald-500 to-teal-600')}>
+                          {product.category === 'ebook' ? (
+                            <BookOpen className="h-6 w-6 text-white" />
+                          ) : (
+                            <Monitor className="h-6 w-6 text-white" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-semibold text-gray-900 truncate">{product.name}</h3>
+                            {product.badge ? (
+                              <Badge variant="outline" className="text-xs shrink-0">{product.badge}</Badge>
+                            ) : null}
+                            {!product.isActive ? (
+                              <Badge variant="secondary" className="text-xs shrink-0 bg-gray-200 text-gray-500">مخفي</Badge>
+                            ) : null}
+                          </div>
+                          <p className="text-sm text-gray-500 truncate">{product.description}</p>
+                          <div className="flex items-center gap-3 mt-1.5">
+                            <span className="text-sm font-bold text-emerald-600">{'$' + product.price}</span>
+                            <Badge variant="outline" className="text-xs">
+                              {product.category === 'ebook' ? 'كتاب PDF' : 'برنامج'}
+                            </Badge>
+                            <span className="text-xs text-gray-400">
+                              {(product.features || []).length + ' مميزة'}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => toggleActive(product)} title={product.isActive ? 'إخفاء' : 'تفعيل'}>
+                            {product.isActive ? <Eye className="h-4 w-4 text-emerald-600" /> : <EyeOff className="h-4 w-4 text-gray-400" />}
+                          </Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEditDialog(product)} title="تعديل">
+                            <Pencil className="h-4 w-4 text-blue-600" />
+                          </Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openDeleteDialog(product)} title="حذف">
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
+      </TabsContent>
+    );
+  }
+
+  function renderForm() {
+    const categories = [
+      { value: 'ebook', label: 'كتاب إلكتروني' },
+      { value: 'software', label: 'برنامج' },
+    ];
+    return (
+      <Select value={formCategory} onValueChange={setFormCategory}>
+        <SelectTrigger className="text-right">
+          <SelectValue placeholder="اختر التصنيف" />
+        </SelectTrigger>
+        <SelectContent>
+          {categories.map((cat) => (
+            <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white border-b sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -275,58 +373,44 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              {user && (
+              {user ? (
                 <div className="flex items-center gap-2 text-sm text-gray-500">
                   <User className="h-4 w-4" />
                   <span>{user.name}</span>
                   <span className="text-gray-300">|</span>
                   <span className="text-xs">{user.email}</span>
                 </div>
-              )}
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={fetchProducts}
-                className="border-gray-200"
-              >
-                <RefreshCw className={"ml-1 h-4 w-4 " + (loading ? 'animate-spin' : '')} />
-                تحديث
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleLogout}
-                className="text-red-500 hover:text-red-600 hover:bg-red-50"
-              >
-                <LogOut className="ml-1 h-4 w-4" />
-                تسجيل الخروج
-              </Button>
-              <Button
-                onClick={openAddDialog}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                size="sm"
-              >
-                <Plus className="ml-1 h-4 w-4" />
-                إضافة منتج جديد
-              </Button>
+              ) : null}
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={fetchProducts} className="border-gray-200">
+                  <RefreshCw className={'ml-1 h-4 w-4 ' + (loading ? 'animate-spin' : '')} />
+                  تحديث
+                </Button>
+                <Button variant="ghost" size="sm" onClick={handleLogout} className="text-red-500 hover:text-red-600 hover:bg-red-50">
+                  <LogOut className="ml-1 h-4 w-4" />
+                  تسجيل الخروج
+                </Button>
+                <Button onClick={openAddDialog} className="bg-emerald-600 hover:bg-emerald-700 text-white" size="sm">
+                  <Plus className="ml-1 h-4 w-4" />
+                  إضافة منتج جديد
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Stats */}
       <div className="container mx-auto px-4 py-6">
         <div className="grid gap-4 sm:grid-cols-4 mb-6">
           {[
             { label: 'إجمالي المنتجات', value: products.length, icon: Package, color: 'bg-emerald-100 text-emerald-600' },
             { label: 'منتجات نشطة', value: activeProducts.length, icon: Eye, color: 'bg-blue-100 text-blue-600' },
-            { label: 'كتب إلكترونية', value: products.filter(p => p.category === 'ebook').length, icon: BookOpen, color: 'bg-amber-100 text-amber-600' },
-            { label: 'برمجيات', value: products.filter(p => p.category === 'software').length, icon: Monitor, color: 'bg-purple-100 text-purple-600' },
+            { label: 'كتب إلكترونية', value: products.filter((p) => p.category === 'ebook').length, icon: BookOpen, color: 'bg-amber-100 text-amber-600' },
+            { label: 'برمجيات', value: products.filter((p) => p.category === 'software').length, icon: Monitor, color: 'bg-purple-100 text-purple-600' },
           ].map((stat, i) => (
             <Card key={i} className="border-gray-100">
               <CardContent className="p-4 flex items-center gap-3">
-                <div className={"h-10 w-10 rounded-lg flex items-center justify-center " + stat.color}>
+                <div className={'h-10 w-10 rounded-lg flex items-center justify-center ' + stat.color}>
                   <stat.icon className="h-5 w-5" />
                 </div>
                 <div>
@@ -338,259 +422,62 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
           ))}
         </div>
 
-        {/* Products List */}
         <Tabs defaultValue="active">
           <TabsList className="mb-4 bg-white border">
-            <TabsTrigger value="active">
-              النشطة ({activeProducts.length})
-            </TabsTrigger>
-            <TabsTrigger value="inactive">
-              المختفية ({inactiveProducts.length})
-            </TabsTrigger>
-            <TabsTrigger value="all">
-              الكل ({products.length})
-            </TabsTrigger>
+            <TabsTrigger value="active">النشطة ({activeProducts.length})</TabsTrigger>
+            <TabsTrigger value="inactive">المختفية ({inactiveProducts.length})</TabsTrigger>
+            <TabsTrigger value="all">الكل ({products.length})</TabsTrigger>
           </TabsList>
-
-          {['active', 'inactive', 'all'].map((tab) => {
-            const list = tab === 'active' ? activeProducts : tab === 'inactive' ? inactiveProducts : products;
-            return (
-              <TabsContent key={tab} value={tab}>
-                {loading ? (
-                  <div className="flex items-center justify-center py-16">
-                    <RefreshCw className="h-8 w-8 text-emerald-600 animate-spin" />
-                  </div>
-                ) : list.length === 0 ? (
-                  <Card className="border-gray-100">
-                    <CardContent className="py-16 text-center">
-                      <Package className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                      <p className="text-gray-400">لا توجد منتجات</p>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="space-y-3">
-                    <AnimatePresence mode="popLayout">
-                      {list.map((product, index) => (
-                        <motion.div
-                          key={product.id}
-                          layout
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.2, delay: index * 0.03 }}
-                        >
-                          <Card className={"border " + (product.isActive ? 'border-gray-100' : 'border-gray-200 bg-gray-50/50')}>
-                            <CardContent className="p-4">
-                              <div className="flex items-center gap-4">
-                                {/* Category Icon */}
-                                <div className={"h-14 w-14 rounded-xl flex items-center justify-center shrink-0 " + (product.category === 'ebook' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 'bg-gradient-to-br from-emerald-500 to-teal-600')}>
-                                  {product.category === 'ebook' ? (
-                                    <BookOpen className="h-6 w-6 text-white" />
-                                  ) : (
-                                    <Monitor className="h-6 w-6 text-white" />
-                                  )}
-                                </div>
-
-                                {/* Info */}
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <h3 className="font-semibold text-gray-900 truncate">{product.name}</h3>
-                                    {product.badge && (
-                                      <Badge variant="outline" className="text-xs shrink-0">{product.badge}</Badge>
-                                    )}
-                                    {!product.isActive && (
-                                      <Badge variant="secondary" className="text-xs shrink-0 bg-gray-200 text-gray-500">مخفي</Badge>
-                                    )}
-                                  </div>
-                                  <p className="text-sm text-gray-500 truncate">{product.description}</p>
-                                  <div className="flex items-center gap-3 mt-1.5">
-                                    <span className="text-sm font-bold text-emerald-600">{"$"}{product.price}</span>
-                                    <Badge variant="outline" className="text-xs">
-                                      {product.category === 'ebook' ? 'كتاب PDF' : 'برنامج'}
-                                    </Badge>
-                                    <span className="text-xs text-gray-400">
-                                      {(product.features || []).length} مميزة
-                                    </span>
-                                  </div>
-                                </div>
-
-                                {/* Actions */}
-                                <div className="flex items-center gap-1 shrink-0">
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className="h-8 w-8"
-                                    onClick={() => toggleActive(product)}
-                                    title={product.isActive ? 'إخفاء' : 'تفعيل'}
-                                  >
-                                    {product.isActive ? (
-                                      <Eye className="h-4 w-4 text-emerald-600" />
-                                    ) : (
-                                      <EyeOff className="h-4 w-4 text-gray-400" />
-                                    )}
-                                  </Button>
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className="h-8 w-8"
-                                    onClick={() => openEditDialog(product)}
-                                  >
-                                    <Pencil className="h-4 w-4 text-blue-600" />
-                                  </Button>
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className="h-8 w-8"
-                                    onClick={() => openDeleteDialog(product)}
-                                  >
-                                    <Trash2 className="h-4 w-4 text-red-500" />
-                                  </Button>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
-                  </div>
-                )}
-              </TabsContent>
-            );
-          })}
+          {['active', 'inactive', 'all'].map((tab) => renderTab(tab))}
         </Tabs>
       </div>
 
-      {/* Add/Edit Product Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" dir="rtl">
+        <DialogContent className="sm:max-w-lg" dir="rtl">
           <DialogHeader>
-            <DialogTitle className="text-right">
-              {editingProduct ? 'تعديل المنتج' : 'إضافة منتج جديد'}
-            </DialogTitle>
+            <DialogTitle>{editingProduct ? 'تعديل المنتج' : 'إضافة منتج جديد'}</DialogTitle>
           </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            {/* Name */}
-            <div className="space-y-2">
-              <Label htmlFor="name">اسم المنتج *</Label>
-              <Input
-                id="name"
-                value={formName}
-                onChange={(e) => setFormName(e.target.value)}
-                placeholder="مثال: كتاب تعلم البرمجة من الصفر"
-                className="text-right"
-              />
+          <div className="space-y-4 py-2">
+            <div>
+              <Label>اسم المنتج</Label>
+              <Input value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="أدخل اسم المنتج" className="text-right" />
             </div>
-
-            {/* Description */}
-            <div className="space-y-2">
-              <Label htmlFor="desc">الوصف المختصر *</Label>
-              <Textarea
-                id="desc"
-                value={formDesc}
-                onChange={(e) => setFormDesc(e.target.value)}
-                placeholder="وصف مختصر يظهر في بطاقة المنتج"
-                className="text-right resize-none"
-                rows={2}
-              />
+            <div>
+              <Label>الوصف المختصر</Label>
+              <Input value={formDesc} onChange={(e) => setFormDesc(e.target.value)} placeholder="وصف مختصر للمنتج" className="text-right" />
             </div>
-
-            {/* Long Description */}
-            <div className="space-y-2">
-              <Label htmlFor="longDesc">الوصف التفصيلي</Label>
-              <Textarea
-                id="longDesc"
-                value={formLongDesc}
-                onChange={(e) => setFormLongDesc(e.target.value)}
-                placeholder="وصف تفصيلي يظهر في صفحة تفاصيل المنتج"
-                className="text-right resize-none"
-                rows={4}
-              />
+            <div>
+              <Label>الوصف الطويل</Label>
+              <Textarea value={formLongDesc} onChange={(e) => setFormLongDesc(e.target.value)} placeholder="وصف تفصيلي للمنتج (اختياري)" className="text-right" rows={4} />
             </div>
-
-            {/* Price + Category */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="price">السعر (دولار) *</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={formPrice}
-                  onChange={(e) => setFormPrice(e.target.value)}
-                  placeholder="0.00"
-                  className="text-left"
-                  dir="ltr"
-                />
+              <div>
+                <Label>السعر</Label>
+                <Input type="number" value={formPrice} onChange={(e) => setFormPrice(e.target.value)} placeholder="0.00" className="text-right" />
               </div>
-              <div className="space-y-2">
-                <Label>الفئة *</Label>
-                <Select value={formCategory} onValueChange={setFormCategory}>
-                  <SelectTrigger className="text-right">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ebook">كتاب إلكتروني PDF</SelectItem>
-                    <SelectItem value="software">برنامج / نظام</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div>
+                <Label>التصنيف</Label>
+                {renderForm()}
               </div>
             </div>
-
-            {/* Badge */}
-            <div className="space-y-2">
-              <Label htmlFor="badge">شارة المنتج (اختياري)</Label>
-              <Input
-                id="badge"
-                value={formBadge}
-                onChange={(e) => setFormBadge(e.target.value)}
-                placeholder="مثال: الأكثر مبيعاً، جديد، مميز"
-                className="text-right"
-              />
+            <div>
+              <Label>الشارة (Badge)</Label>
+              <Input value={formBadge} onChange={(e) => setFormBadge(e.target.value)} placeholder="مثل: الأكثر مبيعاً" className="text-right" />
             </div>
-
-            {/* Image URL */}
-            <div className="space-y-2">
-              <Label htmlFor="image">رابط الصورة (اختياري)</Label>
-              <Input
-                id="image"
-                value={formImage}
-                onChange={(e) => setFormImage(e.target.value)}
-                placeholder="https://example.com/image.jpg"
-                className="text-left"
-                dir="ltr"
-              />
+            <div>
+              <Label>رابط الصورة</Label>
+              <Input value={formImage} onChange={(e) => setFormImage(e.target.value)} placeholder="URL الصورة (اختياري)" className="text-right" />
             </div>
-
-            {/* Download URL */}
-            <div className="space-y-2">
-              <Label htmlFor="downloadUrl">رابط التحميل (للمنتجات فقط)</Label>
-              <Input
-                id="downloadUrl"
-                value={formDownloadUrl}
-                onChange={(e) => setFormDownloadUrl(e.target.value)}
-                placeholder="/downloads/HotelSystem_v2.1.0_Setup.exe"
-                className="text-left"
-                dir="ltr"
-              />
+            <div>
+              <Label>رابط التحميل</Label>
+              <Input value={formDownloadUrl} onChange={(e) => setFormDownloadUrl(e.target.value)} placeholder="رابط تحميل المنتج (اختياري)" className="text-right" />
             </div>
-
-            {/* Features */}
-            <div className="space-y-2">
-              <Label htmlFor="features">المميزات (ميزة واحدة في كل سطر)</Label>
-              <Textarea
-                id="features"
-                value={formFeatures}
-                onChange={(e) => setFormFeatures(e.target.value)}
-                placeholder={"إدارة حجوزات الغرف بشكل ذكي\nنظام فوترة ومحاسبة متكامل\nدعم كامل للغة العربية"}
-                className="text-right resize-none font-mono text-sm"
-                rows={5}
-              />
+            <div>
+              <Label>الميزات (ميزة في كل سطر)</Label>
+              <Textarea value={formFeatures} onChange={(e) => setFormFeatures(e.target.value)} placeholder={'إدارة حجوزات الغرف بشكل ذكي\nنظام فوترة ومحاسبة متكامل\nدعم كامل للغة العربية'} className="text-right resize-none font-mono text-sm" rows={5} />
               <p className="text-xs text-gray-400">اكتب كل ميزة في سطر منفصل</p>
             </div>
           </div>
-
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               <X className="ml-1 h-4 w-4" />
@@ -604,13 +491,12 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent dir="rtl">
           <AlertDialogHeader>
             <AlertDialogTitle>هل أنت متأكد من حذف هذا المنتج؟</AlertDialogTitle>
             <AlertDialogDescription>
-              سيتم حذف المنتج ({productToDelete?.name}) نهائياً. هذا الإجراء لا يمكن التراجع عنه.
+              {'سيتم حذف المنتج (' + (productToDelete?.name || '') + ') نهائياً. هذا الإجراء لا يمكن التراجع عنه.'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2 sm:gap-0">
