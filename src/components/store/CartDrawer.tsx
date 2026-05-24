@@ -1,29 +1,17 @@
 'use client';
 
 import { useStore } from '@/lib/store';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function CartDrawer() {
   const {
-    cart,
-    cartOpen,
-    setCartOpen,
-    removeFromCart,
-    updateQuantity,
-    getCartTotal,
-    getCartCount,
-    setCurrentView,
+    cart, cartOpen, setCartOpen, removeFromCart, updateQuantity,
+    getCartTotal, getCartCount, setCurrentView,
   } = useStore();
 
   const total = getCartTotal();
@@ -34,7 +22,7 @@ export function CartDrawer() {
     setCurrentView('checkout');
   };
 
-  function getCategoryClass(category: string): string {
+  function iconBg(category: string): string {
     return category === 'ebook'
       ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
       : 'bg-gradient-to-br from-emerald-500 to-teal-600';
@@ -58,7 +46,7 @@ export function CartDrawer() {
         </SheetHeader>
 
         <ScrollArea className="flex-1">
-          {cart.length === 0 ? (
+          {cart.length === 0 && (
             <div className="flex flex-col items-center justify-center py-16 text-center px-6">
               <div className="h-20 w-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
                 <ShoppingBag className="h-8 w-8 text-gray-400" />
@@ -66,10 +54,11 @@ export function CartDrawer() {
               <p className="text-gray-500 font-medium mb-1">السلة فارغة</p>
               <p className="text-gray-400 text-sm">لم تضف أي منتجات بعد</p>
             </div>
-          ) : (
+          )}
+          {cart.length > 0 && (
             <div className="p-4 space-y-3">
               <AnimatePresence mode="popLayout">
-                {cart.map((item) => (
+                {cart.map((item: { product: { id: string; name: string; price: number; category: string }; quantity: number }) => (
                   <motion.div
                     key={item.product.id}
                     layout
@@ -80,53 +69,24 @@ export function CartDrawer() {
                     className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm"
                   >
                     <div className="flex gap-3">
-                      <div className={"h-14 w-14 rounded-xl flex items-center justify-center shrink-0 " + getCategoryClass(item.product.category)}>
-                        {item.product.category === 'ebook' ? (
-                          <ShoppingBag className="h-6 w-6 text-white" />
-                        ) : (
-                          <ShoppingBag className="h-6 w-6 text-white" />
-                        )}
+                      <div className={"h-14 w-14 rounded-xl flex items-center justify-center shrink-0 " + iconBg(item.product.category)}>
+                        <ShoppingBag className="h-6 w-6 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-semibold text-gray-900 truncate">
-                          {item.product.name}
-                        </h4>
+                        <h4 className="text-sm font-semibold text-gray-900 truncate">{item.product.name}</h4>
                         <p className="text-xs text-gray-400 mt-0.5">
                           {item.product.category === 'ebook' ? 'كتاب إلكتروني PDF' : 'برنامج'}
                         </p>
                         <div className="flex items-center justify-between mt-2">
-                          <span className="text-sm font-bold text-emerald-600">
-                            {"$"}{item.product.price * item.quantity}
-                          </span>
+                          <span className="text-sm font-bold text-emerald-600">{'$' + (item.product.price * item.quantity).toString()}</span>
                           <div className="flex items-center gap-1">
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="h-7 w-7"
-                              onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                            >
-                              <Minus className="h-3 w-3" />
-                            </Button>
+                            <Button size="icon" variant="outline" className="h-7 w-7" onClick={() => updateQuantity(item.product.id, item.quantity - 1)}><Minus className="h-3 w-3" /></Button>
                             <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="h-7 w-7"
-                              onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                            >
-                              <Plus className="h-3 w-3" />
-                            </Button>
+                            <Button size="icon" variant="outline" className="h-7 w-7" onClick={() => updateQuantity(item.product.id, item.quantity + 1)}><Plus className="h-3 w-3" /></Button>
                           </div>
                         </div>
                       </div>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-8 w-8 text-gray-400 hover:text-red-500 shrink-0"
-                        onClick={() => removeFromCart(item.product.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <Button size="icon" variant="ghost" className="h-8 w-8 text-gray-400 hover:text-red-500 shrink-0" onClick={() => removeFromCart(item.product.id)}><Trash2 className="h-4 w-4" /></Button>
                     </div>
                   </motion.div>
                 ))}
@@ -136,28 +96,27 @@ export function CartDrawer() {
         </ScrollArea>
 
         {cart.length > 0 && (
-          <div className="border-t p-4 space-y-3 bg-gray-50/50">
-            <div className="flex items-center justify-between">
-              <span className="text-gray-600 font-medium">المجموع الفرعي</span>
-              <span className="font-bold text-gray-900">{'$' + total}</span>
+          <div>
+            <div className="border-t p-4 space-y-3 bg-gray-50/50">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600 font-medium">المجموع الفرعي</span>
+                <span className="font-bold text-gray-900">{'$' + total}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600 font-medium">الضريبة</span>
+                <span className="text-gray-600">شاملة</span>
+              </div>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-600 font-medium">الضريبة</span>
-              <span className="text-gray-600">شاملة</span>
+            <div className="border-t pt-4">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-base font-bold text-gray-900">المجموع:</span>
+                <span className="text-xl font-extrabold text-emerald-600">{'$' + total}</span>
+              </div>
+              <Button onClick={handleCheckout} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-200 h-12 text-base">
+                إتمام الشراء
+                <ArrowLeft className="mr-2 h-5 w-5" />
+              </Button>
             </div>
-          </div>
-          <div className="border-t pt-4">
-            <div className="flex items-center justify-between">
-              <span className="text-base font-bold text-gray-900">المجموع:</span>
-              <span className="text-xl font-extrabold text-emerald-600">{'$' + total}</span>
-            </div>
-            <Button
-              onClick={handleCheckout}
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-200 h-12 text-base"
-            >
-              إتمام الشراء
-              <ArrowLeft className="mr-2 h-5 w-5" />
-            </Button>
           </div>
         )}
       </SheetContent>
