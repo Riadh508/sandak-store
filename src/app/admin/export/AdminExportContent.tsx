@@ -1,10 +1,13 @@
-import dynamic from 'next/dynamic';
+'use client';
 
-const AdminExportContent = dynamic(() => import('./AdminExportContent'), { ssr: false });
-
-export default function AdminExportPage() {
-  return <AdminExportContent />;
-}
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useStore } from '@/lib/store';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Loader2, Download, Package, ShieldCheck, FileArchive, Info } from 'lucide-react';
+import { toast } from 'sonner';
 
 const INCLUDED_ITEMS = [
   'ملفات المصدر (src/)',
@@ -21,7 +24,7 @@ const EXCLUDED_ITEMS = [
   '.next/',
 ];
 
-export default function AdminExportPage() {
+export default function AdminExportContent() {
   const router = useRouter();
   const { user, authLoading, checkAuth } = useStore();
   const [checked, setChecked] = useState(false);
