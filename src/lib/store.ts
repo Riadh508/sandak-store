@@ -15,6 +15,29 @@ export interface Product {
   image: string;
   features: string[];
   badge?: string;
+  downloadUrl?: string;
+}
+
+export interface OrderItem {
+  product: Product;
+  quantity: number;
+  total: number;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export interface AuthState {
+  user: User | null;
+  authLoading: boolean;
+  setUser: (user: User | null) => void;
+  setAuthLoading: (loading: boolean) => void;
+  logout: () => Promise<void>;
+  checkAuth: () => Promise<void>;
 }
 
 export interface CartItem {
@@ -31,6 +54,10 @@ export interface StoreState {
   products: Product[];
   productsLoading: boolean;
   fetchProducts: () => Promise<void>;
+
+  // Store settings
+  storeSettings: StoreSettings | null;
+  fetchSettings: () => Promise<void>;
 
   // Cart
   cart: CartItem[];
@@ -56,35 +83,73 @@ export interface StoreState {
   // Cart drawer
   cartOpen: boolean;
   setCartOpen: (open: boolean) => void;
+
+  // Auth
+  user: User | null;
+  authLoading: boolean;
+  setUser: (user: User | null) => void;
+  setAuthLoading: (loading: boolean) => void;
+  logout: () => Promise<void>;
+  checkAuth: () => Promise<void>;
 }
 
-// Payment info
-export const paymentInfo = {
-  jeib: {
-    name: 'محفظة جيب (Jeib)',
-    phone: '00967770240572',
-    instructions: [
-      'قم بفتح تطبيق محفظة جيب على هاتفك',
-      'اختر خيار التحويل',
-      'أدخل رقم المحفظة: 00967770240572',
-      'أدخل المبلغ المطلوب',
-      'أرسل إيصال التحويل عبر الواتساب أو البريد الإلكتروني',
-    ],
-  },
-  westernUnion: {
-    name: 'ويسترن يونين (Western Union)',
-    recipientName: 'Riadh Ahmed Mohammed Alsayaghi',
-    city: 'صنعاء - العاصمة',
-    country: 'اليمن',
-    instructions: [
-      'اذهب إلى أقرب فرع ويسترن يونين',
-      'أرسل المبلغ باسم: Riadh Ahmed Mohammed Alsayaghi',
-      'المدينة: صنعاء - العاصمة',
-      'الدولة: اليمن',
-      'احتفظ برقم التحويل (MTCN) وأرسله لنا',
-    ],
-  },
+export interface StoreSettings {
+  storeName: string;
+  storeEmail: string;
+  storePhone: string;
+  storeAddress: string;
+  jeibPhone: string;
+  wuName: string;
+  wuCity: string;
+  wuCountry: string;
+  siteUrl: string;
+  currency: string;
+  taxRate: number;
+}
+
+const defaultSettings: StoreSettings = {
+  storeName: 'سندك',
+  storeEmail: 'info@store.com',
+  storePhone: '',
+  storeAddress: '',
+  jeibPhone: '00967770240572',
+  wuName: 'Riadh Ahmed Mohammed Alsayaghi',
+  wuCity: 'صنعاء - العاصمة',
+  wuCountry: 'اليمن',
+  siteUrl: '',
+  currency: '$',
+  taxRate: 15,
 };
+
+export function getPaymentInfo(settings: StoreSettings | null) {
+  const s = settings || defaultSettings;
+  return {
+    jeib: {
+      name: 'محفظة جيب (Jeib)',
+      phone: s.jeibPhone || '00967770240572',
+      instructions: [
+        'قم بفتح تطبيق محفظة جيب على هاتفك',
+        'اختر خيار التحويل',
+        `أدخل رقم المحفظة: ${s.jeibPhone || '00967770240572'}`,
+        'أدخل المبلغ المطلوب',
+        'أرسل إيصال التحويل عبر الواتساب أو البريد الإلكتروني',
+      ],
+    },
+    westernUnion: {
+      name: 'ويسترن يونين (Western Union)',
+      recipientName: s.wuName || 'Riadh Ahmed Mohammed Alsayaghi',
+      city: s.wuCity || 'صنعاء - العاصمة',
+      country: s.wuCountry || 'اليمن',
+      instructions: [
+        'اذهب إلى أقرب فرع ويسترن يونين',
+        `أرسل المبلغ باسم: ${s.wuName || 'Riadh Ahmed Mohammed Alsayaghi'}`,
+        `المدينة: ${s.wuCity || 'صنعاء - العاصمة'}`,
+        `الدولة: ${s.wuCountry || 'اليمن'}`,
+        'احتفظ برقم التحويل (MTCN) وأرسله لنا',
+      ],
+    },
+  };
+}
 
 // Create Zustand store
 export const useStore = create<StoreState>((set, get) => ({
@@ -103,7 +168,6 @@ export const useStore = create<StoreState>((set, get) => ({
       if (data.success) {
         set({ products: data.data });
       }
-      // If no products exist, seed defaults
       if (!data.data || data.data.length === 0) {
         await fetch('/api/products/seed', { method: 'POST' });
         const retryRes = await fetch('/api/products');
@@ -116,6 +180,20 @@ export const useStore = create<StoreState>((set, get) => ({
       logger.error('Error fetching products:', error);
     } finally {
       set({ productsLoading: false });
+    }
+  },
+
+  // Store settings
+  storeSettings: null,
+  fetchSettings: async () => {
+    try {
+      const res = await fetch('/api/settings');
+      const data = await res.json();
+      if (data.success) {
+        set({ storeSettings: data.data });
+      }
+    } catch (error) {
+      logger.error('Error fetching store settings:', error);
     }
   },
 
@@ -173,4 +251,29 @@ export const useStore = create<StoreState>((set, get) => ({
   // Cart drawer
   cartOpen: false,
   setCartOpen: (open) => set({ cartOpen: open }),
+
+  // Auth
+  user: null,
+  authLoading: false,
+  setUser: (user) => set({ user }),
+  setAuthLoading: (loading) => set({ authLoading: loading }),
+  logout: async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {}
+    set({ user: null });
+  },
+  checkAuth: async () => {
+    set({ authLoading: true });
+    try {
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      if (data.success) set({ user: data.data });
+      else set({ user: null });
+    } catch {
+      set({ user: null });
+    } finally {
+      set({ authLoading: false });
+    }
+  },
 }));

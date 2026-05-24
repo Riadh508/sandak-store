@@ -1,17 +1,26 @@
 'use client';
 
-import { useStore, type Product } from '@/lib/store';
+import { useStore } from '@/lib/store';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ShoppingCart, BookOpen, Monitor, Check, Star, ArrowLeft } from 'lucide-react';
+import { ShoppingCart, BookOpen, Monitor, Check, Star, ArrowLeft, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const categoryLabels = {
   ebook: { label: 'كتاب إلكتروني PDF', icon: BookOpen, color: 'text-blue-600', bg: 'bg-blue-50' },
   software: { label: 'برنامج', icon: Monitor, color: 'text-emerald-600', bg: 'bg-emerald-50' },
 };
+
+function linkify(text: string) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.split(urlRegex).map((part, i) =>
+    urlRegex.test(part)
+      ? <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800" onClick={e => e.stopPropagation()}>{part}</a>
+      : part
+  );
+}
 
 export function ProductDetailDialog() {
   const { selectedProduct, setSelectedProduct, addToCart, setCartOpen, setCurrentView } = useStore();
@@ -98,7 +107,7 @@ export function ProductDetailDialog() {
           <div className="mb-5">
             <h4 className="text-sm font-bold text-gray-700 mb-2">الوصف</h4>
             <p className="text-gray-600 leading-relaxed text-sm">
-              {selectedProduct.longDescription}
+              {linkify(selectedProduct.longDescription)}
             </p>
           </div>
 
@@ -107,18 +116,28 @@ export function ProductDetailDialog() {
             <h4 className="text-sm font-bold text-gray-700 mb-3">المميزات</h4>
             <div className="grid gap-2 sm:grid-cols-2">
               {selectedProduct.features.map((feature, i) => (
-                <div key={i} className="flex items-start gap-2 rounded-lg bg-gray-50 p-2.5">
-                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100">
-                    <Check className="h-3 w-3 text-emerald-600" />
+                  <div key={i} className="flex items-start gap-2 rounded-lg bg-gray-50 p-2.5">
+                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100">
+                      <Check className="h-3 w-3 text-emerald-600" />
+                    </div>
+                    <span className="text-sm text-gray-700">{linkify(feature)}</span>
                   </div>
-                  <span className="text-sm text-gray-700">{feature}</span>
-                </div>
               ))}
             </div>
           </div>
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3">
+            {selectedProduct.downloadUrl && (
+              <Button
+                onClick={() => window.open(selectedProduct.downloadUrl, '_blank')}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200"
+                size="lg"
+              >
+                <ExternalLink className="ml-2 h-5 w-5" />
+                تحميل النظام
+              </Button>
+            )}
             <Button
               onClick={handleAddToCart}
               className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-200"

@@ -46,9 +46,6 @@ const statusBadge = (status: string) => {
 };
 
 export function InvoiceDashboard({ onBack }: { onBack: () => void }) {
-  const [adminKey, setAdminKey] = useState('');
-  const [keyDialogOpen, setKeyDialogOpen] = useState(true);
-  const [verifying, setVerifying] = useState(false);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -56,16 +53,10 @@ export function InvoiceDashboard({ onBack }: { onBack: () => void }) {
   const [items, setItems] = useState([{ description: '', quantity: 1, unitPrice: 0 }]);
   const [saving, setSaving] = useState(false);
 
-  const adminHeaders = (): HeadersInit => {
-    const h: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (adminKey) h['x-api-key'] = adminKey;
-    return h;
-  };
-
   const fetchInvoices = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/invoices', { headers: adminHeaders() });
+      const res = await fetch('/api/invoices');
       const json = await res.json();
       if (json.success) setInvoices(json.data);
     } catch (e) {
@@ -94,7 +85,7 @@ export function InvoiceDashboard({ onBack }: { onBack: () => void }) {
     try {
       const res = await fetch('/api/invoices', {
         method: 'POST',
-        headers: adminHeaders(),
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, taxRate: parseFloat(form.taxRate), discount: parseFloat(form.discount), items: validItems }),
       });
       const json = await res.json();
@@ -119,7 +110,7 @@ export function InvoiceDashboard({ onBack }: { onBack: () => void }) {
     try {
       const res = await fetch('/api/invoices', {
         method: 'PUT',
-        headers: adminHeaders(),
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, status: 'paid' }),
       });
       const json = await res.json();
@@ -128,51 +119,6 @@ export function InvoiceDashboard({ onBack }: { onBack: () => void }) {
       logger.error('Failed to update invoice', e);
     }
   };
-
-  if (keyDialogOpen) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
-        <div className="bg-white rounded-xl shadow-lg border p-8 max-w-sm w-full mx-4">
-          <h2 className="text-xl font-bold text-gray-900 text-center mb-2">نظام الفواتير</h2>
-          <p className="text-sm text-gray-500 text-center mb-6">أدخل مفتاح التحكم للوصول</p>
-          <Input
-            type="password"
-            placeholder="مفتاح التحكم"
-            value={adminKey}
-            onChange={(e) => setAdminKey(e.target.value)}
-            className="text-center mb-4"
-            autoFocus
-          />
-          <Button
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-            disabled={verifying}
-            onClick={async () => {
-              if (!adminKey.trim()) {
-                toast.error('الرجاء إدخال المفتاح');
-                return;
-              }
-              setVerifying(true);
-              try {
-                const res = await fetch('/api/auth/verify', {
-                  method: 'POST',
-                  headers: { 'x-api-key': adminKey.trim(), 'Content-Type': 'application/json' },
-                });
-                const data = await res.json();
-                if (data.success) setKeyDialogOpen(false);
-                else toast.error('المفتاح غير صحيح');
-              } catch {
-                toast.error('خطأ في الاتصال');
-              } finally {
-                setVerifying(false);
-              }
-            }}
-          >
-            {verifying ? 'جارٍ التحقق...' : 'دخول'}
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">

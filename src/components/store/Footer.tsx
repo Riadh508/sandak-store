@@ -1,16 +1,39 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useStore } from '@/lib/store';
 import { Separator } from '@/components/ui/separator';
 import { Store, Mail, Phone, MapPin, Shield, Heart } from 'lucide-react';
 
+interface StoreSettings {
+  storeName: string;
+  storeEmail: string;
+  storePhone: string;
+  storeAddress: string;
+}
+
 export function Footer() {
   const { setCurrentView, setCategoryFilter } = useStore();
+  const [settings, setSettings] = useState<StoreSettings | null>(null);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) setSettings(data.data);
+      })
+      .catch(() => {});
+  }, []);
 
   const navigate = (view: string, category?: string) => {
     if (category) setCategoryFilter(category as 'ebook' | 'software');
     setCurrentView(view as 'home' | 'products');
   };
+
+  const storeName = settings?.storeName || 'سندك';
+  const storeEmail = settings?.storeEmail || 'sanedsoft32@gmail.com';
+  const storePhone = settings?.storePhone || '00967770240572';
+  const storeAddress = settings?.storeAddress || 'صنعاء - العاصمة، اليمن';
 
   return (
     <footer className="bg-gray-900 text-gray-300">
@@ -23,7 +46,7 @@ export function Footer() {
                 <Store className="h-5 w-5 text-white" />
               </div>
               <div>
-                <span className="text-lg font-bold text-white">سندك</span>
+                <span className="text-lg font-bold text-white">{storeName}</span>
                 <span className="block text-[10px] text-gray-500">للبرمجيات والمنتجات الرقمية</span>
               </div>
             </button>
@@ -60,15 +83,15 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-emerald-400 shrink-0" />
-                <span dir="ltr">00967770240572</span>
+                <span dir="ltr">{storePhone}</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-emerald-400 shrink-0" />
-                <span>info@sandak.store</span>
+                <span>{storeEmail}</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>صنعاء - العاصمة، اليمن</span>
+                <span>{storeAddress}</span>
               </li>
             </ul>
           </div>

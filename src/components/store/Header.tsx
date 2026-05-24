@@ -1,7 +1,7 @@
 'use client';
 
-import { useStore, type ProductCategory } from '@/lib/store';
-import { ShoppingCart, Menu, Store, Settings } from 'lucide-react';
+import { useStore } from '@/lib/store';
+import { ShoppingCart, Menu, Store } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -64,7 +64,7 @@ export function Header() {
             </Button>
           </nav>
 
-          {/* Cart + Admin + Mobile Menu */}
+          {/* Cart + Mobile Menu */}
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
@@ -78,17 +78,6 @@ export function Header() {
                   {cartCount}
                 </Badge>
               )}
-            </Button>
-
-            {/* Admin Button */}
-            <Button
-              variant="outline"
-              size="icon"
-              className="border-gray-200 hover:bg-gray-50"
-              onClick={() => setCurrentView('admin')}
-              title="لوحة التحكم"
-            >
-              <Settings className="h-5 w-5 text-gray-600" />
             </Button>
 
             {/* Mobile Navigation */}
@@ -130,14 +119,6 @@ export function Header() {
                     onClick={() => { setCategoryFilter('software'); setCurrentView('products'); }}
                   >
                     البرمجيات
-                  </Button>
-                  <Button
-                    variant={currentView === 'admin' ? 'default' : 'ghost'}
-                    className="justify-end"
-                    onClick={() => setCurrentView('admin')}
-                  >
-                    <Settings className="ml-2 h-4 w-4" />
-                    لوحة التحكم
                   </Button>
                 </nav>
               </SheetContent>

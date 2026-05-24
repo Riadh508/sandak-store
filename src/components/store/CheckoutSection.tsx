@@ -1,10 +1,11 @@
 'use client';
 
-import { useStore, paymentInfo, type PaymentMethod } from '@/lib/store';
+import { useStore, getPaymentInfo, type PaymentMethod } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import {
@@ -29,11 +30,23 @@ export function CheckoutSection() {
     setPaymentMethod,
     setCurrentView,
     clearCart,
+    storeSettings,
   } = useStore();
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [orderNumber, setOrderNumber] = useState('');
+  const [placing, setPlacing] = useState(false);
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
+  const [formError, setFormError] = useState('');
 
   const total = getCartTotal();
+  const subtotal = total;
+  const taxRate = storeSettings?.taxRate ?? 15;
+  const tax = subtotal * (taxRate / 100);
+  const pInfo = getPaymentInfo(storeSettings);
+  const currency = storeSettings?.currency || '$';
 
   const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
@@ -42,13 +55,62 @@ export function CheckoutSection() {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
+    setFormError('');
+    if (!customerName.trim()) {
+      setFormError('يرجى إدخال الاسم');
+      return;
+    }
+    if (!customerPhone.trim()) {
+      setFormError('يرجى إدخال رقم الهاتف');
+      return;
+    }
     if (!paymentMethod) {
       toast.error('يرجى اختيار طريقة الدفع');
       return;
     }
-    setOrderPlaced(true);
-    clearCart();
+    if (cart.length === 0) {
+      toast.error('السلة فارغة');
+      return;
+    }
+
+    setPlacing(true);
+    try {
+      const items = cart.map(item => ({
+        name: item.product.name,
+        quantity: item.quantity,
+        price: item.product.price,
+        total: item.product.price * item.quantity,
+      }));
+
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerName: customerName.trim(),
+          customerPhone: customerPhone.trim(),
+          customerEmail: customerEmail.trim(),
+          paymentMethod,
+          items,
+          subtotal,
+          tax,
+          total: subtotal + tax,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setOrderNumber(data.data?.orderNumber || `ORD-${Date.now()}`);
+        setOrderPlaced(true);
+        clearCart();
+      } else {
+        toast.error(data.error || 'حدث خطأ');
+      }
+    } catch {
+      toast.error('خطأ في الاتصال');
+    } finally {
+      setPlacing(false);
+    }
   };
 
   if (orderPlaced) {
@@ -63,9 +125,12 @@ export function CheckoutSection() {
             <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-emerald-100 flex items-center justify-center">
               <CheckCircle2 className="h-10 w-10 text-emerald-600" />
             </div>
-            <h2 className="mb-3 text-2xl font-extrabold text-gray-900">تم تأكيد طلبك!</h2>
+            <h2 className="mb-3 text-2xl font-extrabold text-gray-900">تم استلام طلبك!</h2>
+            <p className="mb-2 text-gray-500">
+              شكراً لطلبك من متجر سندك. رقم طلبك: <strong>{orderNumber}</strong>
+            </p>
             <p className="mb-6 text-gray-500">
-              شكراً لطلبك من متجر سندك. يرجى إتمام عملية الدفع وإرسال إيصال التحويل لنا.
+              يرجى إتمام عملية الدفع. المشرف سيتواصل معك بعد التأكد من وصول المبلغ.
             </p>
             <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 mb-6 text-right">
               <h4 className="font-semibold text-amber-800 mb-2">خطوات إتمام الدفع:</h4>
@@ -133,11 +198,60 @@ export function CheckoutSection() {
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Payment Methods */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Step 1: Choose payment */}
+            {/* Step 0: Customer Info */}
             <Card className="border-gray-100 shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-right">
                   <Badge className="bg-emerald-100 text-emerald-700 border-0">الخطوة 1</Badge>
+                  معلومات العميل
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="customer-name" className="text-right">الاسم <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="customer-name"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    placeholder="أدخل اسمك الكامل"
+                    className="text-right"
+                    dir="rtl"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="customer-phone" className="text-right">رقم الهاتف <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="customer-phone"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    placeholder="أدخل رقم هاتفك"
+                    className="text-right"
+                    dir="ltr"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="customer-email" className="text-right">البريد الإلكتروني <span className="text-gray-400 text-xs">(اختياري)</span></Label>
+                  <Input
+                    id="customer-email"
+                    type="email"
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    placeholder="أدخل بريدك الإلكتروني"
+                    className="text-right"
+                    dir="ltr"
+                  />
+                </div>
+                {formError && (
+                  <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3 text-right">{formError}</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Step 1: Choose payment */}
+            <Card className="border-gray-100 shadow-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-right">
+                  <Badge className="bg-emerald-100 text-emerald-700 border-0">الخطوة 2</Badge>
                   اختر طريقة الدفع
                 </CardTitle>
               </CardHeader>
@@ -161,7 +275,7 @@ export function CheckoutSection() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <Wallet className="h-5 w-5 text-emerald-600" />
-                          <span className="font-semibold text-gray-900">{paymentInfo.jeib.name}</span>
+                          <span className="font-semibold text-gray-900">{pInfo.jeib.name}</span>
                         </div>
                         <p className="text-sm text-gray-500">الدفع عبر تطبيق المحفظة على هاتفك</p>
                       </div>
@@ -185,7 +299,7 @@ export function CheckoutSection() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <Building2 className="h-5 w-5 text-emerald-600" />
-                          <span className="font-semibold text-gray-900">{paymentInfo.westernUnion.name}</span>
+                          <span className="font-semibold text-gray-900">{pInfo.westernUnion.name}</span>
                         </div>
                         <p className="text-sm text-gray-500">التحويل من أي فرع حول العالم</p>
                       </div>
@@ -210,9 +324,9 @@ export function CheckoutSection() {
                 >
                   <Card className="border-gray-100 shadow-sm">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-right">
-                        <Badge className="bg-emerald-100 text-emerald-700 border-0">الخطوة 2</Badge>
-                        تفاصيل التحويل
+                    <CardTitle className="flex items-center gap-2 text-right">
+                      <Badge className="bg-emerald-100 text-emerald-700 border-0">الخطوة 3</Badge>
+                      تفاصيل التحويل
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -222,13 +336,13 @@ export function CheckoutSection() {
                             <span className="text-sm text-gray-500">رقم المحفظة</span>
                             <div className="flex items-center gap-2">
                               <span className="font-mono font-bold text-gray-900 text-lg" dir="ltr">
-                                {paymentInfo.jeib.phone}
+                                {pInfo.jeib.phone}
                               </span>
                               <Button
                                 size="icon"
                                 variant="ghost"
                                 className="h-8 w-8"
-                                onClick={() => copyToClipboard(paymentInfo.jeib.phone, 'phone')}
+                                onClick={() => copyToClipboard(pInfo.jeib.phone, 'phone')}
                               >
                                 {copiedField === 'phone' ? (
                                   <Check className="h-4 w-4 text-emerald-600" />
@@ -241,7 +355,7 @@ export function CheckoutSection() {
                           <div className="rounded-lg bg-emerald-50 border border-emerald-100 p-4">
                             <h4 className="font-semibold text-emerald-800 mb-2">خطوات الدفع عبر جيب:</h4>
                             <ol className="text-sm text-emerald-700 space-y-2">
-                              {paymentInfo.jeib.instructions.map((step, i) => (
+                              {pInfo.jeib.instructions.map((step, i) => (
                                 <li key={i} className="flex items-start gap-2">
                                   <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-200 text-xs font-bold text-emerald-700">
                                     {i + 1}
@@ -259,13 +373,13 @@ export function CheckoutSection() {
                               <span className="text-sm text-gray-500">اسم المستفيد</span>
                               <div className="flex items-center gap-2">
                                 <span className="font-semibold text-gray-900" dir="ltr">
-                                  {paymentInfo.westernUnion.recipientName}
+                                  {pInfo.westernUnion.recipientName}
                                 </span>
                                 <Button
                                   size="icon"
                                   variant="ghost"
                                   className="h-7 w-7"
-                                  onClick={() => copyToClipboard(paymentInfo.westernUnion.recipientName, 'name')}
+                                  onClick={() => copyToClipboard(pInfo.westernUnion.recipientName, 'name')}
                                 >
                                   {copiedField === 'name' ? (
                                     <Check className="h-3 w-3 text-emerald-600" />
@@ -278,18 +392,18 @@ export function CheckoutSection() {
                             <Separator />
                             <div className="flex items-center justify-between">
                               <span className="text-sm text-gray-500">المدينة</span>
-                              <span className="font-semibold text-gray-900">{paymentInfo.westernUnion.city}</span>
+                              <span className="font-semibold text-gray-900">{pInfo.westernUnion.city}</span>
                             </div>
                             <Separator />
                             <div className="flex items-center justify-between">
                               <span className="text-sm text-gray-500">الدولة</span>
-                              <span className="font-semibold text-gray-900">{paymentInfo.westernUnion.country}</span>
+                              <span className="font-semibold text-gray-900">{pInfo.westernUnion.country}</span>
                             </div>
                           </div>
                           <div className="rounded-lg bg-blue-50 border border-blue-100 p-4">
                             <h4 className="font-semibold text-blue-800 mb-2">خطوات الدفع عبر ويسترن يونين:</h4>
                             <ol className="text-sm text-blue-700 space-y-2">
-                              {paymentInfo.westernUnion.instructions.map((step, i) => (
+                              {pInfo.westernUnion.instructions.map((step, i) => (
                                 <li key={i} className="flex items-start gap-2">
                                   <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-200 text-xs font-bold text-blue-700">
                                     {i + 1}
@@ -305,7 +419,7 @@ export function CheckoutSection() {
                       {/* Amount to transfer */}
                       <div className="rounded-xl bg-gradient-to-l from-emerald-50 to-teal-50 border border-emerald-200 p-4 text-center">
                         <span className="text-sm text-gray-500">المبلغ المطلوب تحويله</span>
-                        <div className="text-3xl font-extrabold text-emerald-700">${total}</div>
+                        <div className="text-3xl font-extrabold text-emerald-700">{currency}{(subtotal + tax).toFixed(2)}</div>
                       </div>
                     </CardContent>
                   </Card>
@@ -322,7 +436,7 @@ export function CheckoutSection() {
                 <Card className="border-gray-100 shadow-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-right">
-                      <Badge className="bg-emerald-100 text-emerald-700 border-0">الخطوة 3</Badge>
+                      <Badge className="bg-emerald-100 text-emerald-700 border-0">الخطوة 4</Badge>
                       تأكيد الطلب
                     </CardTitle>
                   </CardHeader>
@@ -335,11 +449,11 @@ export function CheckoutSection() {
                     </div>
                     <Button
                       onClick={handlePlaceOrder}
+                      disabled={placing}
                       className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-12 text-base shadow-lg shadow-emerald-200"
                       size="lg"
                     >
-                      <Shield className="ml-2 h-5 w-5" />
-                      تأكيد الطلب - ${total}
+                      {placing ? 'جارٍ الحفظ...' : <><Shield className="ml-2 h-5 w-5" /> تأكيد الطلب - {currency}{(subtotal + tax).toFixed(2)}</>}
                     </Button>
                   </CardContent>
                 </Card>
@@ -370,14 +484,18 @@ export function CheckoutSection() {
                       <p className="text-xs text-gray-400">{item.quantity} نسخة</p>
                     </div>
                     <span className="text-sm font-semibold text-gray-700">
-                      ${item.product.price * item.quantity}
+                      {currency}{item.product.price * item.quantity}
                     </span>
                   </div>
                 ))}
                 <Separator />
                 <div className="flex items-center justify-between">
                   <span className="text-gray-500">المجموع الفرعي</span>
-                  <span className="font-semibold">${total}</span>
+                  <span className="font-semibold">{currency}{subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-500">الضريبة ({taxRate}%)</span>
+                  <span className="font-semibold">{currency}{tax.toFixed(2)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-500">التوصيل</span>
@@ -386,7 +504,7 @@ export function CheckoutSection() {
                 <Separator />
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-gray-900">الإجمالي</span>
-                  <span className="text-xl font-extrabold text-emerald-600">${total}</span>
+                  <span className="text-xl font-extrabold text-emerald-600">{currency}{(subtotal + tax).toFixed(2)}</span>
                 </div>
               </CardContent>
             </Card>

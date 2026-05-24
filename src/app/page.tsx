@@ -8,9 +8,7 @@ import { ProductDetailDialog } from '@/components/store/ProductDetailDialog';
 import { CartDrawer } from '@/components/store/CartDrawer';
 import { CheckoutSection } from '@/components/store/CheckoutSection';
 import { HomeContent } from '@/components/store/HomeContent';
-import { AdminPanel } from '@/components/store/AdminPanel';
 import { Footer } from '@/components/store/Footer';
-import { InvoiceDashboard } from '@/components/invoices/InvoiceDashboard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
 
@@ -21,15 +19,6 @@ export default function StorePage() {
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
-
-  // Admin panel has its own full layout
-  if (currentView === 'admin') {
-    return <AdminPanel onBack={() => setCurrentView('home')} />;
-  }
-
-  if (currentView === 'invoices') {
-    return <InvoiceDashboard onBack={() => setCurrentView('home')} />;
-  }
 
   return (
     <div className="min-h-screen flex flex-col bg-white">

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Product } from '@/lib/store';
+import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -42,6 +42,11 @@ import {
   Save,
   RefreshCw,
   LayoutDashboard,
+  LogOut,
+  User,
+  Users,
+  ShoppingCart,
+  FileText,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -56,6 +61,7 @@ interface ProductDB {
   image: string;
   features: string[];
   badge: string;
+  downloadUrl: string;
   isActive: boolean;
   sortOrder: number;
   createdAt: string;
@@ -63,9 +69,7 @@ interface ProductDB {
 }
 
 export function AdminPanel({ onBack }: { onBack: () => void }) {
-  const [adminKey, setAdminKey] = useState('');
-  const [keyDialogOpen, setKeyDialogOpen] = useState(true);
-  const [verifying, setVerifying] = useState(false);
+  const { user, logout } = useStore();
   const [products, setProducts] = useState<ProductDB[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -83,11 +87,10 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
   const [formFeatures, setFormFeatures] = useState('');
   const [formActive, setFormActive] = useState(true);
   const [formImage, setFormImage] = useState('');
+  const [formDownloadUrl, setFormDownloadUrl] = useState('');
 
   const adminHeaders = (): HeadersInit => {
-    const h: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (adminKey) h['x-api-key'] = adminKey;
-    return h;
+    return { 'Content-Type': 'application/json' };
   };
 
   const fetchProducts = useCallback(async () => {
@@ -103,7 +106,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     } finally {
       setLoading(false);
     }
-  }, [adminKey]);
+  }, []);
 
   useEffect(() => {
     fetchProducts();
@@ -112,7 +115,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
         fetchProducts();
       }
     });
-  }, [fetchProducts, adminKey]);
+  }, [fetchProducts]);
 
   const resetForm = () => {
     setFormName('');
@@ -124,6 +127,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     setFormFeatures('');
     setFormActive(true);
     setFormImage('');
+    setFormDownloadUrl('');
     setEditingProduct(null);
   };
 
@@ -143,6 +147,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     setFormFeatures((product.features || []).join('\n'));
     setFormActive(product.isActive);
     setFormImage(product.image || '');
+    setFormDownloadUrl(product.downloadUrl || '');
     setDialogOpen(true);
   };
 
@@ -172,6 +177,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
       features: featuresArray,
       isActive: formActive,
       image: formImage.trim(),
+      downloadUrl: formDownloadUrl.trim(),
     };
 
     try {
@@ -246,52 +252,6 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
   const activeProducts = products.filter((p) => p.isActive);
   const inactiveProducts = products.filter((p) => !p.isActive);
 
-  // If key dialog is open, show password gate
-  if (keyDialogOpen) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-xl shadow-lg border p-8 max-w-sm w-full mx-4">
-          <h2 className="text-xl font-bold text-gray-900 text-center mb-2">لوحة التحكم</h2>
-          <p className="text-sm text-gray-500 text-center mb-6">أدخل مفتاح التحكم للوصول</p>
-          <Input
-            type="password"
-            placeholder="مفتاح التحكم"
-            value={adminKey}
-            onChange={(e) => setAdminKey(e.target.value)}
-            className="text-center mb-4"
-            autoFocus
-          />
-          <Button
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-            disabled={verifying}
-            onClick={async () => {
-              if (!adminKey.trim()) {
-                toast.error('الرجاء إدخال المفتاح');
-                return;
-              }
-              setVerifying(true);
-              try {
-                const res = await fetch('/api/auth/verify', {
-                  method: 'POST',
-                  headers: { 'x-api-key': adminKey.trim(), 'Content-Type': 'application/json' },
-                });
-                const data = await res.json();
-                if (data.success) setKeyDialogOpen(false);
-                else toast.error('المفتاح غير صحيح');
-              } catch {
-                toast.error('خطأ في الاتصال');
-              } finally {
-                setVerifying(false);
-              }
-            }}
-          >
-            {verifying ? 'جارٍ التحقق...' : 'دخول'}
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -309,6 +269,15 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                 <h1 className="text-lg font-bold text-gray-900">لوحة التحكم</h1>
               </div>
             </div>
+            <div className="flex items-center gap-3">
+              {user && (
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <User className="h-4 w-4" />
+                  <span>{user.name}</span>
+                  <span className="text-gray-300">|</span>
+                  <span className="text-xs">{user.email}</span>
+                </div>
+              )}
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
@@ -318,6 +287,18 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
               >
                 <RefreshCw className={`ml-1 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
                 تحديث
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={async () => {
+                  await logout();
+                  window.location.href = '/admin/login';
+                }}
+                className="text-red-500 hover:text-red-600 hover:bg-red-50"
+              >
+                <LogOut className="ml-1 h-4 w-4" />
+                تسجيل الخروج
               </Button>
               <Button
                 onClick={openAddDialog}
@@ -579,6 +560,19 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                 value={formImage}
                 onChange={(e) => setFormImage(e.target.value)}
                 placeholder="https://example.com/image.jpg"
+                className="text-left"
+                dir="ltr"
+              />
+            </div>
+
+            {/* Download URL */}
+            <div className="space-y-2">
+              <Label htmlFor="downloadUrl">رابط التحميل (للمنتجات فقط)</Label>
+              <Input
+                id="downloadUrl"
+                value={formDownloadUrl}
+                onChange={(e) => setFormDownloadUrl(e.target.value)}
+                placeholder="/downloads/HotelSystem_v2.1.0_Setup.exe"
                 className="text-left"
                 dir="ltr"
               />

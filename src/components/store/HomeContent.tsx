@@ -6,7 +6,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Star, ArrowLeft, Shield, Zap, Users, Clock, BookOpen, Monitor } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useEffect } from 'react';
 
 export function HomeContent() {
   const { products, productsLoading, setCurrentView, setCategoryFilter } = useStore();

@@ -368,7 +368,7 @@ const defaultProducts = [
   {
     name: 'نظام إدارة الفنادق الشامل',
     description: 'نظام متكامل لإدارة الفنادق والشقق المفروشة مع واجهة عربية احترافية وكامل المميزات',
-    longDescription: 'نظام إدارة فندقية متكامل ومتطور مصمم خصيصاً لتلبية احتياجات الفنادق والشقق المفروشة في العالم العربي. يتميز النظام بواجهة عربية سهلة الاستخدام تدعم كافة عمليات الإدارة اليومية بدءاً من حجوزات الغرف وإدارة النزلاء مروراً بالمحاسبة والتقارير وصولاً إلى إدارة الموظفين والمخزون. النظام يعمل على الويب مما يعني إمكانية الوصول إليه من أي مكان وفي أي وقت عبر أي جهاز متصل بالإنترنت.',
+    longDescription: 'نظام إدارة فندقية متكامل ومتطور مصمم خصيصاً لتلبية احتياجات الفنادق والشقق المفروشة في العالم العربي. يتميز النظام بواجهة عربية سهلة الاستخدام تدعم كافة عمليات الإدارة اليومية بدءاً من حجوزات الغرف وإدارة النزلاء مروراً بالمحاسبة والتقارير وصولاً إلى إدارة الموظفين والمخزون. النظام يعمل على الويب مما يعني إمكانية الوصول إليه من أي مكان وفي أي وقت عبر أي جهاز متصل بالإنترنت. جرب النظام التجريبي مباشرة: https://hotelsystem-web.netlify.app',
     price: 299,
     category: 'software',
     image: '/covers/19-hotel-management.png',
@@ -381,8 +381,10 @@ const defaultProducts = [
       'تقارير يومية وأسبوعية وشهرية',
       'إدارة المخزون والخدمات الإضافية',
       'نظام إشعارات فوري للإدارة',
+      'رابط النظام التجريبي: https://hotelsystem-web.netlify.app',
     ]),
     badge: 'الأكثر مبيعاً',
+    downloadUrl: '/downloads/HotelSystem_v2.1.0_Setup.exe',
     sortOrder: 19,
   },
   {
@@ -526,6 +528,18 @@ const defaultProducts = [
     badge: '',
     sortOrder: 26,
   },
+  // ===== Sandak Store Itself =====
+  {
+    name: 'متجر سندك v4 — نظام متجر إلكتروني متكامل',
+    description: 'نظام متجر إلكتروني جاهز للبيع مع لوحة تحكم ونظام طلبات وفواتير ومستخدمين',
+    longDescription: 'نظام متجر إلكتروني متكامل مبني بـ Next.js 16 + React 19 + TypeScript + Prisma + SQLite. يتضمن: لوحة تحكم كاملة (منتجات، طلبات، فواتير، مستخدمين)، نظام مصادقة JWT، سلة تسوق، دفع عبر جيب وويسترن يونين، تصميم عصري متجاوب، دعم اللغة العربية RTL. مثالي لرواد الأعمال وأصحاب المتاجر. يُصدّر بدون منتجات — أضف منتجاتك الخاصة.',
+    price: 499,
+    category: 'software',
+    image: '/covers/27-sandak-store.png',
+    features: JSON.stringify(['لوحة تحكم كاملة (منتجات، طلبات، فواتير، مستخدمين)', 'نظام مصادقة آمن JWT + bcryptjs', 'سلة تسوق + نظام طلبات', 'دفع عبر جيب وويسترن يونين', 'تصميم عصري متجاوب', 'دعم اللغة العربية RTL', 'قاعدة بيانات SQLite + Prisma', 'إعدادات قابلة للتخصيص', 'جاهز للنشر على Netlify', 'يُصدّر بدون منتجات — أضف منتجاتك الخاصة']),
+    badge: 'نظام متكامل',
+    sortOrder: 27,
+  },
 ];
 
 export async function POST() {
@@ -545,10 +559,19 @@ export async function POST() {
           image: product.image,
           features: product.features,
           badge: product.badge,
+          downloadUrl: product.downloadUrl || '',
           sortOrder: product.sortOrder,
         },
       });
       results.push(created);
+    }
+
+    // Create StoreSettings if it doesn't exist
+    const existingSettings = await db.storeSettings.findFirst();
+    if (!existingSettings) {
+      await db.storeSettings.create({
+        data: {},
+      });
     }
 
     return NextResponse.json({

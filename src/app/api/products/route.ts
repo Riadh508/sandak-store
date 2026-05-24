@@ -42,6 +42,7 @@ export async function POST(request: Request) {
       image,
       features,
       badge,
+      downloadUrl,
       isActive,
       sortOrder,
     } = body;
@@ -60,6 +61,7 @@ export async function POST(request: Request) {
     const sanitizedLongDesc = String(longDescription || '').slice(0, 2000);
     const sanitizedImage = String(image || '').slice(0, 500);
     const sanitizedBadge = String(badge || '').slice(0, 100);
+    const sanitizedDownloadUrl = String(downloadUrl || '').slice(0, 500);
     const sanitizedFeatures = Array.isArray(features)
       ? features.map((f: unknown) => String(f).slice(0, 200)).slice(0, 50)
       : [];
@@ -79,6 +81,7 @@ export async function POST(request: Request) {
         image: sanitizedImage || '',
         features: JSON.stringify(sanitizedFeatures || []),
         badge: sanitizedBadge || '',
+        downloadUrl: sanitizedDownloadUrl,
         isActive: isActive !== undefined ? isActive : true,
         sortOrder: sortOrder || 0,
       },
@@ -119,6 +122,7 @@ export async function PUT(request: Request) {
       (Array.isArray(data.features) ? data.features : []).map((f: unknown) => String(f).slice(0, 200)).slice(0, 50)
     );
     if (data.badge !== undefined) updateData.badge = String(data.badge).slice(0, 100);
+    if (data.downloadUrl !== undefined) updateData.downloadUrl = String(data.downloadUrl).slice(0, 500);
     if (data.isActive !== undefined) updateData.isActive = data.isActive;
     if (data.sortOrder !== undefined) updateData.sortOrder = data.sortOrder;
 
