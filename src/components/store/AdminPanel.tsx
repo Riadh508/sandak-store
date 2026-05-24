@@ -249,6 +249,11 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     }
   };
 
+  const handleLogout = async () => {
+    await logout();
+    window.location.href = '/admin/login';
+  };
+
   const activeProducts = products.filter((p) => p.isActive);
   const inactiveProducts = products.filter((p) => !p.isActive);
 
@@ -291,10 +296,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={async () => {
-                  await logout();
-                  window.location.href = '/admin/login';
-                }}
+                onClick={handleLogout}
                 className="text-red-500 hover:text-red-600 hover:bg-red-50"
               >
                 <LogOut className="ml-1 h-4 w-4" />
@@ -608,7 +610,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
           <AlertDialogHeader>
             <AlertDialogTitle>هل أنت متأكد من حذف هذا المنتج؟</AlertDialogTitle>
             <AlertDialogDescription>
-              سيتم حذف المنتج &quot;{productToDelete?.name}&quot; نهائياً. هذا الإجراء لا يمكن التراجع عنه.
+              سيتم حذف المنتج ({productToDelete?.name}) نهائياً. هذا الإجراء لا يمكن التراجع عنه.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2 sm:gap-0">
