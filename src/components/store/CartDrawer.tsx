@@ -77,11 +77,7 @@ export function CartDrawer() {
                   >
                     <div className="flex gap-3">
                       {/* Product Icon */}
-                      <div className={`h-14 w-14 rounded-xl flex items-center justify-center shrink-0 ${
-                        item.product.category === 'ebook'
-                          ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
-                          : 'bg-gradient-to-br from-emerald-500 to-teal-600'
-                      }`}>
+                      <div className={"h-14 w-14 rounded-xl flex items-center justify-center shrink-0 " + (item.product.category === 'ebook' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 'bg-gradient-to-br from-emerald-500 to-teal-600')}>
                         {item.product.category === 'ebook' ? (
                           <ShoppingBag className="h-6 w-6 text-white" />
                         ) : (

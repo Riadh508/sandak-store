@@ -285,7 +285,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                 onClick={fetchProducts}
                 className="border-gray-200"
               >
-                <RefreshCw className={`ml-1 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={"ml-1 h-4 w-4 " + (loading ? 'animate-spin' : '')} />
                 تحديث
               </Button>
               <Button
@@ -324,7 +324,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
           ].map((stat, i) => (
             <Card key={i} className="border-gray-100">
               <CardContent className="p-4 flex items-center gap-3">
-                <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${stat.color}`}>
+                <div className={"h-10 w-10 rounded-lg flex items-center justify-center " + stat.color}>
                   <stat.icon className="h-5 w-5" />
                 </div>
                 <div>
@@ -377,15 +377,11 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.2, delay: index * 0.03 }}
                         >
-                          <Card className={`border ${product.isActive ? 'border-gray-100' : 'border-gray-200 bg-gray-50/50'}`}>
+                          <Card className={"border " + (product.isActive ? 'border-gray-100' : 'border-gray-200 bg-gray-50/50')}>
                             <CardContent className="p-4">
                               <div className="flex items-center gap-4">
                                 {/* Category Icon */}
-                                <div className={`h-14 w-14 rounded-xl flex items-center justify-center shrink-0 ${
-                                  product.category === 'ebook'
-                                    ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
-                                    : 'bg-gradient-to-br from-emerald-500 to-teal-600'
-                                }`}>
+                                <div className={"h-14 w-14 rounded-xl flex items-center justify-center shrink-0 " + (product.category === 'ebook' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 'bg-gradient-to-br from-emerald-500 to-teal-600')}>
                                   {product.category === 'ebook' ? (
                                     <BookOpen className="h-6 w-6 text-white" />
                                   ) : (
