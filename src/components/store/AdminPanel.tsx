@@ -406,7 +406,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                                   </div>
                                   <p className="text-sm text-gray-500 truncate">{product.description}</p>
                                   <div className="flex items-center gap-3 mt-1.5">
-                                    <span className="text-sm font-bold text-emerald-600">${product.price}</span>
+                                    <span className="text-sm font-bold text-emerald-600">{"$"}{product.price}</span>
                                     <Badge variant="outline" className="text-xs">
                                       {product.category === 'ebook' ? 'كتاب PDF' : 'برنامج'}
                                     </Badge>

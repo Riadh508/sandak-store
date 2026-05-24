@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStore } from '@/lib/store';
-import InvoiceDashboard from '@/components/invoices/InvoiceDashboard';
+import { InvoiceDashboard } from '@/components/invoices/InvoiceDashboard';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, LogOut, Receipt } from 'lucide-react';
 
