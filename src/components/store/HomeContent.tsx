@@ -72,7 +72,7 @@ export function HomeContent() {
                 <div className="flex items-center justify-between">
                   {ebookCount > 0 && (
                     <span className="text-sm font-medium text-blue-600">
-                      ابتداءً من $ {Math.min(...products.filter(p => p.category === 'ebook').map(p => p.price))}
+                      ابتداءً من {"$"}{Math.min(...products.filter(p => p.category === 'ebook').map(p => p.price))}
                     </span>
                   )}
                   <Button size="sm" variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-50">

@@ -112,7 +112,7 @@ export function ProductCard({ product, index }: { product: Product; index: numbe
         <CardFooter className="px-5 pb-5 pt-0 flex items-center justify-between gap-3">
           <div>
             <div className="text-2xl font-extrabold text-emerald-600">
-              $ {product.price}
+              {"$"}{product.price}
             </div>
             {product.category === 'software' && (
               <div className="text-[11px] text-gray-400">دفعة واحدة</div>

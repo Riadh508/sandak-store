@@ -99,7 +99,7 @@ export function CartDrawer() {
                         </p>
                         <div className="flex items-center justify-between mt-2">
                           <span className="text-sm font-bold text-emerald-600">
-                            $ {item.product.price * item.quantity}
+                            {"$"}{item.product.price * item.quantity}
                           </span>
                           <div className="flex items-center gap-1">
                             <Button
@@ -145,7 +145,7 @@ export function CartDrawer() {
           <div className="border-t p-4 space-y-3 bg-gray-50/50">
             <div className="flex items-center justify-between">
               <span className="text-gray-600 font-medium">المجموع الفرعي</span>
-<span className="font-bold text-gray-900">$ {total}</span>
+<span className="font-bold text-gray-900">{"$"}{total}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-gray-600 font-medium">الضريبة</span>
@@ -155,7 +155,7 @@ export function CartDrawer() {
           <div className="border-t pt-4">
             <div className="flex items-center justify-between">
               <span className="text-base font-bold text-gray-900">المجموع:</span>
-              <span className="text-xl font-extrabold text-emerald-600">$ {total}</span>
+              <span className="text-xl font-extrabold text-emerald-600">{"$"}{total}</span>
             </div>
             <Button
               onClick={handleCheckout}
