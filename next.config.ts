@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  //output: "standalone", // Uncomment for Vercel if needed
+  // Vercel handles standalone automatically; do NOT set output: "standalone"
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**" },
@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  serverExternalPackages: ["bcryptjs", "jsonwebtoken", "pdfkit"],
   async headers() {
     return [
       {

@@ -1,7 +1,5 @@
 "use client"
 
-export const dynamic = "force-dynamic"
-
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { LayoutDashboard, ShoppingCart, FileText, Users, Store, Settings, Menu } from "lucide-react"
@@ -105,7 +103,7 @@ export default function AdminLayout({
         </Sidebar>
         <main className="flex flex-1 flex-col">
           <header className="flex h-14 items-center gap-2 border-b px-4 md:px-6">
-            <SidebarTrigger asChild>
+            <SidebarTrigger asChild={false}>
               <Button variant="ghost" size="icon" className="md:hidden">
                 <Menu className="h-5 w-5" />
               </Button>

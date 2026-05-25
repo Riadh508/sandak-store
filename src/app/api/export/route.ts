@@ -55,6 +55,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'غير مصرح - يتطلب صلاحية المدير' }, { status: 403 });
     }
 
+    if (process.env.VERCEL === '1') {
+      return NextResponse.json({ success: false, error: 'التصدير غير متاح في بيئة Vercel' }, { status: 400 });
+    }
+
     const projectRoot = path.resolve(process.cwd());
     const tempDir = path.resolve(process.cwd(), '.tmp-export');
     const archivePath = path.join(tempDir, 'sandak-store-v4.tar.gz');

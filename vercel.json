@@ -1,0 +1,15 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npx prisma generate && next build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  },
+  "env": {
+    "PRISMA_CLIENT_ENGINE_TYPE": "dataproxy",
+    "NEXT_PUBLIC_SITE_URL": "https://sandak-store.vercel.app"
+  }
+}

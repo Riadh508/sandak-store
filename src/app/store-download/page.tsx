@@ -14,9 +14,9 @@ const INCLUDED_ITEMS = [
   'دفع عبر جيب وويسترن يونين',
   'تصميم عصري متجاوب',
   'دعم اللغة العربية RTL',
-  'قاعدة بيانات SQLite + Prisma',
+  'قاعدة بيانات PostgreSQL + Prisma',
   'إعدادات قابلة للتخصيص',
-  'جاهز للنشر على Netlify',
+  'جاهز للنشر على Vercel',
 ];
 
 const NOT_INCLUDED = [
@@ -78,7 +78,7 @@ export default function StoreDownloadPage() {
           <CardHeader>
             <CardTitle className="text-xl">نظام متجر إلكتروني جاهز للبيع</CardTitle>
             <CardDescription>
-              نظام متجر إلكتروني متكامل مبني بـ Next.js 16 + React 19 + TypeScript + Prisma + SQLite
+              نظام متجر إلكتروني متكامل مبني بـ Next.js 16 + React 19 + TypeScript + Prisma + PostgreSQL
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
