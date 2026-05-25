@@ -5,10 +5,8 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 function createPrismaClient() {
-  // For Vercel serverless:
-  // - DATABASE_URL should be the pooled URL (e.g. with ?pgbouncer=true)
-  // - DATABASE_URL_UNPOOLED is for direct connections (used by prisma migrate)
   return new PrismaClient({
+    datasourceUrl: process.env.DATABASE_URL,
     log: process.env.NODE_ENV === 'production' ? ['error'] : ['query'],
   })
 }
