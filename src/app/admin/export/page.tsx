@@ -1,3 +1,5 @@
+'use client';
+
 import dynamic from 'next/dynamic';
 
 const AdminExportContent = dynamic(() => import('./AdminExportContent'), { ssr: false });
