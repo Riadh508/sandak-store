@@ -22,7 +22,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ success: true, data: formatted });
   } catch (error) {
     logger.error('Error fetching products:', error);
-    return NextResponse.json({ success: false, error: 'Failed to fetch products' }, { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ success: false, error: msg }, { status: 500 });
   }
 }
 
