@@ -1,6 +1,6 @@
 {
   "framework": "nextjs",
-  "buildCommand": "DATABASE_URL=$DATABASE_URL_UNPOOLED npx prisma migrate resolve --applied 20260525000000_init 2>/dev/null; DATABASE_URL=$DATABASE_URL_UNPOOLED npx prisma migrate deploy && npx prisma generate && next build",
+  "buildCommand": "DATABASE_URL=$DATABASE_URL_UNPOOLED npx prisma db push --accept-data-loss && npx prisma generate && next build",
   "outputDirectory": ".next",
   "installCommand": "npm install",
   "git": {
