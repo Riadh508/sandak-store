@@ -20,7 +20,6 @@ model Product {
   image           String   @default("")
   features        String   @default("[]")
   badge           String   @default("")
-  downloadUrl     String   @default("")
   isActive        Boolean  @default(true)
   sortOrder       Int      @default(0)
   createdAt       DateTime @default(now())

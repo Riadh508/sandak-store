@@ -4,7 +4,7 @@ import { logger } from '@/lib/logger';
 
 export async function POST() {
   try {
-    await db.product.deleteMany({});
+    await db.$executeRawUnsafe(`DELETE FROM "Product"`);
 
     const existingSettings = await db.storeSettings.findFirst();
     if (!existingSettings) {
