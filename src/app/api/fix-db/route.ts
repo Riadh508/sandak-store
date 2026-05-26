@@ -8,26 +8,19 @@ export async function POST(request: Request) {
 
   const steps: string[] = [];
 
-  async function exec(sql: string) {
+  async function exec(label: string, sql: string) {
     try {
       await db.$executeRawUnsafe(sql);
-      steps.push(`OK: ${sql.substring(0, 50)}`);
+      steps.push(`OK ${label}`);
     } catch (e: any) {
-      steps.push(`FAIL: ${sql.substring(0, 50)} => ${e.message}`);
+      steps.push(`FAIL ${label}: ${e.message}`);
     }
   }
 
-  await exec(`SET ROLE neondb_owner`);
-  await exec(`ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "downloadUrl" TEXT NOT NULL DEFAULT ''`);
+  // Check what we can do
+  await exec('create_table', `CREATE TABLE IF NOT EXISTS "_sandak_test" (id TEXT PRIMARY KEY, val TEXT NOT NULL DEFAULT '')`);
+  await exec('drop_test', `DROP TABLE IF EXISTS "_sandak_test"`);
+  await exec('alter_table', `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "downloadUrl" TEXT NOT NULL DEFAULT ''`);
 
-  // Check column now
-  try {
-    const rows: any = await db.$queryRawUnsafe(
-      `SELECT column_name FROM information_schema.columns WHERE table_name='Product' AND column_name='downloadUrl'`
-    );
-    const hasColumn = rows && rows.length > 0;
-    return NextResponse.json({ success: hasColumn, message: hasColumn ? 'Column exists now' : 'Column still missing', data: { steps, hasColumn } });
-  } catch (e: any) {
-    return NextResponse.json({ success: false, error: e.message, data: { steps } }, { status: 500 });
-  }
+  return NextResponse.json({ success: false, data: { steps } });
 }
