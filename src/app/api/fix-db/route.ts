@@ -6,36 +6,56 @@ export async function POST(request: Request) {
   const auth = requireAdmin(request);
   if (auth) return auth;
 
-  // Try owner role for DDL
-  const ownerUrl = process.env.DATABASE_URL_UNPOOLED?.replace(
-    'authenticator',
-    'neondb_owner'
-  ) || '';
+  const unpooledUrl = process.env.DATABASE_URL_UNPOOLED || '';
 
-  let prisma: PrismaClient | null = null;
-  try {
-    prisma = new PrismaClient({ datasourceUrl: ownerUrl });
-    await prisma.$executeRawUnsafe(
-      `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "downloadUrl" TEXT NOT NULL DEFAULT ''`
-    );
-    await prisma.$disconnect();
-    return NextResponse.json({ success: true, message: 'Column added via neondb_owner' });
-  } catch (err) {
-    if (prisma) await prisma.$disconnect();
-    const msg = err instanceof Error ? err.message : String(err);
-    // Fallback: try authenticator with direct connection
+  async function tryAsUser(url: string): Promise<string | null> {
+    let p: PrismaClient | null = null;
     try {
-      const fallbackUrl = process.env.DATABASE_URL_UNPOOLED;
-      prisma = new PrismaClient({ datasourceUrl: fallbackUrl });
-      await prisma.$executeRawUnsafe(
+      p = new PrismaClient({ datasourceUrl: url });
+      await p.$executeRawUnsafe(
         `ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "downloadUrl" TEXT NOT NULL DEFAULT ''`
       );
-      await prisma.$disconnect();
-      return NextResponse.json({ success: true, message: 'Column added via authenticator' });
-    } catch (err2) {
-      if (prisma) await prisma.$disconnect();
-      const msg2 = err2 instanceof Error ? err2.message : String(err2);
-      return NextResponse.json({ success: false, error: msg2 }, { status: 500 });
+      await p.$disconnect();
+      return null;
+    } catch (e: any) {
+      if (p) await p.$disconnect();
+      return e.message || String(e);
     }
   }
+
+  // First, discover table owner
+  let discoverPrisma: PrismaClient | null = null;
+  let owner = 'authenticator';
+  try {
+    discoverPrisma = new PrismaClient({ datasourceUrl: unpooledUrl });
+    const rows: any = await discoverPrisma.$queryRawUnsafe(
+      `SELECT pg_catalog.pg_get_userbyid(t.relowner) AS table_owner
+       FROM pg_catalog.pg_class t
+       WHERE t.relname = 'Product' AND t.relkind = 'r'`
+    );
+    if (rows && rows.length > 0 && rows[0].table_owner) {
+      owner = rows[0].table_owner;
+    }
+    await discoverPrisma.$disconnect();
+  } catch {
+    if (discoverPrisma) await discoverPrisma.$disconnect();
+  }
+
+  // Try owner
+  const err1 = await tryAsUser(unpooledUrl.replace('authenticator', owner));
+  if (!err1) {
+    return NextResponse.json({ success: true, message: `Column added as ${owner}` });
+  }
+
+  // Try original
+  const err2 = await tryAsUser(unpooledUrl);
+  if (!err2) {
+    return NextResponse.json({ success: true, message: 'Column added as authenticator' });
+  }
+
+  return NextResponse.json({
+    success: false,
+    error: `Failed. Owner=${owner}. Error: ${err2}`,
+    data: { owner }
+  }, { status: 500 });
 }
