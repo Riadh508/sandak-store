@@ -78,37 +78,6 @@ model DownloadToken {
   @@index([token])
 }
 
-model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      String   @default("admin")
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Order {
-  id            String      @id @default(cuid())
-  orderNumber   String      @unique
-  customerName  String
-  customerPhone String
-  customerEmail String?
-  paymentMethod String
-  items         String
-  subtotal      Float
-  tax           Float
-  total         Float
-  status        String      @default("pending")
-  paymentRef    String?
-  verifiedAt    DateTime?
-  verifiedBy    String?
-  notes         String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
-
 model Invoice {
   id            String         @id @default(cuid())
   invoiceNumber String         @unique
