@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { db } from '@/lib/db';
-import { hashPassword, requireAuth } from '@/lib/auth-server';
+import { hashPassword } from '@/lib/auth-server';
+import { requireAdmin } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
-  const auth = requireAuth(request);
-  if (auth && 'status' in auth) return auth;
+  const auth = requireAdmin(request);
+  if (auth) return auth;
 
   try {
     const users = await db.user.findMany({
@@ -29,8 +30,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const auth = requireAuth(request);
-  if (auth && 'status' in auth) return auth;
+  const auth = requireAdmin(request);
+  if (auth) return auth;
 
   try {
     const body = await request.json();
@@ -79,8 +80,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  const auth = requireAuth(request);
-  if (auth && 'status' in auth) return auth;
+  const auth = requireAdmin(request);
+  if (auth) return auth;
 
   try {
     const body = await request.json();
@@ -121,8 +122,8 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const auth = requireAuth(request);
-  if (auth && 'status' in auth) return auth;
+  const auth = requireAdmin(request);
+  if (auth) return auth;
 
   try {
     const { searchParams } = new URL(request.url);

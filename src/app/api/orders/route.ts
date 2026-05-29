@@ -2,18 +2,12 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
-import { verifyToken } from '@/lib/auth-server';
+import { requireAdmin } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.cookies.get('auth_token')?.value;
-    if (!token) {
-      return NextResponse.json({ success: false, error: 'غير مصرح' }, { status: 401 });
-    }
-    const payload = verifyToken(token);
-    if (!payload || payload.role !== 'admin') {
-      return NextResponse.json({ success: false, error: 'غير مصرح' }, { status: 401 });
-    }
+    const auth = requireAdmin(request);
+    if (auth) return auth;
 
     const orders = await db.order.findMany({
       orderBy: { createdAt: 'desc' },
