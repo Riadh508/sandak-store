@@ -14,10 +14,15 @@ export async function GET(request: NextRequest) {
     });
 
     const formatted = await Promise.all(orders.map(async (o) => {
-      const downloads = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
-        `SELECT "id", "token", "productName", "fileUrl", "fileName", "downloaded", "downloadedAt", "createdAt" FROM "DownloadToken" WHERE "orderId" = $1 ORDER BY "createdAt" ASC`,
-        o.id as string,
-      );
+      let downloads: Array<Record<string, unknown>> = [];
+      try {
+        downloads = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
+          `SELECT "id", "token", "productName", "fileUrl", "fileName", "downloaded", "downloadedAt", "createdAt" FROM "DownloadToken" WHERE "orderId" = $1 ORDER BY "createdAt" ASC`,
+          o.id as string,
+        );
+      } catch (dlErr) {
+        logger.warn('Failed to fetch downloads for order ' + (o.id as string) + ': ' + (dlErr instanceof Error ? dlErr.message : String(dlErr)));
+      }
       return {
         ...o,
         items: JSON.parse(o.items as string || '[]'),
@@ -104,9 +109,40 @@ export async function PUT(request: Request) {
       data: updateData,
     });
 
+    // Auto-generate download tokens when marking as paid
+    let tokens: Array<Record<string, unknown>> = [];
+    if (status === 'paid') {
+      try {
+        const items = JSON.parse(order.items || '[]');
+        for (const item of items) {
+          const productName = item.name || item.product?.name || '';
+          const products = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
+            `SELECT "id", "fileUrl" FROM "Product" WHERE "name" = $1 LIMIT 1`, productName
+          );
+          const product = Array.isArray(products) && products.length > 0 ? products[0] : null;
+          if (!product) continue;
+
+          const fileUrl = (product.fileUrl as string) || '';
+          const fileName = fileUrl.split('/').pop() || productName;
+
+          const result = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
+            `INSERT INTO "DownloadToken" ("id", "token", "orderId", "productId", "productName", "fileUrl", "fileName", "createdAt")
+             VALUES (gen_random_uuid()::text, gen_random_uuid()::text, $1, $2, $3, $4, $5, NOW())
+             RETURNING *`,
+            id, product.id as string, productName, fileUrl, fileName,
+          );
+          const token = Array.isArray(result) && result.length > 0 ? result[0] : null;
+          if (token) tokens.push(token);
+        }
+      } catch (genErr) {
+        logger.error('Error generating download tokens:', genErr);
+      }
+    }
+
     return NextResponse.json({
       success: true,
-      data: { ...order, items: JSON.parse(order.items || '[]') },
+      data: { ...order, items: JSON.parse(order.items || '[]'), downloads: tokens },
+      message: tokens.length > 0 ? `تم إنشاء ${tokens.length} رابط تحميل` : undefined,
     });
   } catch (error) {
     logger.error('Error updating order:', error);

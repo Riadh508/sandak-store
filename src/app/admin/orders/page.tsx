@@ -171,27 +171,6 @@ export default function AdminOrdersPage() {
     }
   };
 
-  const handleGenerateDownloads = async (orderId: string) => {
-    setActionLoading(orderId);
-    try {
-      const res = await fetch(`/api/orders/${orderId}/generate-downloads`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      const data = await res.json();
-      if (data.success) {
-        toast.success(data.message || 'تم إنشاء روابط التحميل');
-        fetchOrders();
-      } else {
-        toast.error(data.error || 'حدث خطأ');
-      }
-    } catch {
-      toast.error('حدث خطأ أثناء إنشاء روابط التحميل');
-    } finally {
-      setActionLoading(null);
-    }
-  };
-
   const openViewDialog = (order: Order) => {
     setSelectedOrder(order);
     setViewDialogOpen(true);
@@ -396,22 +375,6 @@ export default function AdminOrdersPage() {
                           >
                             <Eye className="h-4 w-4 text-gray-500" />
                           </Button>
-                          {order.status === 'paid' && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                              onClick={() => handleGenerateDownloads(order.id)}
-                              disabled={actionLoading === order.id}
-                            >
-                              {actionLoading === order.id ? (
-                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                              ) : (
-                                <Download className="h-3.5 w-3.5 ml-1" />
-                              )}
-                              <span className="text-xs mr-1">تحميل</span>
-                            </Button>
-                          )}
                           {order.status === 'pending' && (
                             <>
                               <Button
