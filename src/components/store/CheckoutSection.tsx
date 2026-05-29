@@ -141,6 +141,18 @@ export function CheckoutSection() {
                 <li>سيتم إرسال المنتج إليك خلال دقائق بعد التأكيد</li>
               </ol>
             </div>
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-4 text-center">
+              <p className="text-sm text-emerald-700 mb-2">
+                يمكنك متابعة حالة طلبك عبر الرابط التالي:
+              </p>
+              <a
+                href={`/order/${orderNumber}`}
+                className="text-sm font-bold text-emerald-700 underline underline-offset-4 hover:text-emerald-800"
+                target="_blank"
+              >
+                /order/{orderNumber}
+              </a>
+            </div>
             <Button
               onClick={() => {
                 setCurrentView('home');

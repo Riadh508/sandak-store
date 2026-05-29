@@ -11,7 +11,7 @@ export async function GET(request: Request) {
     const whereClause = showAll ? '' : 'WHERE "isActive" = true';
     const rows = await db.$queryRawUnsafe<
       Array<Record<string, unknown>>
-    >(`SELECT "id", "name", "description", "longDescription", "price", "category", "image", "features", "badge", "isActive", "sortOrder", "createdAt", "updatedAt" FROM "Product" ${whereClause} ORDER BY "sortOrder" ASC`);
+    >(`SELECT "id", "name", "description", "longDescription", "price", "category", "image", "features", "badge", "fileUrl", "fileSize", "isActive", "sortOrder", "createdAt", "updatedAt" FROM "Product" ${whereClause} ORDER BY "sortOrder" ASC`);
 
     const formatted = rows.map((p) => ({
       ...p,
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { name, description, longDescription, price, category, image, features, badge, downloadUrl, isActive, sortOrder } = body;
+    const { name, description, longDescription, price, category, image, features, badge, fileUrl, fileSize, isActive, sortOrder } = body;
 
     if (!name || !description || !price || !category) {
       return NextResponse.json({ success: false, error: 'الاسم والوصف والسعر والفئة مطلوبة' }, { status: 400 });
@@ -49,8 +49,8 @@ export async function POST(request: Request) {
     }
 
     const product = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
-      `INSERT INTO "Product" ("id", "name", "description", "longDescription", "price", "category", "image", "features", "badge", "isActive", "sortOrder", "createdAt", "updatedAt")
-       VALUES (gen_random_uuid()::text, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), NOW())
+      `INSERT INTO "Product" ("id", "name", "description", "longDescription", "price", "category", "image", "features", "badge", "fileUrl", "fileSize", "isActive", "sortOrder", "createdAt", "updatedAt")
+       VALUES (gen_random_uuid()::text, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW(), NOW())
        RETURNING *`,
       String(name).slice(0, 200),
       String(description).slice(0, 500),
@@ -60,6 +60,8 @@ export async function POST(request: Request) {
       String(image || '').slice(0, 500),
       JSON.stringify(sanitizedFeatures),
       String(badge || '').slice(0, 100),
+      String(fileUrl || '').slice(0, 500),
+      parseInt(fileSize) || 0,
       isActive !== undefined ? isActive : true,
       sortOrder || 0,
     );
@@ -98,6 +100,8 @@ export async function PUT(request: Request) {
     if (data.badge !== undefined) { sets.push(`"badge" = $${idx++}`); values.push(String(data.badge).slice(0, 100)); }
     if (data.isActive !== undefined) { sets.push(`"isActive" = $${idx++}`); values.push(data.isActive); }
     if (data.sortOrder !== undefined) { sets.push(`"sortOrder" = $${idx++}`); values.push(data.sortOrder); }
+    if (data.fileUrl !== undefined) { sets.push(`"fileUrl" = $${idx++}`); values.push(String(data.fileUrl).slice(0, 500)); }
+    if (data.fileSize !== undefined) { const fs = parseInt(data.fileSize); if (!isNaN(fs)) { sets.push(`"fileSize" = $${idx++}`); values.push(fs); } }
 
     if (sets.length === 0) {
       return NextResponse.json({ success: false, error: 'No fields to update' }, { status: 400 });

@@ -11,19 +11,71 @@ datasource db {
 }
 
 model Product {
-  id              String   @id @default(cuid())
+  id              String            @id @default(cuid())
   name            String
   description     String
-  longDescription String   @default("")
+  longDescription String            @default("")
   price           Float
-  category        String   @default("ebook")
-  image           String   @default("")
-  features        String   @default("[]")
-  badge           String   @default("")
-  isActive        Boolean  @default(true)
-  sortOrder       Int      @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  category        String            @default("ebook")
+  image           String            @default("")
+  features        String            @default("[]")
+  badge           String            @default("")
+  fileUrl         String            @default("")
+  fileSize        Int               @default(0)
+  isActive        Boolean           @default(true)
+  sortOrder       Int               @default(0)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  downloads       DownloadToken[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("admin")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id            String          @id @default(cuid())
+  orderNumber   String          @unique
+  customerName  String
+  customerPhone String
+  customerEmail String?
+  paymentMethod String
+  items         String
+  subtotal      Float
+  tax           Float
+  total         Float
+  status        String          @default("pending")
+  paymentRef    String?
+  verifiedAt    DateTime?
+  verifiedBy    String?
+  notes         String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  downloads     DownloadToken[]
+}
+
+model DownloadToken {
+  id            String    @id @default(cuid())
+  token         String    @unique @default(cuid())
+  orderId       String
+  order         Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId     String
+  product       Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productName   String
+  fileUrl       String
+  fileName      String    @default("")
+  downloaded    Boolean   @default(false)
+  downloadedAt  DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([token])
 }
 
 model User {

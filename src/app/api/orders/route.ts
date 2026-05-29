@@ -13,9 +13,16 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' },
     });
 
-    const formatted = orders.map((o) => ({
-      ...o,
-      items: JSON.parse(o.items || '[]'),
+    const formatted = await Promise.all(orders.map(async (o) => {
+      const downloads = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
+        `SELECT "id", "token", "productName", "fileUrl", "fileName", "downloaded", "downloadedAt", "createdAt" FROM "DownloadToken" WHERE "orderId" = $1 ORDER BY "createdAt" ASC`,
+        o.id as string,
+      );
+      return {
+        ...o,
+        items: JSON.parse(o.items as string || '[]'),
+        downloads,
+      };
     }));
 
     return NextResponse.json({ success: true, data: formatted });

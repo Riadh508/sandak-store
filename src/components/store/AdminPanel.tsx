@@ -86,7 +86,8 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
   const [formFeatures, setFormFeatures] = useState('');
   const [formActive, setFormActive] = useState(true);
   const [formImage, setFormImage] = useState('');
-  const [formDownloadUrl, setFormDownloadUrl] = useState('');
+  const [formFileUrl, setFormFileUrl] = useState('');
+  const [formFileSize, setFormFileSize] = useState('');
 
   const adminHeaders = (): HeadersInit => {
     return { 'Content-Type': 'application/json' };
@@ -126,7 +127,8 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     setFormFeatures('');
     setFormActive(true);
     setFormImage('');
-    setFormDownloadUrl('');
+    setFormFileUrl('');
+    setFormFileSize('');
     setEditingProduct(null);
   };
 
@@ -146,7 +148,8 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     setFormFeatures((product.features || []).join('\n'));
     setFormActive(product.isActive);
     setFormImage(product.image || '');
-    setFormDownloadUrl(product.downloadUrl || '');
+    setFormFileUrl((product as any).fileUrl || '');
+    setFormFileSize((product as any).fileSize?.toString() || '');
     setDialogOpen(true);
   };
 
@@ -176,7 +179,8 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
       features: featuresArray,
       isActive: formActive,
       image: formImage.trim(),
-      downloadUrl: formDownloadUrl.trim(),
+      fileUrl: formFileUrl.trim(),
+      fileSize: parseInt(formFileSize) || 0,
     };
 
     try {
@@ -468,9 +472,15 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
               <Label>رابط الصورة</Label>
               <Input value={formImage} onChange={(e) => setFormImage(e.target.value)} placeholder="URL الصورة (اختياري)" className="text-right" />
             </div>
-            <div>
-              <Label>رابط التحميل</Label>
-              <Input value={formDownloadUrl} onChange={(e) => setFormDownloadUrl(e.target.value)} placeholder="رابط تحميل المنتج (اختياري)" className="text-right" />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>رابط الملف</Label>
+                <Input value={formFileUrl} onChange={(e) => setFormFileUrl(e.target.value)} placeholder="رابط تحميل المنتج" className="text-right" />
+              </div>
+              <div>
+                <Label>حجم الملف (بايت)</Label>
+                <Input type="number" value={formFileSize} onChange={(e) => setFormFileSize(e.target.value)} placeholder="0" className="text-right" />
+              </div>
             </div>
             <div>
               <Label>الميزات (ميزة في كل سطر)</Label>

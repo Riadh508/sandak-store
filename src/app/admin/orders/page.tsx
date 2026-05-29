@@ -43,8 +43,18 @@ import {
   Eye,
   DollarSign,
   RefreshCw,
+  Download,
 } from 'lucide-react';
 import { toast } from 'sonner';
+
+interface DownloadItem {
+  id: string;
+  token: string;
+  productName: string;
+  fileName: string;
+  downloaded: boolean;
+  downloadedAt: string | null;
+}
 
 interface Order {
   id: string;
@@ -60,6 +70,7 @@ interface Order {
     quantity: number;
     total: number;
   }>;
+  downloads?: DownloadItem[];
   createdAt: string;
   updatedAt: string;
 }
@@ -155,6 +166,27 @@ export default function AdminOrdersPage() {
       }
     } catch {
       toast.error('حدث خطأ أثناء الإلغاء');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleGenerateDownloads = async (orderId: string) => {
+    setActionLoading(orderId);
+    try {
+      const res = await fetch(`/api/orders/${orderId}/generate-downloads`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(data.message || 'تم إنشاء روابط التحميل');
+        fetchOrders();
+      } else {
+        toast.error(data.error || 'حدث خطأ');
+      }
+    } catch {
+      toast.error('حدث خطأ أثناء إنشاء روابط التحميل');
     } finally {
       setActionLoading(null);
     }
@@ -364,6 +396,22 @@ export default function AdminOrdersPage() {
                           >
                             <Eye className="h-4 w-4 text-gray-500" />
                           </Button>
+                          {order.status === 'paid' && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                              onClick={() => handleGenerateDownloads(order.id)}
+                              disabled={actionLoading === order.id}
+                            >
+                              {actionLoading === order.id ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              ) : (
+                                <Download className="h-3.5 w-3.5 ml-1" />
+                              )}
+                              <span className="text-xs mr-1">تحميل</span>
+                            </Button>
+                          )}
                           {order.status === 'pending' && (
                             <>
                               <Button
@@ -458,6 +506,41 @@ export default function AdminOrdersPage() {
                   {"$"}{selectedOrder.total.toFixed(2)}
                 </span>
               </div>
+
+              {selectedOrder.downloads && selectedOrder.downloads.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-2">
+                    <Download className="h-4 w-4 inline ml-1" />
+                    روابط التحميل:
+                  </h4>
+                  <div className="space-y-2">
+                    {selectedOrder.downloads.map((dl) => (
+                      <div key={dl.id} className="flex items-center justify-between text-sm bg-gray-50 p-2 rounded">
+                        <div>
+                          <span>{dl.productName}</span>
+                          <span className="text-xs text-gray-400 mr-2">{dl.fileName}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {dl.downloaded ? (
+                            <Badge className="bg-emerald-100 text-emerald-700 border-0 text-xs">تم التحميل</Badge>
+                          ) : (
+                            <Badge className="bg-amber-100 text-amber-700 border-0 text-xs">لم يتم</Badge>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 text-xs"
+                            onClick={() => window.open(`/api/download/${dl.token}`, '_blank')}
+                          >
+                            <Download className="h-3 w-3 ml-1" />
+                            فتح
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </DialogContent>

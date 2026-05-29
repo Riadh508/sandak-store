@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ShoppingCart, Eye, BookOpen, Monitor, Star } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 const categoryColors = {
   ebook: {
@@ -35,7 +36,7 @@ export function ProductCard({ product, index }: { product: Product; index: numbe
 
   const handleAddToCart = () => {
     addToCart(product);
-    setCartOpen(true);
+    toast.success(`تمت إضافة "${product.name}" إلى السلة`, { duration: 2500 });
   };
 
   const handleViewDetails = () => {
