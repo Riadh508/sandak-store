@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { requireAdmin } from '@/lib/auth';
 
-export async function POST() {
+export async function POST(request: Request) {
+  const auth = requireAdmin(request);
+  if (auth) return auth;
+
   try {
     await db.$executeRawUnsafe(`DELETE FROM "Product"`);
 

@@ -44,9 +44,6 @@ import {
   LayoutDashboard,
   LogOut,
   User,
-  Users,
-  ShoppingCart,
-  FileText,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';

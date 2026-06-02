@@ -13,9 +13,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
 
 export default function StorePage() {
-  const { currentView, setCurrentView, fetchProducts } = useStore();
+  const { currentView, setCurrentView, fetchProducts, products, productsLoading } = useStore();
 
-  // Fetch products on mount
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
@@ -44,7 +43,7 @@ export default function StorePage() {
                 <section className="bg-gradient-to-l from-emerald-600 to-teal-500 py-10 md:py-14">
                   <div className="container mx-auto px-4 text-center">
                     <h1 className="text-2xl font-extrabold text-white md:text-3xl mb-2">
-                      جميع المنتجات
+                      جميع المنتجات {productsLoading ? '' : `(${products.length})`}
                     </h1>
                     <p className="text-emerald-100">
                       تصفح مجموعتنا الكاملة من البرمجيات والكتب الإلكترونية
@@ -61,7 +60,6 @@ export default function StorePage() {
 
       <Footer />
 
-      {/* Dialogs and Drawers */}
       <ProductDetailDialog />
       <CartDrawer />
     </div>

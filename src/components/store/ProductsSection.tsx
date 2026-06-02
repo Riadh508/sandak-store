@@ -4,16 +4,11 @@ import { useStore } from '@/lib/store';
 import { ProductCard, ProductCardSkeleton } from './ProductCard';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { ProductCategory } from '@/lib/store';
-import { useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 
 export function ProductsSection() {
-  const { products, productsLoading, categoryFilter, setCategoryFilter, fetchProducts } = useStore();
-
-  useEffect(() => {
-    if (products.length === 0) {
-      fetchProducts();
-    }
-  }, [products.length, fetchProducts]);
+  const { products, productsLoading, productsError, categoryFilter, setCategoryFilter, retryFetchProducts } = useStore();
 
   const filteredProducts = categoryFilter === 'all'
     ? products
@@ -52,6 +47,17 @@ export function ProductsSection() {
           </Tabs>
         </div>
 
+        {/* Error State */}
+        {productsError && !productsLoading && (
+          <div className="text-center py-12 bg-amber-50 rounded-2xl border border-amber-200 mb-6">
+            <p className="text-amber-800 mb-3">حدث خطأ في تحميل المنتجات: {productsError}</p>
+            <Button onClick={retryFetchProducts} variant="outline" className="border-amber-300">
+              <RefreshCw className="ml-2 h-4 w-4" />
+              إعادة المحاولة
+            </Button>
+          </div>
+        )}
+
         {/* Products Grid */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {productsLoading
@@ -64,9 +70,13 @@ export function ProductsSection() {
         </div>
 
         {/* Empty State */}
-        {!productsLoading && filteredProducts.length === 0 && (
+        {!productsLoading && !productsError && filteredProducts.length === 0 && (
           <div className="text-center py-16">
             <p className="text-gray-400 text-lg">لا توجد منتجات في هذه الفئة حالياً</p>
+            <Button onClick={retryFetchProducts} variant="outline" className="mt-4">
+              <RefreshCw className="ml-2 h-4 w-4" />
+              إعادة تحميل
+            </Button>
           </div>
         )}
       </div>

@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireAdmin } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { generateSecureToken } from '@/lib/auth-server';
+
+function generateCuid(): string {
+  return `c${Date.now().toString(36)}${generateSecureToken(16).toLowerCase()}`.slice(0, 25);
+}
 
 const defaultProducts = [
   { name: 'كتاب تعلم البرمجة من الصفر حتى الاحتراف', description: 'دليلك الشامل لتعلم البرمجة من الصفر المطلق حتى الاحتراف مع أكثر من 500 صفحة', longDescription: 'كتاب شامل ومتكامل يأخذ بيدك في رحلة تعلم البرمجة من الصفر المطلق حتى المستوى المتقدم.', price: 25, category: 'ebook', image: '/covers/02-learn-programming.png', features: JSON.stringify(['أكثر من 500 صفحة', 'شرح مبسط للمبتدئين', 'أكثر من 200 مثال عملي', 'تمارين مع حلول']), badge: '', sortOrder: 1 },
@@ -23,9 +28,11 @@ export async function POST(request: Request) {
     await db.$executeRawUnsafe(`DELETE FROM "Product"`);
 
     for (const product of defaultProducts) {
+      const productId = generateCuid();
       await db.$executeRawUnsafe(
         `INSERT INTO "Product" ("id", "name", "description", "longDescription", "price", "category", "image", "features", "badge", "isActive", "sortOrder", "createdAt", "updatedAt")
-         VALUES (gen_random_uuid()::text, $1, $2, $3, $4, $5, $6, $7, $8, true, $9, NOW(), NOW())`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, true, $10, NOW(), NOW())`,
+        productId,
         product.name,
         product.description,
         product.longDescription,
@@ -60,16 +67,19 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   try {
     let count = 0;
+    let isAdmin = false;
     try {
       const rows = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(`SELECT COUNT(*)::int as count FROM "Product"`);
       count = rows?.[0]?.count || 0;
     } catch {
       // Tables not ready yet
     }
+    const authResult = requireAdmin(request);
+    isAdmin = !authResult;
     return NextResponse.json({
       success: true,
       message: 'System is running',
-      data: { productCount: count, isAdmin: true },
+      data: { productCount: count, isAdmin },
     });
   } catch {
     return NextResponse.json({

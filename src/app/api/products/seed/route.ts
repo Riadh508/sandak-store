@@ -164,7 +164,7 @@ const defaultProducts: SeedProduct[] = [
   {
     name: 'كتاب إدارة الوقت وزيادة الإنتاجية',
     description: 'ضاعف إنتاجيتك وحقق أهدافك مع تقنيات واستراتيجيات إدارة الوقت المثبتة علمياً',
-    longDescription: 'كتاب متخصص في إدارة الوقت وزيادة الإنتاجية يقدم استراتيجيات وتقنيات عملية مثبتة علمياً لإدارة وقتك بفعالية وتحقيق أهدافك المهنية والشخصية. يبدأ الكتاب بفهم طبيعة الوقت وعلاقتنا النفسية به، ثم ينتقل إلى تقنيات إدارة الوقت الكلاسيكية: مصفوفة أيزنهاور (Eisenhower Matrix) لتحديد الأولويات، تقنية Pomodoro للعمل المركز، طريقة Getting Things Done (GTD) لإدارة المهام، تقنية Time Blocking لتخطيط اليوم.\n\nيغطي الكتاب استراتيجيات التغلب على المماطلة (Procrastination) وأسبابها النفسية، إدارة الانشتتادات في العصر الرقمي (الإشعارات، وسائل التواصل)، بناء عادات إنتاجية مستدامة (Atomic Habits)، تقنيات تحديد الأولويات الذكية (ABCDE, MoSCoW)، استراتيجيات التفويض الفعال، التوازن بين العمل والحياة (Work-Life Balance)، وإدارة الطاقة وليس فقط الوقت.\n\nيحتوي الكتاب على أدوات وقوالب للتخطيط اليومي والشهري والسنوي، تطبيقات موصى بها لإدارة المهام (Notion, Todoist, Trello)، 10 دراسات حالة لشخصيات ناجحة وكيف يديرون وقتهم، اختبارات لتحديد نمط إنتاجيتك الشخصي، وخطة عمل 30 يوماً لتطبيق ما تعلمته.',
+    longDescription: 'كتاب متخصص في إدارة الوقت وزيادة الإنتاجية يقدم استراتيجيات وتقنيات عملية مثبتة علمياً لإدارة وقتك بفعالية وتحقيق أهدافك المهنية والشخصية. يبدأ الكتاب بفهم طبيعة الوقت وعلاقتنا النفسية به، ثم ينتقل إلى تقنيات إدارة الوقت الكلاسيكية: مصفوفة أيزنهاور (Eisenhower Matrix) لتحديد الأولويات، تقنية Pomodoro للعمل المركز، طريقة Getting Things Done (GTD) لإدارة المهام، تقنية Time Blocking لتخطيط اليوم.\n\nيغطي الكتاب استراتيجيات التغلب على المماطلة (Procrastination) وأسبابها النفسية، إدارة المشتتات في العصر الرقمي (الإشعارات، وسائل التواصل)، بناء عادات إنتاجية مستدامة (Atomic Habits)، تقنيات تحديد الأولويات الذكية (ABCDE, MoSCoW)، استراتيجيات التفويض الفعال، التوازن بين العمل والحياة (Work-Life Balance)، وإدارة الطاقة وليس فقط الوقت.\n\nيحتوي الكتاب على أدوات وقوالب للتخطيط اليومي والشهري والسنوي، تطبيقات موصى بها لإدارة المهام (Notion, Todoist, Trello)، 10 دراسات حالة لشخصيات ناجحة وكيف يديرون وقتهم، اختبارات لتحديد نمط إنتاجيتك الشخصي، وخطة عمل 30 يوماً لتطبيق ما تعلمته.',
     price: 18,
     category: 'ebook',
     image: '/covers/07-time-management.png',
@@ -173,7 +173,7 @@ const defaultProducts: SeedProduct[] = [
       'استراتيجيات علمية للتغلب على المماطلة',
       'أدوات وقوالب للتخطيط اليومي والشهري والسنوي',
       'بناء عادات إنتاجية مستدامة (Atomic Habits)',
-      'إدارة الانشتتادات في العصر الرقمي',
+      'إدارة المشتتات في العصر الرقمي',
       'تقنيات تحديد الأولويات الذكية (ABCDE, MoSCoW)',
       'نصائح عملية للتوازن بين العمل والحياة',
       '10 دراسات حالة لشخصيات ناجحة عالمياً',
@@ -667,14 +667,23 @@ const defaultProducts: SeedProduct[] = [
   },
 ];
 
+function generateCuid(): string {
+  const timestamp = Date.now().toString(36);
+  const randomPart = Math.random().toString(36).slice(2, 14);
+  const counter = Math.floor(Math.random() * 1000000).toString(36);
+  return `c${timestamp}${randomPart}${counter}`.slice(0, 25);
+}
+
 export async function POST() {
   try {
     await db.$executeRawUnsafe(`DELETE FROM "Product"`);
 
     for (const product of defaultProducts) {
+      const productId = generateCuid();
       await db.$executeRawUnsafe(
         `INSERT INTO "Product" ("id", "name", "description", "longDescription", "price", "category", "image", "features", "badge", "fileUrl", "fileSize", "isActive", "sortOrder", "createdAt", "updatedAt")
-         VALUES (gen_random_uuid()::text, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, true, $11, NOW(), NOW())`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, true, $12, NOW(), NOW())`,
+        productId,
         product.name,
         product.description,
         product.longDescription,

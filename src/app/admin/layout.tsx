@@ -67,7 +67,7 @@ export default function AdminLayout({
           <SidebarHeader className="border-b border-sidebar-border px-4 py-3">
             <div className="flex items-center gap-2">
               <Store className="h-6 w-6" />
-              <span className="text-lg font-bold">سانداك</span>
+              <span className="text-lg font-bold">سندك</span>
             </div>
           </SidebarHeader>
           <SidebarContent>
@@ -97,7 +97,7 @@ export default function AdminLayout({
           </SidebarContent>
           <SidebarFooter className="border-t border-sidebar-border p-4">
             <p className="text-center text-xs text-muted-foreground">
-              © 2026 سانداك
+              © 2026 سندك
             </p>
           </SidebarFooter>
         </Sidebar>

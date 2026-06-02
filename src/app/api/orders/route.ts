@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
 import { requireAdmin } from '@/lib/auth';
+import { verifyTokenSafe, generateSecureToken } from '@/lib/auth-server';
 
 export async function GET(request: NextRequest) {
   try {
@@ -86,7 +87,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'البيانات المطلوبة ناقصة' }, { status: 400 });
     }
 
-    const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+    const orderNumber = `ORD-${Date.now()}-${generateSecureToken(6).toUpperCase().replace(/[^A-Z0-9]/g, 'X')}`;
 
     const order = await db.order.create({
       data: {
@@ -177,13 +178,14 @@ export async function PUT(request: NextRequest) {
             continue;
           }
           const fileName = fileUrl.split('/').pop() || productName;
-          const tokenValue = randomToken();
+          const tokenValue = generateSecureToken(40);
+          const tokenId = `c${Date.now().toString(36)}${generateSecureToken(16).toLowerCase()}`.slice(0, 25);
 
           const result = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
             `INSERT INTO "DownloadToken" ("id", "token", "orderId", "productId", "productName", "fileUrl", "fileName", "createdAt")
-             VALUES (gen_random_uuid()::text, $1, $2, $3, $4, $5, $6, NOW())
+             VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
              RETURNING *`,
-            tokenValue, id, product.id as string, productName, fileUrl, fileName
+            tokenId, tokenValue, id, product.id as string, productName, fileUrl, fileName
           );
           const token = Array.isArray(result) && result.length > 0 ? result[0] : null;
           if (token) tokens.push(token);
@@ -201,23 +203,5 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     logger.error('Error updating order:', error);
     return NextResponse.json({ success: false, error: 'حدث خطأ' }, { status: 500 });
-  }
-}
-
-function randomToken(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let out = '';
-  for (let i = 0; i < 40; i++) out += chars.charAt(Math.floor(Math.random() * chars.length));
-  return out;
-}
-
-function verifyTokenSafe(token: string): { email?: string; role?: string } | null {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const jwt = require('jsonwebtoken');
-    const secret = process.env.JWT_SECRET || process.env.ADMIN_API_KEY || 'sandak-secret-key-2026';
-    return jwt.verify(token, secret);
-  } catch {
-    return null;
   }
 }

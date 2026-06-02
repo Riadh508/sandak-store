@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
 import { requireAdmin } from '@/lib/auth';
+import { generateSecureToken } from '@/lib/auth-server';
 
 export async function GET(request: Request) {
   try {
@@ -47,10 +48,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'السعر غير صالح' }, { status: 400 });
     }
 
+    const productId = `c${Date.now().toString(36)}${generateSecureToken(16).toLowerCase()}`.slice(0, 25);
     const product = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
       `INSERT INTO "Product" ("id", "name", "description", "longDescription", "price", "category", "image", "features", "badge", "fileUrl", "fileSize", "isActive", "sortOrder", "createdAt", "updatedAt")
-       VALUES (gen_random_uuid()::text, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW(), NOW())
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW(), NOW())
        RETURNING *`,
+      productId,
       String(name).slice(0, 200),
       String(description).slice(0, 500),
       String(longDescription || '').slice(0, 2000),

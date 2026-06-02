@@ -54,7 +54,9 @@ export interface StoreState {
   // Products from database
   products: Product[];
   productsLoading: boolean;
+  productsError: string | null;
   fetchProducts: () => Promise<void>;
+  retryFetchProducts: () => Promise<void>;
 
   // Store settings
   storeSettings: StoreSettings | null;
@@ -161,27 +163,42 @@ export const useStore = create<StoreState>((set, get) => ({
   // Products from database
   products: [],
   productsLoading: true,
+  productsError: null,
   fetchProducts: async () => {
-    set({ productsLoading: true });
+    set({ productsLoading: true, productsError: null });
     try {
-      const res = await fetch('/api/products');
-      const data = await res.json();
-      if (data.success) {
-        set({ products: data.data });
+      const res = await fetch('/api/products', { cache: 'no-store' });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
       }
-      if (!data.data || data.data.length === 0) {
-        await fetch('/api/products/seed', { method: 'POST' });
-        const retryRes = await fetch('/api/products');
-        const retryData = await retryRes.json();
-        if (retryData.success) {
-          set({ products: retryData.data });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        set({ products: data.data, productsError: null });
+        if (data.data.length === 0) {
+          try {
+            await fetch('/api/products/seed', { method: 'POST', cache: 'no-store' });
+            const retryRes = await fetch('/api/products', { cache: 'no-store' });
+            const retryData = await retryRes.json();
+            if (retryData.success && Array.isArray(retryData.data)) {
+              set({ products: retryData.data });
+            }
+          } catch (seedErr) {
+            logger.warn('Auto-seed failed (may need admin auth):', seedErr);
+          }
         }
+      } else {
+        set({ productsError: data.error || 'فشل تحميل المنتجات' });
       }
     } catch (error) {
       logger.error('Error fetching products:', error);
+      set({ productsError: error instanceof Error ? error.message : 'حدث خطأ في الاتصال' });
     } finally {
       set({ productsLoading: false });
     }
+  },
+  retryFetchProducts: async () => {
+    const { fetchProducts } = get();
+    await fetchProducts();
   },
 
   // Store settings

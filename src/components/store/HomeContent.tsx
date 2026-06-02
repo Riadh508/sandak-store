@@ -4,13 +4,13 @@ import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, ArrowLeft, Shield, Zap, Users, Clock, BookOpen, Monitor, Award, Sparkles, TrendingUp, CheckCircle2, MessageCircle, Heart, Award as AwardIcon } from 'lucide-react';
+import { Star, ArrowLeft, Shield, Zap, Users, Clock, BookOpen, Monitor, Award, Sparkles, TrendingUp, CheckCircle2, MessageCircle, Heart, Award as AwardIcon, RefreshCw } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 export function HomeContent() {
-  const { products, productsLoading, setCurrentView, setCategoryFilter } = useStore();
+  const { products, productsLoading, productsError, setCurrentView, setCategoryFilter, retryFetchProducts } = useStore();
 
   const ebookCount = products.filter((p) => p.category === 'ebook').length;
   const softwareCount = products.filter((p) => p.category === 'software').length;
@@ -226,14 +226,43 @@ export function HomeContent() {
 
           {/* All Products Button */}
           <div className="text-center">
-            <Button
-              size="lg"
-              onClick={() => { setCategoryFilter('all'); setCurrentView('products'); }}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-10 shadow-lg shadow-emerald-200"
-            >
-              عرض جميع المنتجات ({products.length})
-              <ArrowLeft className="mr-2 h-4 w-4" />
-            </Button>
+            {productsError ? (
+              <div className="space-y-3">
+                <p className="text-amber-700 bg-amber-50 inline-block px-4 py-2 rounded-lg border border-amber-200">
+                  تعذر تحميل بعض المنتجات
+                </p>
+                <div>
+                  <Button
+                    size="lg"
+                    onClick={retryFetchProducts}
+                    variant="outline"
+                    className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 px-10"
+                  >
+                    <RefreshCw className="ml-2 h-4 w-4" />
+                    إعادة المحاولة
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button
+                size="lg"
+                onClick={() => { setCategoryFilter('all'); setCurrentView('products'); }}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-10 shadow-lg shadow-emerald-200"
+                disabled={productsLoading}
+              >
+                {productsLoading ? (
+                  <>
+                    <RefreshCw className="ml-2 h-4 w-4 animate-spin" />
+                    جاري التحميل...
+                  </>
+                ) : (
+                  <>
+                    عرض جميع المنتجات ({products.length})
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            )}
           </div>
         </div>
       </section>

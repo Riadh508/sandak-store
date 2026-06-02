@@ -21,10 +21,5 @@ export function requireAdmin(request: Request) {
     }
   }
 
-  // If no ADMIN_API_KEY set (dev mode), allow
-  if (!envKey) {
-    return null;
-  }
-
   return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
 }
