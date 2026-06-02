@@ -65,6 +65,10 @@ export function CheckoutSection() {
       setFormError('يرجى إدخال رقم الهاتف');
       return;
     }
+    if (customerEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail.trim())) {
+      setFormError('البريد الإلكتروني غير صالح');
+      return;
+    }
     if (!paymentMethod) {
       toast.error('يرجى اختيار طريقة الدفع');
       return;
