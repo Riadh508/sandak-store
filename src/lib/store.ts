@@ -15,7 +15,8 @@ export interface Product {
   image: string;
   features: string[];
   badge?: string;
-  downloadUrl?: string;
+  fileUrl?: string;
+  fileSize?: number;
 }
 
 export interface OrderItem {
@@ -145,7 +146,7 @@ export function getPaymentInfo(settings: StoreSettings | null) {
         `أرسل المبلغ باسم: ${s.wuName || 'Riadh Ahmed Mohammed Alsayaghi'}`,
         `المدينة: ${s.wuCity || 'صنعاء - العاصمة'}`,
         `الدولة: ${s.wuCountry || 'اليمن'}`,
-        'احتفظ برقم التحويل (MTCN) وأرسله لنا',
+        'احتفظ برقم التحويل (MTCN) وأرسله إلينا عبر الواتساب أو البريد الإلكتروني',
       ],
     },
   };

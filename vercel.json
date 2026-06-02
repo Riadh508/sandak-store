@@ -7,18 +7,5 @@
     "deploymentEnabled": {
       "main": true
     }
-  },
-  "env": {
-    "DATABASE_URL": "postgresql://authenticator:npg_mLOdp2jzFgQ7@ep-green-dust-aovlqleu.c-2.ap-southeast-1.aws.neon.tech/neondb?pgbouncer=true&connection_limit=1",
-    "DATABASE_URL_UNPOOLED": "postgresql://authenticator:npg_mLOdp2jzFgQ7@ep-green-dust-aovlqleu.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require",
-    "ADMIN_API_KEY": "SandakStore@2026!Pro",
-    "JWT_SECRET": "SandakStore@2026!Pro",
-    "NEXT_PUBLIC_SITE_URL": "https://sandak-store.vercel.app",
-    "NEXT_PUBLIC_CONTACT_EMAIL": "sanedsoft32@gmail.com",
-    "NEXT_PUBLIC_CONTACT_PHONE": "00967770240572",
-    "NEXT_PUBLIC_JEIB_PHONE": "00967770240572",
-    "NEXT_PUBLIC_WU_RECIPIENT": "Riadh Ahmed Mohammed Alsayaghi",
-    "NEXT_PUBLIC_WU_CITY": "صنعاء - العاصمة",
-    "NEXT_PUBLIC_WU_COUNTRY": "اليمن"
   }
 }

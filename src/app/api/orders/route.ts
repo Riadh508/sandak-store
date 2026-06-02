@@ -6,6 +6,47 @@ import { requireAdmin } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const orderNumber = searchParams.get('orderNumber');
+
+    // Public lookup by orderNumber (used by /order/[orderNumber] page)
+    if (orderNumber) {
+      const safeNumber = String(orderNumber).slice(0, 60);
+      const orders = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
+        `SELECT "id", "orderNumber", "customerName", "customerPhone", "customerEmail",
+                "paymentMethod", "items", "subtotal", "tax", "total", "status",
+                "paymentRef", "verifiedAt", "verifiedBy", "notes",
+                "createdAt", "updatedAt"
+         FROM "Order" WHERE "orderNumber" = $1 LIMIT 1`,
+        safeNumber
+      );
+      const order = Array.isArray(orders) && orders.length > 0 ? orders[0] : null;
+      if (!order) {
+        return NextResponse.json({ success: false, error: 'الطلب غير موجود' }, { status: 404 });
+      }
+
+      let downloads: Array<Record<string, unknown>> = [];
+      try {
+        downloads = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
+          `SELECT "id", "token", "productName", "fileUrl", "fileName", "downloaded", "downloadedAt", "createdAt"
+           FROM "DownloadToken" WHERE "orderId" = $1 ORDER BY "createdAt" ASC`,
+          order.id as string
+        );
+      } catch (dlErr) {
+        logger.warn('Failed to fetch downloads for order ' + (order.id as string) + ': ' + (dlErr instanceof Error ? dlErr.message : String(dlErr)));
+      }
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          ...order,
+          items: typeof order.items === 'string' ? JSON.parse(order.items) : order.items,
+          downloads,
+        },
+      });
+    }
+
+    // Admin only: list all orders
     const auth = requireAdmin(request);
     if (auth) return auth;
 
@@ -50,15 +91,15 @@ export async function POST(request: Request) {
     const order = await db.order.create({
       data: {
         orderNumber,
-        customerName,
-        customerPhone,
-        customerEmail: customerEmail || '',
-        paymentMethod,
+        customerName: String(customerName).slice(0, 100),
+        customerPhone: String(customerPhone).slice(0, 30),
+        customerEmail: customerEmail ? String(customerEmail).slice(0, 200) : '',
+        paymentMethod: String(paymentMethod).slice(0, 50),
         items: JSON.stringify(items),
         subtotal: parseFloat(subtotal) || 0,
         tax: parseFloat(tax) || 0,
         total: parseFloat(total) || 0,
-        paymentRef: paymentRef || '',
+        paymentRef: paymentRef ? String(paymentRef).slice(0, 200) : '',
         status: 'pending',
       },
     });
@@ -74,7 +115,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
@@ -83,25 +124,22 @@ export async function PUT(request: Request) {
       return NextResponse.json({ success: false, error: 'معرف الطلب مطلوب' }, { status: 400 });
     }
 
-    const token = request.headers.get('cookie')?.split('auth_token=')?.[1];
-    const payload = token ? verifyToken(token.split(';')[0]) : null;
-
-    if (!payload) {
-      const apiKey = request.headers.get('x-api-key');
-      if (!apiKey || apiKey !== process.env.ADMIN_API_KEY) {
-        return NextResponse.json({ success: false, error: 'غير مصرح' }, { status: 401 });
-      }
-    }
+    const auth = requireAdmin(request);
+    if (auth) return auth;
 
     const body = await request.json();
-    const { status, paymentRef } = body;
+    const { status, paymentRef, notes } = body;
 
     const updateData: Record<string, unknown> = {};
-    if (status) updateData.status = status;
-    if (paymentRef !== undefined) updateData.paymentRef = paymentRef;
+    if (status) updateData.status = String(status).slice(0, 30);
+    if (paymentRef !== undefined) updateData.paymentRef = String(paymentRef).slice(0, 200);
+    if (notes !== undefined) updateData.notes = String(notes || '').slice(0, 1000);
     if (status === 'paid') {
       updateData.verifiedAt = new Date();
-      updateData.verifiedBy = payload?.email || 'api';
+      const cookieHeader = request.headers.get('cookie') || '';
+      const tokenMatch = cookieHeader.match(/auth_token=([^;]+)/);
+      const payload = tokenMatch ? verifyTokenSafe(tokenMatch[1]) : null;
+      updateData.verifiedBy = (payload?.email as string) || 'admin';
     }
 
     const order = await db.order.update({
@@ -116,20 +154,36 @@ export async function PUT(request: Request) {
         const items = JSON.parse(order.items || '[]');
         for (const item of items) {
           const productName = item.name || item.product?.name || '';
-          const products = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
-            `SELECT "id", "fileUrl" FROM "Product" WHERE "name" = $1 LIMIT 1`, productName
-          );
-          const product = Array.isArray(products) && products.length > 0 ? products[0] : null;
+          const productId = item.product?.id || item.id || '';
+
+          let product: Record<string, unknown> | null = null;
+          if (productId) {
+            const byId = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
+              `SELECT "id", "name", "fileUrl" FROM "Product" WHERE "id" = $1 LIMIT 1`, productId
+            );
+            if (Array.isArray(byId) && byId.length > 0) product = byId[0];
+          }
+          if (!product) {
+            const byName = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
+              `SELECT "id", "name", "fileUrl" FROM "Product" WHERE "name" = $1 LIMIT 1`, productName
+            );
+            if (Array.isArray(byName) && byName.length > 0) product = byName[0];
+          }
           if (!product) continue;
 
           const fileUrl = (product.fileUrl as string) || '';
+          if (!fileUrl) {
+            logger.warn(`Product "${productName}" has no fileUrl; skip token generation`);
+            continue;
+          }
           const fileName = fileUrl.split('/').pop() || productName;
+          const tokenValue = randomToken();
 
           const result = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
             `INSERT INTO "DownloadToken" ("id", "token", "orderId", "productId", "productName", "fileUrl", "fileName", "createdAt")
-             VALUES (gen_random_uuid()::text, gen_random_uuid()::text, $1, $2, $3, $4, $5, NOW())
+             VALUES (gen_random_uuid()::text, $1, $2, $3, $4, $5, $6, NOW())
              RETURNING *`,
-            id, product.id as string, productName, fileUrl, fileName,
+            tokenValue, id, product.id as string, productName, fileUrl, fileName
           );
           const token = Array.isArray(result) && result.length > 0 ? result[0] : null;
           if (token) tokens.push(token);
@@ -147,5 +201,23 @@ export async function PUT(request: Request) {
   } catch (error) {
     logger.error('Error updating order:', error);
     return NextResponse.json({ success: false, error: 'حدث خطأ' }, { status: 500 });
+  }
+}
+
+function randomToken(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let out = '';
+  for (let i = 0; i < 40; i++) out += chars.charAt(Math.floor(Math.random() * chars.length));
+  return out;
+}
+
+function verifyTokenSafe(token: string): { email?: string; role?: string } | null {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const jwt = require('jsonwebtoken');
+    const secret = process.env.JWT_SECRET || process.env.ADMIN_API_KEY || 'sandak-secret-key-2026';
+    return jwt.verify(token, secret);
+  } catch {
+    return null;
   }
 }

@@ -58,7 +58,7 @@ export function CartDrawer() {
           {cart.length > 0 && (
             <div className="p-4 space-y-3">
               <AnimatePresence mode="popLayout">
-                {cart.map((item: { product: { id: string; name: string; price: number; category: string }; quantity: number }) => (
+                {cart.map((item: { product: { id: string; name: string; price: number; category: string; image?: string }; quantity: number }) => (
                   <motion.div
                     key={item.product.id}
                     layout
@@ -69,8 +69,12 @@ export function CartDrawer() {
                     className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm"
                   >
                     <div className="flex gap-3">
-                      <div className={"h-14 w-14 rounded-xl flex items-center justify-center shrink-0 " + iconBg(item.product.category)}>
-                        <ShoppingBag className="h-6 w-6 text-white" />
+                      <div className={"h-14 w-14 rounded-xl flex items-center justify-center shrink-0 overflow-hidden " + iconBg(item.product.category)}>
+                        {item.product.image ? (
+                          <img src={item.product.image} alt={item.product.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <ShoppingBag className="h-6 w-6 text-white" />
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-semibold text-gray-900 truncate">{item.product.name}</h4>

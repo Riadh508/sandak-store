@@ -128,14 +128,14 @@ export function ProductDetailDialog() {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3">
-            {selectedProduct.downloadUrl && (
+            {selectedProduct.fileUrl && (
               <Button
-                onClick={() => window.open(selectedProduct.downloadUrl, '_blank')}
+                onClick={() => window.open(selectedProduct.fileUrl, '_blank')}
                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200"
                 size="lg"
               >
                 <ExternalLink className="ml-2 h-5 w-5" />
-                تحميل النظام
+                تحميل مباشر
               </Button>
             )}
             <Button

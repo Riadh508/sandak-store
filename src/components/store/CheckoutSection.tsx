@@ -136,7 +136,7 @@ export function CheckoutSection() {
               <h4 className="font-semibold text-amber-800 mb-2">خطوات إتمام الدفع:</h4>
               <ol className="text-sm text-amber-700 space-y-1 list-decimal list-inside">
                 <li>قم بالتحويل باستخدام طريقة الدفع المختارة</li>
-                <li>احصل على إيصال التحويل (رقم MTCN أو لقطة شاشة)</li>
+                <li>احصل على إيصال التحويل (رقم العملية أو لقطة شاشة للإيصال)</li>
                 <li>أرسل الإيصال عبر الواتساب أو البريد الإلكتروني</li>
                 <li>سيتم إرسال المنتج إليك خلال دقائق بعد التأكيد</li>
               </ol>
@@ -177,7 +177,7 @@ export function CheckoutSection() {
             <ShoppingBag className="h-10 w-10 text-gray-400" />
           </div>
           <h2 className="mb-3 text-2xl font-extrabold text-gray-900">السلة فارغة</h2>
-          <p className="mb-6 text-gray-500">أضف منتجات إلى السلة أولاً ثم proceed للدفع</p>
+          <p className="mb-6 text-gray-500">أضف منتجات إلى السلة أولاً ثم أكمل عملية الشراء</p>
           <Button
             onClick={() => setCurrentView('products')}
             className="bg-emerald-600 hover:bg-emerald-700 text-white"

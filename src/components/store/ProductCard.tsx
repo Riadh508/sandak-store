@@ -97,13 +97,13 @@ export function ProductCard({ product, index }: { product: Product; index: numbe
           {/* Features preview */}
           <div className="flex flex-wrap gap-1.5">
             {(product.features || []).slice(0, 3).map((f, i) => (
-              <span key={i} className="rounded-full bg-gray-50 px-2.5 py-0.5 text-[11px] text-gray-500 border border-gray-100">
+              <span key={i} className="rounded-full bg-gray-50 px-2.5 py-0.5 text-[11px] text-gray-500 border border-gray-100 line-clamp-1 max-w-[180px]">
                 {f}
               </span>
             ))}
             {(product.features || []).length > 3 && (
-              <span className="rounded-full bg-gray-50 px-2.5 py-0.5 text-[11px] text-gray-400 border border-gray-100">
-                +{(product.features || []).length - 3}
+              <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] text-emerald-700 border border-emerald-100 font-medium">
+                +{(product.features || []).length - 3} ميزة أخرى
               </span>
             )}
           </div>

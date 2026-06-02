@@ -50,6 +50,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatFileSize } from '@/lib/format';
 
 interface ProductDB {
   id: string;
@@ -61,7 +62,8 @@ interface ProductDB {
   image: string;
   features: string[];
   badge: string;
-  downloadUrl: string;
+  fileUrl: string;
+  fileSize: number;
   isActive: boolean;
   sortOrder: number;
   createdAt: string;
@@ -110,11 +112,6 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
 
   useEffect(() => {
     fetchProducts();
-    fetch('/api/products/seed', { method: 'POST', headers: adminHeaders() }).then(r => r.json()).then(data => {
-      if (data.success && data.data?.count === 0) {
-        fetchProducts();
-      }
-    });
   }, [fetchProducts]);
 
   const resetForm = () => {
@@ -148,8 +145,8 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     setFormFeatures((product.features || []).join('\n'));
     setFormActive(product.isActive);
     setFormImage(product.image || '');
-    setFormFileUrl((product as any).fileUrl || '');
-    setFormFileSize((product as any).fileSize?.toString() || '');
+    setFormFileUrl(product.fileUrl || '');
+    setFormFileSize(product.fileSize?.toString() || '');
     setDialogOpen(true);
   };
 
@@ -308,13 +305,18 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                             ) : null}
                           </div>
                           <p className="text-sm text-gray-500 truncate">{product.description}</p>
-                          <div className="flex items-center gap-3 mt-1.5">
+                          <div className="flex items-center gap-3 mt-1.5 flex-wrap">
                             <span className="text-sm font-bold text-emerald-600">{'$' + product.price}</span>
                             <Badge variant="outline" className="text-xs">
                               {product.category === 'ebook' ? 'كتاب PDF' : 'برنامج'}
                             </Badge>
+                            {product.fileSize > 0 && (
+                              <span className="text-xs text-gray-400">
+                                {formatFileSize(product.fileSize)}
+                              </span>
+                            )}
                             <span className="text-xs text-gray-400">
-                              {(product.features || []).length + ' مميزة'}
+                              {(product.features || []).length} مميزة
                             </span>
                           </div>
                         </div>
@@ -475,11 +477,13 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>رابط الملف</Label>
-                <Input value={formFileUrl} onChange={(e) => setFormFileUrl(e.target.value)} placeholder="رابط تحميل المنتج" className="text-right" />
+                <Input value={formFileUrl} onChange={(e) => setFormFileUrl(e.target.value)} placeholder="/downloads/file.pdf أو رابط خارجي" className="text-right" />
+                <p className="text-xs text-gray-400 mt-1">يُستخدم لإنشاء رابط تحميل تلقائي بعد الدفع</p>
               </div>
               <div>
                 <Label>حجم الملف (بايت)</Label>
                 <Input type="number" value={formFileSize} onChange={(e) => setFormFileSize(e.target.value)} placeholder="0" className="text-right" />
+                <p className="text-xs text-gray-400 mt-1">1048576 = 1MB</p>
               </div>
             </div>
             <div>

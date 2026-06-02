@@ -16,7 +16,6 @@ export async function GET(request: Request) {
     const formatted = rows.map((p) => ({
       ...p,
       features: typeof p.features === 'string' ? JSON.parse(p.features as string) : p.features,
-      downloadUrl: '',
     }));
 
     return NextResponse.json({ success: true, data: formatted });
@@ -67,7 +66,7 @@ export async function POST(request: Request) {
     );
 
     const created = product[0] || product;
-    return NextResponse.json({ success: true, data: { ...created, downloadUrl: '' } }, { status: 201 });
+    return NextResponse.json({ success: true, data: { ...created } }, { status: 201 });
   } catch (error) {
     logger.error('Error creating product:', error);
     return NextResponse.json({ success: false, error: 'Failed to create product' }, { status: 500 });
@@ -116,7 +115,7 @@ export async function PUT(request: Request) {
     );
 
     const updated = result[0] || result;
-    return NextResponse.json({ success: true, data: { ...updated, downloadUrl: '' } });
+    return NextResponse.json({ success: true, data: { ...updated } });
   } catch (error) {
     logger.error('Error updating product:', error);
     return NextResponse.json({ success: false, error: 'Failed to update product' }, { status: 500 });
