@@ -81,7 +81,8 @@ export function CheckoutSection() {
     setPlacing(true);
     try {
       const items = cart.map(item => ({
-        name: item.product.name,
+        id: item.product.id,
+        name: item.product.name as string,
         quantity: item.quantity,
         price: item.product.price,
         total: item.product.price * item.quantity,

@@ -170,28 +170,33 @@ export async function PUT(request: NextRequest) {
             );
             if (Array.isArray(byName) && byName.length > 0) product = byName[0];
           }
-          if (!product) continue;
+          if (!product) {
+            logger.warn(`TokenGen: Product not found for "${productName}" (id=${productId})`);
+            continue;
+          }
 
           const fileUrl = (product.fileUrl as string) || '';
           if (!fileUrl) {
-            logger.warn(`Product "${productName}" has no fileUrl; skip token generation`);
+            logger.warn(`TokenGen: Product "${productName}" has no fileUrl`);
             continue;
           }
           const fileName = fileUrl.split('/').pop() || productName;
           const tokenValue = generateSecureToken(40);
-          const tokenId = `c${Date.now().toString(36)}${generateSecureToken(16).toLowerCase()}`.slice(0, 25);
 
-          const result = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
-            `INSERT INTO "DownloadToken" ("id", "token", "orderId", "productId", "productName", "fileUrl", "fileName", "createdAt")
-             VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
-             RETURNING *`,
-            tokenId, tokenValue, id, product.id as string, productName, fileUrl, fileName
-          );
-          const token = Array.isArray(result) && result.length > 0 ? result[0] : null;
-          if (token) tokens.push(token);
+          const token = await db.downloadToken.create({
+            data: {
+              token: tokenValue,
+              orderId: id,
+              productId: product.id as string,
+              productName,
+              fileUrl,
+              fileName,
+            },
+          });
+          tokens.push(token);
         }
       } catch (genErr) {
-        logger.error('Error generating download tokens:', genErr);
+        logger.error('TokenGen error:', genErr);
       }
     }
 
