@@ -17,9 +17,10 @@ coverage
 .nyc_output
 tmp
 temp
-public/downloads/*
-!public/downloads/README.md
-public/downloads/.*.tmp
+public/downloads/*.exe
+public/downloads/*.msi
+public/downloads/*.dmg
+public/downloads/sandak-store-v4.zip
 public/uploads/*
 - sandak-v4/
 - sandak-v4/
