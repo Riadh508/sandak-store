@@ -26,9 +26,9 @@ async function findTokenInOrders(tokenValue: string): Promise<{
   }
 }
 
-export async function GET(request: Request, { params }: { params: { token: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ token: string }> }) {
   try {
-    const tokenValue = params.token;
+    const { token: tokenValue } = await params;
 
     if (!tokenValue || tokenValue.length < 10) {
       return NextResponse.json({ success: false, error: 'رابط التحميل غير صالح' }, { status: 400 });
