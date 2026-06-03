@@ -26,22 +26,22 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ success: false, error: 'الطلب غير موجود' }, { status: 404 });
       }
 
-      let downloads: Array<Record<string, unknown>> = [];
-      try {
-        downloads = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
-          `SELECT "id", "token", "productName", "fileUrl", "fileName", "downloaded", "downloadedAt", "createdAt"
-           FROM "DownloadToken" WHERE "orderId" = $1 ORDER BY "createdAt" ASC`,
-          order.id as string
-        );
-      } catch (dlErr) {
-        logger.warn('Failed to fetch downloads for order ' + (order.id as string) + ': ' + (dlErr instanceof Error ? dlErr.message : String(dlErr)));
-      }
+      const parsedItems = typeof order.items === 'string' ? JSON.parse(order.items) : order.items || [];
+      const downloads = (Array.isArray(parsedItems) ? parsedItems : []).filter((i: Record<string, unknown>) => i.token).map((i: Record<string, unknown>) => ({
+        token: i.token,
+        productName: i.productName || i.name || '',
+        fileUrl: i.fileUrl || '',
+        fileName: i.fileName || '',
+        downloaded: i.downloaded || false,
+        downloadedAt: i.downloadedAt || null,
+        createdAt: i.createdAt || null,
+      }));
 
       return NextResponse.json({
         success: true,
         data: {
           ...order,
-          items: typeof order.items === 'string' ? JSON.parse(order.items) : order.items,
+          items: parsedItems,
           downloads,
         },
       });
@@ -55,22 +55,23 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' },
     });
 
-    const formatted = await Promise.all(orders.map(async (o) => {
-      let downloads: Array<Record<string, unknown>> = [];
-      try {
-        downloads = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
-          `SELECT "id", "token", "productName", "fileUrl", "fileName", "downloaded", "downloadedAt", "createdAt" FROM "DownloadToken" WHERE "orderId" = $1 ORDER BY "createdAt" ASC`,
-          o.id as string,
-        );
-      } catch (dlErr) {
-        logger.warn('Failed to fetch downloads for order ' + (o.id as string) + ': ' + (dlErr instanceof Error ? dlErr.message : String(dlErr)));
-      }
+    const formatted = orders.map((o) => {
+      const parsedItems = JSON.parse(o.items as string || '[]');
+      const downloads = (Array.isArray(parsedItems) ? parsedItems : []).filter((i: Record<string, unknown>) => i.token).map((i: Record<string, unknown>) => ({
+        token: i.token,
+        productName: i.productName || i.name || '',
+        fileUrl: i.fileUrl || '',
+        fileName: i.fileName || '',
+        downloaded: i.downloaded || false,
+        downloadedAt: i.downloadedAt || null,
+        createdAt: i.createdAt || null,
+      }));
       return {
         ...o,
-        items: JSON.parse(o.items as string || '[]'),
+        items: parsedItems,
         downloads,
       };
-    }));
+    });
 
     return NextResponse.json({ success: true, data: formatted });
   } catch (error) {
@@ -184,17 +185,34 @@ export async function PUT(request: NextRequest) {
           const fileName = fileUrl.split('/').pop() || productName;
           const tokenValue = generateSecureToken(40);
 
-          const token = await db.downloadToken.create({
-            data: {
-              token: tokenValue,
-              orderId: id,
-              productId: product.id as string,
-              productName,
-              fileUrl,
-              fileName,
-            },
+          tokens.push({
+            token: tokenValue,
+            productName,
+            fileUrl,
+            fileName,
+            productId: product.id as string,
+            downloaded: false,
+            downloadedAt: null,
+            createdAt: new Date().toISOString(),
           });
-          tokens.push(token);
+        }
+
+        // Store tokens in the order items instead of DownloadToken table
+        if (tokens.length > 0) {
+          const updatedItems = items.map((item: Record<string, unknown>) => {
+            const match = tokens.find((t) =>
+              t.productName === (item.name || item.product?.name || '') ||
+              t.productId === (item.product?.id || item.id || '')
+            );
+            if (match) {
+              return { ...item, token: match.token, fileUrl: match.fileUrl, fileName: match.fileName };
+            }
+            return item;
+          });
+          await db.$executeRawUnsafe(
+            `UPDATE "Order" SET "items" = $1::text WHERE "id" = $2`,
+            JSON.stringify(updatedItems), id
+          );
         }
       } catch (genErr) {
         tokenError = genErr instanceof Error ? genErr.message : String(genErr);
@@ -202,10 +220,14 @@ export async function PUT(request: NextRequest) {
       }
     }
 
+    const finalOrder = await db.order.findUnique({ where: { id } });
+    const parsedItems = JSON.parse(finalOrder?.items || '[]');
+    const finalDownloads = Array.isArray(parsedItems) ? parsedItems.filter((i: Record<string, unknown>) => i.token) : [];
+
     return NextResponse.json({
       success: true,
-      data: { ...order, items: JSON.parse(order.items || '[]'), downloads: tokens },
-      message: tokens.length > 0 ? `تم إنشاء ${tokens.length} رابط تحميل` : undefined,
+      data: { ...finalOrder, items: parsedItems, downloads: finalDownloads },
+      message: finalDownloads.length > 0 ? `تم إنشاء ${finalDownloads.length} رابط تحميل` : undefined,
       ...(tokenError ? { debug: tokenError } : {}),
     });
   } catch (error) {

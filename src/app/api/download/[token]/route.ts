@@ -4,6 +4,30 @@ import { logger } from '@/lib/logger';
 import { promises as fs } from 'fs';
 import path from 'path';
 
+async function findTokenInOrders(tokenValue: string): Promise<{
+  orderId: string;
+  item: Record<string, unknown>;
+} | null> {
+  try {
+    const orders = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
+      `SELECT "id", "items" FROM "Order" WHERE "items" LIKE $1 ORDER BY "createdAt" DESC LIMIT 50`,
+      `%${tokenValue}%`
+    );
+    for (const order of orders) {
+      const items = JSON.parse((order.items as string) || '[]');
+      if (!Array.isArray(items)) continue;
+      for (const item of items) {
+        if (item.token === tokenValue) {
+          return { orderId: order.id as string, item };
+        }
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 export async function GET(request: Request, { params }: { params: { token: string } }) {
   try {
     const tokenValue = params.token;
@@ -12,15 +36,13 @@ export async function GET(request: Request, { params }: { params: { token: strin
       return NextResponse.json({ success: false, error: 'رابط التحميل غير صالح' }, { status: 400 });
     }
 
-    const tokens = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
-      `SELECT * FROM "DownloadToken" WHERE "token" = $1 LIMIT 1`, tokenValue
-    );
-    const token = Array.isArray(tokens) ? tokens[0] : null;
-    if (!token) {
+    const found = await findTokenInOrders(tokenValue);
+    if (!found) {
       return NextResponse.json({ success: false, error: 'رابط التحميل غير صالح أو منتهي الصلاحية' }, { status: 404 });
     }
 
-    const fileUrl = token.fileUrl as string;
+    const { orderId, item } = found;
+    const fileUrl = item.fileUrl as string;
     if (!fileUrl) {
       return NextResponse.json({ success: false, error: 'لم يتم رفع الملف بعد. يرجى التواصل مع الدعم.' }, { status: 404 });
     }
@@ -33,14 +55,36 @@ export async function GET(request: Request, { params }: { params: { token: strin
       return NextResponse.json({
         success: false,
         error: 'الملف غير متوفر حالياً. يرجى التواصل مع الدعم الفني.',
-        productName: token.productName,
+        productName: item.productName,
       }, { status: 404 });
     }
 
-    await db.$executeRawUnsafe(
-      `UPDATE "DownloadToken" SET "downloaded" = true, "downloadedAt" = NOW() WHERE "id" = $1`,
-      token.id as string,
-    );
+    // Mark token as downloaded in the order items
+    if (!item.downloaded) {
+      try {
+        const order = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
+          `SELECT "items" FROM "Order" WHERE "id" = $1 LIMIT 1`, orderId
+        );
+        if (Array.isArray(order) && order.length > 0) {
+          const allItems = JSON.parse((order[0].items as string) || '[]');
+          if (Array.isArray(allItems)) {
+            for (const it of allItems) {
+              if (it.token === tokenValue) {
+                it.downloaded = true;
+                it.downloadedAt = new Date().toISOString();
+                break;
+              }
+            }
+            await db.$executeRawUnsafe(
+              `UPDATE "Order" SET "items" = $1::text WHERE "id" = $2`,
+              JSON.stringify(allItems), orderId
+            );
+          }
+        }
+      } catch (markErr) {
+        logger.warn('Failed to mark download token as used: ' + (markErr instanceof Error ? markErr.message : String(markErr)));
+      }
+    }
 
     return NextResponse.redirect(new URL(fileUrl, request.url).toString());
   } catch (error) {
