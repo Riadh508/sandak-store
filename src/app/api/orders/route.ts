@@ -150,6 +150,7 @@ export async function PUT(request: NextRequest) {
 
     // Auto-generate download tokens when marking as paid
     let tokens: Array<Record<string, unknown>> = [];
+    let tokenError: string | null = null;
     if (status === 'paid') {
       try {
         const items = JSON.parse(order.items || '[]');
@@ -196,7 +197,8 @@ export async function PUT(request: NextRequest) {
           tokens.push(token);
         }
       } catch (genErr) {
-        logger.error('TokenGen error:', genErr);
+        tokenError = genErr instanceof Error ? genErr.message : String(genErr);
+        logger.error('TokenGen error:', tokenError);
       }
     }
 
@@ -204,6 +206,7 @@ export async function PUT(request: NextRequest) {
       success: true,
       data: { ...order, items: JSON.parse(order.items || '[]'), downloads: tokens },
       message: tokens.length > 0 ? `تم إنشاء ${tokens.length} رابط تحميل` : undefined,
+      ...(tokenError ? { debug: tokenError } : {}),
     });
   } catch (error) {
     logger.error('Error updating order:', error);
