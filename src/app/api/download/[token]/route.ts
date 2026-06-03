@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { logger } from '@/lib/logger';
-import { promises as fs } from 'fs';
-import path from 'path';
 
 async function findTokenInOrders(tokenValue: string): Promise<{
   orderId: string;
@@ -45,18 +43,6 @@ export async function GET(request: Request, { params }: { params: { token: strin
     const fileUrl = item.fileUrl as string;
     if (!fileUrl) {
       return NextResponse.json({ success: false, error: 'لم يتم رفع الملف بعد. يرجى التواصل مع الدعم.' }, { status: 404 });
-    }
-
-    const publicPath = path.join(process.cwd(), 'public', fileUrl.replace(/^\//, ''));
-    try {
-      await fs.access(publicPath);
-    } catch {
-      logger.warn(`Download file missing: ${fileUrl} for token ${tokenValue}`);
-      return NextResponse.json({
-        success: false,
-        error: 'الملف غير متوفر حالياً. يرجى التواصل مع الدعم الفني.',
-        productName: item.productName,
-      }, { status: 404 });
     }
 
     // Mark token as downloaded in the order items
