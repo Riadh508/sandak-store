@@ -20,15 +20,11 @@ temp
 public/downloads/*.exe
 public/downloads/*.msi
 public/downloads/*.dmg
-public/downloads/sandak-store-v4.zip
 public/uploads/*
-- sandak-v4/
-- sandak-v4/
-7.8.0
-nextjs_tailwind_shadcn_ts@0.2.0
 *.exe
 *.msi
 *.dmg
 *.zip
+!public/downloads/sandak-store-v4.zip
 !public/covers/*
 
