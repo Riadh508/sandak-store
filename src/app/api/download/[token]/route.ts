@@ -8,7 +8,7 @@ async function findTokenInOrders(tokenValue: string): Promise<{
 } | null> {
   try {
     const orders = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
-      `SELECT "id", "items" FROM "Order" WHERE "items" LIKE $1 ORDER BY "createdAt" DESC LIMIT 50`,
+      `SELECT "id", "items" FROM "Order" WHERE "items" LIKE $1 ORDER BY "createdAt" DESC`,
       `%${tokenValue}%`
     );
     for (const order of orders) {

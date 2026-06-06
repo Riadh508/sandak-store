@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ShoppingCart, BookOpen, Monitor, Check, Star, ArrowLeft, ExternalLink } from 'lucide-react';
+import { ShoppingCart, BookOpen, Monitor, Check, Star, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const categoryLabels = {
@@ -128,16 +128,6 @@ export function ProductDetailDialog() {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3">
-            {selectedProduct.fileUrl && (
-              <Button
-                onClick={() => window.open(selectedProduct.fileUrl, '_blank')}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200"
-                size="lg"
-              >
-                <ExternalLink className="ml-2 h-5 w-5" />
-                تحميل مباشر
-              </Button>
-            )}
             <Button
               onClick={handleAddToCart}
               className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-200"

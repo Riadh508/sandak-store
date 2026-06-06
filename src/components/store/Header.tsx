@@ -74,7 +74,7 @@ export function Header() {
             >
               <ShoppingCart className="h-5 w-5 text-emerald-700" />
               {cartCount > 0 && (
-                <Badge className="absolute -top-2 -left-2 h-5 w-5 rounded-full bg-emerald-600 p-0 text-[10px] text-white flex items-center justify-center">
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-emerald-600 p-0 text-[10px] text-white flex items-center justify-center">
                   {cartCount}
                 </Badge>
               )}

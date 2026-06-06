@@ -135,7 +135,7 @@ export default function AdminLoginPage() {
 
           {mode === 'register' && (
             <p className="text-xs text-gray-400 text-center mt-4">
-              إنشاء حساب جديد للمشرف. كلمة المرور يجب أن تكون 6 أحرف على الأقل.
+              إنشاء حساب جديد للمشرف. كلمة المرور يجب أن تكون 8 أحرف على الأقل.
             </p>
           )}
         </CardContent>

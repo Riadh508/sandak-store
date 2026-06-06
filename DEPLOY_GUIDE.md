@@ -19,24 +19,23 @@
 ### من ملف `vercel.json` (الإنتاج - Neon PostgreSQL)
 
 ```env
-# قاعدة البيانات
-DATABASE_URL="postgresql://authenticator:npg_mLOdp2jzFgQ7@ep-green-dust-aovlqleu.c-2.ap-southeast-1.aws.neon.tech/neondb?pgbouncer=true&connection_limit=1"
-DATABASE_URL_UNPOOLED="postgresql://authenticator:npg_mLOdp2jzFgQ7@ep-green-dust-aovlqleu.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+# قاعدة البيانات (أضف رابط PostgreSQL الخاص بك)
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
 
-# المصادقة
-ADMIN_API_KEY="SandakStore@2026!Pro"
-JWT_SECRET="SandakStore@2026!Pro"
+# المصادقة (غيّر القيم الافتراضية فوراً)
+ADMIN_API_KEY="your-secret-admin-key"
+JWT_SECRET="your-secret-jwt-key"
 
 # الموقع
 NEXT_PUBLIC_SITE_URL="https://sandak-store.vercel.app"
 
 # معلومات التواصل والدفع
-NEXT_PUBLIC_CONTACT_EMAIL="sanedsoft32@gmail.com"
-NEXT_PUBLIC_CONTACT_PHONE="00967770240572"
-NEXT_PUBLIC_JEIB_PHONE="00967770240572"
-NEXT_PUBLIC_WU_RECIPIENT="Riadh Ahmed Mohammed Alsayaghi"
-NEXT_PUBLIC_WU_CITY="صنعاء - العاصمة"
-NEXT_PUBLIC_WU_COUNTRY="اليمن"
+NEXT_PUBLIC_CONTACT_EMAIL="your@email.com"
+NEXT_PUBLIC_CONTACT_PHONE="+967XXXXXXXXX"
+NEXT_PUBLIC_JEIB_PHONE="+967XXXXXXXXX"
+NEXT_PUBLIC_WU_RECIPIENT="Your Name"
+NEXT_PUBLIC_WU_CITY="Your City"
+NEXT_PUBLIC_WU_COUNTRY="Your Country"
 ```
 
 ---
@@ -64,7 +63,7 @@ npx prisma migrate deploy
 #### خيار B: محلياً
 ```bash
 # تأكد من DATABASE_URL في .env يشير للإنتاج
-DATABASE_URL="postgresql://authenticator:npg_mLOdp2jzFgQ7@ep-green-dust-aovlqleu.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require" npx prisma migrate deploy
+npx prisma migrate deploy
 ```
 
 ### 3. بذر المنتجات الافتراضية

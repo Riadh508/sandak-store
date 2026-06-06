@@ -44,8 +44,11 @@ import {
   DollarSign,
   RefreshCw,
   Download,
+  FileText,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface DownloadItem {
   id: string;
@@ -83,8 +86,10 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [payDialogOpen, setPayDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [paymentRef, setPaymentRef] = useState('');
 
   useEffect(() => {
     checkAuth().then(() => setChecked(true));
@@ -119,17 +124,27 @@ export default function AdminOrdersPage() {
     }
   }, [checked, user, fetchOrders]);
 
-  const handleMarkPaid = async (order: Order) => {
-    setActionLoading(order.id);
+  const openPayDialog = (order: Order) => {
+    setSelectedOrder(order);
+    setPaymentRef('');
+    setPayDialogOpen(true);
+  };
+
+  const handleMarkPaid = async () => {
+    if (!selectedOrder) return;
+    setActionLoading(selectedOrder.id);
     try {
-      const res = await fetch(`/api/orders?id=${order.id}`, {
+      const res = await fetch(`/api/orders?id=${selectedOrder.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'paid' }),
+        body: JSON.stringify({ status: 'paid', paymentRef: paymentRef || '' }),
       });
       const data = await res.json();
       if (data.success) {
-        toast.success('تم تحديث حالة الطلب إلى مدفوع');
+        toast.success(data.message || 'تم تحديث حالة الطلب إلى مدفوع');
+        setPayDialogOpen(false);
+        setSelectedOrder(null);
+        setPaymentRef('');
         fetchOrders();
       } else {
         toast.error(data.error || 'حدث خطأ');
@@ -381,7 +396,7 @@ export default function AdminOrdersPage() {
                                 size="sm"
                                 variant="ghost"
                                 className="h-8 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
-                                onClick={() => handleMarkPaid(order)}
+                                onClick={() => openPayDialog(order)}
                                 disabled={actionLoading === order.id}
                               >
                                 {actionLoading === order.id ? (
@@ -478,7 +493,7 @@ export default function AdminOrdersPage() {
                   </h4>
                   <div className="space-y-2">
                     {selectedOrder.downloads.map((dl) => (
-                      <div key={dl.id} className="flex items-center justify-between text-sm bg-gray-50 p-2 rounded">
+                      <div key={dl.token} className="flex items-center justify-between text-sm bg-gray-50 p-2 rounded">
                         <div>
                           <span>{dl.productName}</span>
                           <span className="text-xs text-gray-400 mr-2">{dl.fileName}</span>
@@ -508,6 +523,45 @@ export default function AdminOrdersPage() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Payment Confirmation Dialog */}
+      <AlertDialog open={payDialogOpen} onOpenChange={setPayDialogOpen}>
+        <AlertDialogContent dir="rtl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>تأكيد الدفع</AlertDialogTitle>
+            <AlertDialogDescription>
+              تأكيد دفع الطلب &quot;{selectedOrder?.orderNumber}&quot; بقيمة {"$"}{selectedOrder?.total.toFixed(2)} للعميل &quot;{selectedOrder?.customerName}&quot;.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="py-4">
+            <Label htmlFor="paymentRef">مرجع الدفع (اختياري)</Label>
+            <Input
+              id="paymentRef"
+              value={paymentRef}
+              onChange={(e) => setPaymentRef(e.target.value)}
+              placeholder="رقم العملية أو ملاحظات..."
+              className="mt-1"
+            />
+          </div>
+          <AlertDialogFooter className="gap-2 sm:gap-0">
+            <AlertDialogCancel>إلغاء</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleMarkPaid}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              disabled={actionLoading === selectedOrder?.id}
+            >
+              {actionLoading === selectedOrder?.id ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <CheckCircle className="ml-1 h-4 w-4" />
+                  تأكيد الدفع
+                </>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Cancel Confirmation Dialog */}
       <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
