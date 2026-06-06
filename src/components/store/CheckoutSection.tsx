@@ -19,7 +19,7 @@ import {
   Shield,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
 export function CheckoutSection() {
@@ -40,8 +40,15 @@ export function CheckoutSection() {
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [formError, setFormError] = useState('');
+  const paymentDetailsRef = useRef<HTMLDivElement>(null);
 
-  const total = getCartTotal();
+  useEffect(() => {
+    if (paymentMethod && paymentDetailsRef.current) {
+      setTimeout(() => {
+        paymentDetailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 350);
+    }
+  }, [paymentMethod]);
   const subtotal = total;
   const taxRate = storeSettings?.taxRate ?? 15;
   const tax = subtotal * (taxRate / 100);
@@ -333,6 +340,7 @@ export function CheckoutSection() {
             <AnimatePresence mode="wait">
               {paymentMethod && (
                 <motion.div
+                  ref={paymentDetailsRef}
                   key={paymentMethod}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -485,26 +493,31 @@ export function CheckoutSection() {
                 <CardTitle className="text-right">ملخص الطلب</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {cart.map((item) => (
-                  <div key={item.product.id} className="flex items-center gap-3">
-                    <div className={`h-10 w-10 rounded-lg flex items-center justify-center shrink-0 ${
-                      item.product.category === 'ebook'
-                        ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
-                        : 'bg-gradient-to-br from-emerald-500 to-teal-600'
-                    }`}>
-                      <span className="text-white text-xs font-bold">{item.quantity}x</span>
+                <div className={cart.length > 2 ? 'max-h-48 overflow-y-auto scroll-smooth space-y-3' : 'space-y-3'}>
+                  {cart.map((item) => (
+                    <div key={item.product.id} className="flex items-center gap-3">
+                      <div className={`h-10 w-10 rounded-lg flex items-center justify-center shrink-0 ${
+                        item.product.category === 'ebook'
+                          ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
+                          : 'bg-gradient-to-br from-emerald-500 to-teal-600'
+                      }`}>
+                        <span className="text-white text-xs font-bold">{item.quantity}x</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {item.product.name}
+                        </p>
+                        <p className="text-xs text-gray-400">{item.quantity} نسخة</p>
+                      </div>
+                      <span className="text-sm font-semibold text-gray-700">
+                        {currency}{item.product.price * item.quantity}
+                      </span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        {item.product.name}
-                      </p>
-                      <p className="text-xs text-gray-400">{item.quantity} نسخة</p>
-                    </div>
-                    <span className="text-sm font-semibold text-gray-700">
-                      {currency}{item.product.price * item.quantity}
-                    </span>
-                  </div>
-                ))}
+                  ))}
+                </div>
+                {cart.length > 2 && (
+                  <p className="text-xs text-gray-400 text-center">عرض {cart.length} منتج</p>
+                )}
                 <Separator />
                 <div className="flex items-center justify-between">
                   <span className="text-gray-500">المجموع الفرعي</span>

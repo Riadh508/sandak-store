@@ -49,6 +49,7 @@ import {
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface DownloadItem {
   id: string;
@@ -90,6 +91,7 @@ export default function AdminOrdersPage() {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [paymentRef, setPaymentRef] = useState('');
+  const [confirmPaymentChecked, setConfirmPaymentChecked] = useState(false);
 
   useEffect(() => {
     checkAuth().then(() => setChecked(true));
@@ -127,6 +129,7 @@ export default function AdminOrdersPage() {
   const openPayDialog = (order: Order) => {
     setSelectedOrder(order);
     setPaymentRef('');
+    setConfirmPaymentChecked(false);
     setPayDialogOpen(true);
   };
 
@@ -526,29 +529,70 @@ export default function AdminOrdersPage() {
 
       {/* Payment Confirmation Dialog */}
       <AlertDialog open={payDialogOpen} onOpenChange={setPayDialogOpen}>
-        <AlertDialogContent dir="rtl">
+        <AlertDialogContent dir="rtl" className="max-w-lg">
           <AlertDialogHeader>
             <AlertDialogTitle>تأكيد الدفع</AlertDialogTitle>
             <AlertDialogDescription>
-              تأكيد دفع الطلب &quot;{selectedOrder?.orderNumber}&quot; بقيمة {"$"}{selectedOrder?.total.toFixed(2)} للعميل &quot;{selectedOrder?.customerName}&quot;.
+              تأكيد دفع الطلب &quot;{selectedOrder?.orderNumber}&quot;
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="py-4">
-            <Label htmlFor="paymentRef">مرجع الدفع (اختياري)</Label>
-            <Input
-              id="paymentRef"
-              value={paymentRef}
-              onChange={(e) => setPaymentRef(e.target.value)}
-              placeholder="رقم العملية أو ملاحظات..."
-              className="mt-1"
-            />
-          </div>
+          {selectedOrder && (
+            <div className="space-y-3 py-2">
+              <div className="rounded-lg bg-gray-50 p-3 space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">العميل</span>
+                  <span className="font-medium">{selectedOrder.customerName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">رقم الهاتف</span>
+                  <span className="font-mono" dir="ltr">{selectedOrder.customerPhone}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">طريقة الدفع</span>
+                  <span>{getPaymentMethodLabel(selectedOrder.paymentMethod)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">المبلغ</span>
+                  <span className="font-bold text-emerald-600 text-lg">{"$"}{selectedOrder.total.toFixed(2)}</span>
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 mb-1">المنتجات:</p>
+                <div className="max-h-28 overflow-y-auto space-y-1">
+                  {selectedOrder.items.map((item, i) => (
+                    <div key={i} className="flex justify-between text-sm bg-gray-50 p-1.5 rounded">
+                      <span className="truncate ml-2">{item.product.name} × {item.quantity}</span>
+                      <span className="font-medium shrink-0">{"$"}{item.total.toFixed(2)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <Label htmlFor="paymentRef">مرجع الدفع (اختياري)</Label>
+              <Input
+                id="paymentRef"
+                value={paymentRef}
+                onChange={(e) => setPaymentRef(e.target.value)}
+                placeholder="رقم العملية أو ملاحظات..."
+              />
+            </div>
+            <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3">
+              <Checkbox
+                id="confirm-payment"
+                checked={confirmPaymentChecked}
+                onCheckedChange={(checked) => setConfirmPaymentChecked(checked === true)}
+                className="mt-0.5"
+              />
+              <Label htmlFor="confirm-payment" className="text-sm text-amber-800 leading-relaxed cursor-pointer">
+                أؤكد أن المبلغ <strong>${selectedOrder?.total.toFixed(2)}</strong> قد وصل إلى الحساب، وسيتم إنشاء روابط التحميل تلقائياً
+              </Label>
+            </div>
+          )}
           <AlertDialogFooter className="gap-2 sm:gap-0">
             <AlertDialogCancel>إلغاء</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleMarkPaid}
               className="bg-emerald-600 hover:bg-emerald-700 text-white"
-              disabled={actionLoading === selectedOrder?.id}
+              disabled={actionLoading === selectedOrder?.id || !confirmPaymentChecked}
             >
               {actionLoading === selectedOrder?.id ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
