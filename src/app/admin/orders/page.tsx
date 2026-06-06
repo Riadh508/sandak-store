@@ -378,7 +378,7 @@ export default function AdminOrdersPage() {
                       </TableCell>
                       <TableCell>{getPaymentMethodLabel(order.paymentMethod)}</TableCell>
                       <TableCell className="font-semibold text-emerald-600">
-                        {"$"}{order.total.toFixed(2)}
+                        {"$"}{(order.total ?? 0).toFixed(2)}
                       </TableCell>
                       <TableCell>{getStatusBadge(order.status)}</TableCell>
                       <TableCell className="text-sm text-gray-500">
@@ -477,7 +477,7 @@ export default function AdminOrdersPage() {
                   {selectedOrder.items.map((item, i) => (
                     <div key={i} className="flex justify-between text-sm bg-gray-50 p-2 rounded">
                       <span>{item.name} × {item.quantity}</span>
-                      <span className="font-medium">{"$"}{item.total.toFixed(2)}</span>
+                      <span className="font-medium">{"$"}{(item.total ?? item.price * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
@@ -486,7 +486,7 @@ export default function AdminOrdersPage() {
               <div className="flex justify-between pt-2 border-t">
                 <span className="font-bold">الإجمالي:</span>
                 <span className="font-bold text-emerald-600 text-lg">
-                  {"$"}{selectedOrder.total.toFixed(2)}
+                  {"$"}{(selectedOrder.total ?? 0).toFixed(2)}
                 </span>
               </div>
 
@@ -555,7 +555,7 @@ export default function AdminOrdersPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">المبلغ</span>
-                  <span className="font-bold text-emerald-600 text-lg">{"$"}{selectedOrder.total.toFixed(2)}</span>
+                  <span className="font-bold text-emerald-600 text-lg">{"$"}{(selectedOrder.total ?? 0).toFixed(2)}</span>
                 </div>
               </div>
               <div>
@@ -564,7 +564,7 @@ export default function AdminOrdersPage() {
                   {selectedOrder.items.map((item, i) => (
                     <div key={i} className="flex justify-between text-sm bg-gray-50 p-1.5 rounded">
                       <span className="truncate ml-2">{item.name} × {item.quantity}</span>
-                      <span className="font-medium shrink-0">{"$"}{item.total.toFixed(2)}</span>
+                      <span className="font-medium shrink-0">{"$"}{(item.total ?? item.price * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
@@ -585,7 +585,7 @@ export default function AdminOrdersPage() {
                 className="mt-0.5"
               />
               <Label htmlFor="confirm-payment" className="text-sm text-amber-800 leading-relaxed cursor-pointer">
-                أؤكد أن المبلغ <strong>${selectedOrder?.total.toFixed(2)}</strong> قد وصل إلى الحساب، وسيتم إنشاء روابط التحميل تلقائياً
+                أؤكد أن المبلغ <strong>${(selectedOrder?.total ?? 0).toFixed(2)}</strong> قد وصل إلى الحساب، وسيتم إنشاء روابط التحميل تلقائياً
               </Label>
             </div>
           )}
