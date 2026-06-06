@@ -82,29 +82,43 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: Request) {
   try {
-    const { customerName, customerPhone, customerEmail, paymentMethod, items, subtotal, tax, total, paymentRef } = await request.json();
+    const body = await request.json();
+    const { customerName, customerPhone, customerEmail, paymentMethod, items, subtotal, tax, total, paymentRef } = body;
 
     if (!customerName || !customerPhone || !paymentMethod || !items || items.length === 0) {
       return NextResponse.json({ success: false, error: 'البيانات المطلوبة ناقصة' }, { status: 400 });
     }
 
-    const orderNumber = `ORD-${Date.now()}-${generateSecureToken(6).toUpperCase().replace(/[^A-Z0-9]/g, 'X')}`;
+    let orderNumber: string;
+    try {
+      orderNumber = `ORD-${Date.now()}-${generateSecureToken(6).toUpperCase().replace(/[^A-Z0-9]/g, 'X')}`;
+    } catch (tokenErr) {
+      logger.error('TokenGen error in POST:', tokenErr);
+      return NextResponse.json({ success: false, error: 'فشل في إنشاء رقم الطلب' }, { status: 500 });
+    }
 
-    const order = await db.order.create({
-      data: {
-        orderNumber,
-        customerName: String(customerName).slice(0, 100),
-        customerPhone: String(customerPhone).slice(0, 30),
-        customerEmail: customerEmail ? String(customerEmail).slice(0, 200) : '',
-        paymentMethod: String(paymentMethod).slice(0, 50),
-        items: JSON.stringify(items),
-        subtotal: parseFloat(subtotal) || 0,
-        tax: parseFloat(tax) || 0,
-        total: parseFloat(total) || 0,
-        paymentRef: paymentRef ? String(paymentRef).slice(0, 200) : '',
-        status: 'pending',
-      },
-    });
+    let order;
+    try {
+      order = await db.order.create({
+        data: {
+          orderNumber,
+          customerName: String(customerName).slice(0, 100),
+          customerPhone: String(customerPhone).slice(0, 30),
+          customerEmail: customerEmail ? String(customerEmail).slice(0, 200) : '',
+          paymentMethod: String(paymentMethod).slice(0, 50),
+          items: JSON.stringify(items),
+          subtotal: parseFloat(subtotal) || 0,
+          tax: parseFloat(tax) || 0,
+          total: parseFloat(total) || 0,
+          paymentRef: paymentRef ? String(paymentRef).slice(0, 200) : '',
+          status: 'pending',
+        },
+      });
+    } catch (dbErr) {
+      logger.error('DB error creating order:', dbErr);
+      const msg = dbErr instanceof Error ? dbErr.message : String(dbErr);
+      return NextResponse.json({ success: false, error: 'خطأ في حفظ الطلب', debug: msg }, { status: 500 });
+    }
 
     return NextResponse.json({
       success: true,
@@ -113,7 +127,8 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     logger.error('Error creating order:', error);
-    return NextResponse.json({ success: false, error: 'حدث خطأ' }, { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ success: false, error: 'حدث خطأ', debug: msg }, { status: 500 });
   }
 }
 
