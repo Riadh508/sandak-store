@@ -116,8 +116,7 @@ export async function POST(request: Request) {
       });
     } catch (dbErr) {
       logger.error('DB error creating order:', dbErr);
-      const msg = dbErr instanceof Error ? dbErr.message : String(dbErr);
-      return NextResponse.json({ success: false, error: 'خطأ في حفظ الطلب', debug: msg }, { status: 500 });
+      return NextResponse.json({ success: false, error: 'حدث خطأ أثناء حفظ الطلب' }, { status: 500 });
     }
 
     return NextResponse.json({
@@ -127,8 +126,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     logger.error('Error creating order:', error);
-    const msg = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ success: false, error: 'حدث خطأ', debug: msg }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'حدث خطأ' }, { status: 500 });
   }
 }
 
