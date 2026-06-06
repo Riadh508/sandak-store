@@ -70,8 +70,10 @@ interface Order {
   total: number;
   status: 'pending' | 'paid' | 'cancelled';
   items: Array<{
-    product: { id: string; name: string; price: number };
+    id: string;
+    name: string;
     quantity: number;
+    price: number;
     total: number;
   }>;
   downloads?: DownloadItem[];
@@ -474,7 +476,7 @@ export default function AdminOrdersPage() {
                 <div className="space-y-2">
                   {selectedOrder.items.map((item, i) => (
                     <div key={i} className="flex justify-between text-sm bg-gray-50 p-2 rounded">
-                      <span>{item.product.name} × {item.quantity}</span>
+                      <span>{item.name} × {item.quantity}</span>
                       <span className="font-medium">{"$"}{item.total.toFixed(2)}</span>
                     </div>
                   ))}
@@ -561,7 +563,7 @@ export default function AdminOrdersPage() {
                 <div className="max-h-28 overflow-y-auto space-y-1">
                   {selectedOrder.items.map((item, i) => (
                     <div key={i} className="flex justify-between text-sm bg-gray-50 p-1.5 rounded">
-                      <span className="truncate ml-2">{item.product.name} × {item.quantity}</span>
+                      <span className="truncate ml-2">{item.name} × {item.quantity}</span>
                       <span className="font-medium shrink-0">{"$"}{item.total.toFixed(2)}</span>
                     </div>
                   ))}
