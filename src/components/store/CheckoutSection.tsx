@@ -49,7 +49,7 @@ export function CheckoutSection() {
       }, 350);
     }
   }, [paymentMethod]);
-  const subtotal = total;
+  const subtotal = getCartTotal();
   const taxRate = storeSettings?.taxRate ?? 15;
   const tax = subtotal * (taxRate / 100);
   const pInfo = getPaymentInfo(storeSettings);
