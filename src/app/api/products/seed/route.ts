@@ -38,7 +38,7 @@ const defaultProducts: SeedProduct[] = [
     ],
     badge: '',
     fileUrl: '/downloads/learn-programming.pdf',
-    fileSize: 15728640,
+    fileSize: 185569,
     sortOrder: 1,
   },
   {
@@ -470,7 +470,7 @@ const defaultProducts: SeedProduct[] = [
     ],
     badge: 'الأكثر مبيعاً',
     fileUrl: '/downloads/HotelSystem_v2.1.0_Setup.exe',
-    fileSize: 125829120,
+    fileSize: 14294235,
     sortOrder: 19,
   },
   {
@@ -493,8 +493,8 @@ const defaultProducts: SeedProduct[] = [
       'نسخة ويب ونسخة سطح مكتب',
     ],
     badge: '',
-    fileUrl: '/downloads/InvoiceSystem_v1.5.0_Setup.exe',
-    fileSize: 94371840,
+    fileUrl: '/downloads/InvoiceSystem_v1.5.0_Setup.zip',
+    fileSize: 73090,
     sortOrder: 20,
   },
   {
@@ -517,8 +517,8 @@ const defaultProducts: SeedProduct[] = [
       'برنامج ولاء وخصومات العملاء',
     ],
     badge: '',
-    fileUrl: '/downloads/POSSystem_v2.0.0_Setup.exe',
-    fileSize: 104857600,
+    fileUrl: '/downloads/POSSystem_v2.0.0_Setup.zip',
+    fileSize: 59679,
     sortOrder: 21,
   },
   {
@@ -541,8 +541,8 @@ const defaultProducts: SeedProduct[] = [
       'تكامل مع أنظمة POS والمتاجر الإلكترونية',
     ],
     badge: 'جديد',
-    fileUrl: '/downloads/AccountingSystem_v3.0.0_Setup.exe',
-    fileSize: 115343360,
+    fileUrl: '/downloads/AccountingSystem_v3.0.0_Setup.zip',
+    fileSize: 50334,
     sortOrder: 22,
   },
   {
@@ -565,8 +565,8 @@ const defaultProducts: SeedProduct[] = [
       'دعم التعلم عن بعد والحصص الافتراضية',
     ],
     badge: '',
-    fileUrl: '/downloads/SchoolSystem_v2.5.0_Setup.exe',
-    fileSize: 134217728,
+    fileUrl: '/downloads/SchoolSystem_v2.5.0_Setup.zip',
+    fileSize: 69753,
     sortOrder: 23,
   },
   {
@@ -590,7 +590,7 @@ const defaultProducts: SeedProduct[] = [
     ],
     badge: 'مميز',
     fileUrl: '/downloads/amazon-trading.pdf',
-    fileSize: 18874368,
+    fileSize: 185569,
     sortOrder: 24,
   },
   {
@@ -614,7 +614,7 @@ const defaultProducts: SeedProduct[] = [
     ],
     badge: 'جديد',
     fileUrl: '/downloads/ceo-prompts.pdf',
-    fileSize: 7340032,
+    fileSize: 18962,
     sortOrder: 25,
   },
   {
@@ -638,7 +638,7 @@ const defaultProducts: SeedProduct[] = [
     ],
     badge: '',
     fileUrl: '/downloads/canva-designs.pdf',
-    fileSize: 15728640,
+    fileSize: 185569,
     sortOrder: 26,
   },
   {
@@ -662,7 +662,7 @@ const defaultProducts: SeedProduct[] = [
     ],
     badge: 'نظام متكامل',
     fileUrl: '/downloads/sandak-store-v4.zip',
-    fileSize: 52428800,
+    fileSize: 17703507,
     sortOrder: 27,
   },
 ];
