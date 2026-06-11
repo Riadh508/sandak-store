@@ -539,6 +539,7 @@ export default function AdminOrdersPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           {selectedOrder && (
+            <>
             <div className="space-y-3 py-2">
               <div className="rounded-lg bg-gray-50 p-3 space-y-2 text-sm">
                 <div className="flex justify-between">
@@ -588,6 +589,7 @@ export default function AdminOrdersPage() {
                 أؤكد أن المبلغ <strong>${(selectedOrder?.total ?? 0).toFixed(2)}</strong> قد وصل إلى الحساب، وسيتم إنشاء روابط التحميل تلقائياً
               </Label>
             </div>
+            </>
           )}
           <AlertDialogFooter className="gap-2 sm:gap-0">
             <AlertDialogCancel>إلغاء</AlertDialogCancel>
