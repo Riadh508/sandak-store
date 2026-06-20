@@ -45,7 +45,8 @@ export function CartDrawer() {
           </SheetTitle>
         </SheetHeader>
 
-        <ScrollArea className="flex-1">
+        {/* Fixed height scroll area for cart items */}
+        <ScrollArea className="flex-1 h-0">
           {cart.length === 0 && (
             <div className="flex flex-col items-center justify-center py-16 text-center px-6">
               <div className="h-20 w-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
