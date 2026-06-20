@@ -284,7 +284,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                   <Card className={'border ' + (product.isActive ? 'border-gray-100' : 'border-gray-200 bg-gray-50/50')}>
                     <CardContent className="p-4">
                       <div className="flex items-center gap-4">
-                        <div className={'h-14 w-14 rounded-xl flex items-center justify-center shrink-0 ' + (product.category === 'ebook' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 'bg-gradient-to-br from-emerald-500 to-teal-600')}>
+                        <div className={'h-14 w-14 rounded-xl flex items-center justify-center shrink-0 ' + (product.category === 'ebook' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 'bg-gradient-to-br from-purple-500 to-pink-600')}>
                           {product.category === 'ebook' ? (
                             <BookOpen className="h-6 w-6 text-white" />
                           ) : (
@@ -436,60 +436,62 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-lg" dir="rtl">
+        <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col overflow-hidden" dir="rtl">
           <DialogHeader>
             <DialogTitle>{editingProduct ? 'تعديل المنتج' : 'إضافة منتج جديد'}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div>
-              <Label>اسم المنتج</Label>
-              <Input value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="أدخل اسم المنتج" className="text-right" />
-            </div>
-            <div>
-              <Label>الوصف المختصر</Label>
-              <Input value={formDesc} onChange={(e) => setFormDesc(e.target.value)} placeholder="وصف مختصر للمنتج" className="text-right" />
-            </div>
-            <div>
-              <Label>الوصف الطويل</Label>
-              <Textarea value={formLongDesc} onChange={(e) => setFormLongDesc(e.target.value)} placeholder="وصف تفصيلي للمنتج (اختياري)" className="text-right" rows={4} />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+          <div className="flex-1 overflow-y-auto">
+            <div className="space-y-4 py-2 px-6">
               <div>
-                <Label>السعر</Label>
-                <Input type="number" value={formPrice} onChange={(e) => setFormPrice(e.target.value)} placeholder="0.00" className="text-right" />
+                <Label>اسم المنتج</Label>
+                <Input value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="أدخل اسم المنتج" className="text-right" />
               </div>
               <div>
-                <Label>التصنيف</Label>
-                {renderForm()}
-              </div>
-            </div>
-            <div>
-              <Label>الشارة (Badge)</Label>
-              <Input value={formBadge} onChange={(e) => setFormBadge(e.target.value)} placeholder="مثل: الأكثر مبيعاً" className="text-right" />
-            </div>
-            <div>
-              <Label>رابط الصورة</Label>
-              <Input value={formImage} onChange={(e) => setFormImage(e.target.value)} placeholder="URL الصورة (اختياري)" className="text-right" />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>رابط الملف</Label>
-                <Input value={formFileUrl} onChange={(e) => setFormFileUrl(e.target.value)} placeholder="/downloads/file.pdf أو رابط خارجي" className="text-right" />
-                <p className="text-xs text-gray-400 mt-1">يُستخدم لإنشاء رابط تحميل تلقائي بعد الدفع</p>
+                <Label>الوصف المختصر</Label>
+                <Input value={formDesc} onChange={(e) => setFormDesc(e.target.value)} placeholder="وصف مختصر للمنتج" className="text-right" />
               </div>
               <div>
-                <Label>حجم الملف (بايت)</Label>
-                <Input type="number" value={formFileSize} onChange={(e) => setFormFileSize(e.target.value)} placeholder="0" className="text-right" />
-                <p className="text-xs text-gray-400 mt-1">1048576 = 1MB</p>
+                <Label>الوصف الطويل</Label>
+                <Textarea value={formLongDesc} onChange={(e) => setFormLongDesc(e.target.value)} placeholder="وصف تفصيلي للمنتج (اختياري)" className="text-right" rows={4} />
               </div>
-            </div>
-            <div>
-              <Label>الميزات (ميزة في كل سطر)</Label>
-              <Textarea value={formFeatures} onChange={(e) => setFormFeatures(e.target.value)} placeholder={'إدارة حجوزات الغرف بشكل ذكي\nنظام فوترة ومحاسبة متكامل\nدعم كامل للغة العربية'} className="text-right resize-none font-mono text-sm" rows={5} />
-              <p className="text-xs text-gray-400">اكتب كل ميزة في سطر منفصل</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>السعر</Label>
+                  <Input type="number" value={formPrice} onChange={(e) => setFormPrice(e.target.value)} placeholder="0.00" className="text-right" />
+                </div>
+                <div>
+                  <Label>التصنيف</Label>
+                  {renderForm()}
+                </div>
+              </div>
+              <div>
+                <Label>الشارة (Badge)</Label>
+                <Input value={formBadge} onChange={(e) => setFormBadge(e.target.value)} placeholder="مثل: الأكثر مبيعاً" className="text-right" />
+              </div>
+              <div>
+                <Label>رابط الصورة</Label>
+                <Input value={formImage} onChange={(e) => setFormImage(e.target.value)} placeholder="URL الصورة (اختياري)" className="text-right" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>رابط الملف</Label>
+                  <Input value={formFileUrl} onChange={(e) => setFormFileUrl(e.target.value)} placeholder="/downloads/file.pdf أو رابط خارجي" className="text-right" />
+                  <p className="text-xs text-gray-400 mt-1">يُستخدم لإنشاء رابط تحميل تلقائي بعد الدفع</p>
+                </div>
+                <div>
+                  <Label>حجم الملف (بايت)</Label>
+                  <Input type="number" value={formFileSize} onChange={(e) => setFormFileSize(e.target.value)} placeholder="0" className="text-right" />
+                  <p className="text-xs text-gray-400 mt-1">1048576 = 1MB</p>
+                </div>
+              </div>
+              <div>
+                <Label>الميزات (ميزة في كل سطر)</Label>
+                <Textarea value={formFeatures} onChange={(e) => setFormFeatures(e.target.value)} placeholder="إدارة حجوزات الغرف بشكل ذكي&#10;نظام فوترة ومحاسبة&#10;إرسال الفاتورة تلقائياً" className="text-right" rows={4} />
+                <p className="text-xs text-gray-400">اكتب كل ميزة في سطر منفصل</p>
+              </div>
             </div>
           </div>
-          <DialogFooter className="gap-2 sm:gap-0">
+          <DialogFooter className="gap-2 sm:gap-0 px-6 py-4 border-t">
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               <X className="ml-1 h-4 w-4" />
               إلغاء
