@@ -283,7 +283,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                 >
                   <Card className={'border ' + (product.isActive ? 'border-gray-100' : 'border-gray-200 bg-gray-50/50')}>
                     <CardContent className="p-4">
-                      <div className="flex items-center gap-4">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                         <div className={'h-14 w-14 rounded-xl flex items-center justify-center shrink-0 ' + (product.category === 'ebook' ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 'bg-gradient-to-br from-purple-500 to-pink-600')}>
                           {product.category === 'ebook' ? (
                             <BookOpen className="h-6 w-6 text-white" />
@@ -291,8 +291,8 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                             <Monitor className="h-6 w-6 text-white" />
                           )}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
+                        <div className="flex-1 min-w-0 w-full sm:w-auto">
+                          <div className="flex items-center gap-2 mb-1 flex-wrap">
                             <h3 className="font-semibold text-gray-900 truncate">{product.name}</h3>
                             {product.badge ? (
                               <Badge variant="outline" className="text-xs shrink-0">{product.badge}</Badge>
@@ -317,7 +317,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                             </span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-1 shrink-0">
+                        <div className="flex items-center gap-1 shrink-0 w-full sm:w-auto">
                           <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => toggleActive(product)} title={product.isActive ? 'إخفاء' : 'تفعيل'}>
                             {product.isActive ? <Eye className="h-4 w-4 text-emerald-600" /> : <EyeOff className="h-4 w-4 text-gray-400" />}
                           </Button>
@@ -363,39 +363,39 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <Button variant="ghost" onClick={onBack} className="text-gray-600">
                 <ArrowRight className="ml-2 h-4 w-4" />
                 العودة للمتجر
               </Button>
-              <Separator orientation="vertical" className="h-8" />
+              <Separator orientation="vertical" className="h-8 hidden sm:block" />
               <div className="flex items-center gap-2">
                 <LayoutDashboard className="h-5 w-5 text-emerald-600" />
                 <h1 className="text-lg font-bold text-gray-900">لوحة التحكم</h1>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
               {user ? (
-                <div className="flex items-center gap-2 text-sm text-gray-500">
+                <div className="flex items-center gap-2 text-sm text-gray-500 hidden sm:flex">
                   <User className="h-4 w-4" />
                   <span>{user.name}</span>
                   <span className="text-gray-300">|</span>
                   <span className="text-xs">{user.email}</span>
                 </div>
               ) : null}
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={fetchProducts} className="border-gray-200">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <Button variant="outline" size="sm" onClick={fetchProducts} className="border-gray-200 flex-1 sm:flex-none">
                   <RefreshCw className={'ml-1 h-4 w-4 ' + (loading ? 'animate-spin' : '')} />
                   تحديث
                 </Button>
-                <Button variant="ghost" size="sm" onClick={handleLogout} className="text-red-500 hover:text-red-600 hover:bg-red-50">
+                <Button variant="ghost" size="sm" onClick={handleLogout} className="text-red-500 hover:text-red-600 hover:bg-red-50 flex-1 sm:flex-none">
                   <LogOut className="ml-1 h-4 w-4" />
-                  تسجيل الخروج
+                  خروج
                 </Button>
-                <Button onClick={openAddDialog} className="bg-emerald-600 hover:bg-emerald-700 text-white" size="sm">
+                <Button onClick={openAddDialog} className="bg-emerald-600 hover:bg-emerald-700 text-white" size="sm" disabled={loading}>
                   <Plus className="ml-1 h-4 w-4" />
-                  إضافة منتج جديد
+                  منتج جديد
                 </Button>
               </div>
             </div>
@@ -404,7 +404,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
       </div>
 
       <div className="container mx-auto px-4 py-6">
-        <div className="grid gap-4 sm:grid-cols-4 mb-6">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
           {[
             { label: 'إجمالي المنتجات', value: products.length, icon: Package, color: 'bg-emerald-100 text-emerald-600' },
             { label: 'منتجات نشطة', value: activeProducts.length, icon: Eye, color: 'bg-blue-100 text-blue-600' },
@@ -426,7 +426,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
         </div>
 
         <Tabs defaultValue="active">
-          <TabsList className="mb-4 bg-white border">
+          <TabsList className="mb-4 bg-white border w-full justify-start overflow-x-auto">
             <TabsTrigger value="active">النشطة ({activeProducts.length})</TabsTrigger>
             <TabsTrigger value="inactive">المختفية ({inactiveProducts.length})</TabsTrigger>
             <TabsTrigger value="all">الكل ({products.length})</TabsTrigger>
@@ -436,12 +436,12 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col overflow-hidden" dir="rtl">
+        <DialogContent className="w-[95vw] sm:max-w-2xl max-h-[90vh] flex flex-col overflow-hidden p-4 sm:p-6 rounded-lg" dir="rtl">
           <DialogHeader>
             <DialogTitle>{editingProduct ? 'تعديل المنتج' : 'إضافة منتج جديد'}</DialogTitle>
           </DialogHeader>
           <div className="flex-1 overflow-y-auto">
-            <div className="space-y-4 py-2 px-6">
+            <div className="space-y-4 py-2">
               <div>
                 <Label>اسم المنتج</Label>
                 <Input value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="أدخل اسم المنتج" className="text-right" />
@@ -454,7 +454,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                 <Label>الوصف الطويل</Label>
                 <Textarea value={formLongDesc} onChange={(e) => setFormLongDesc(e.target.value)} placeholder="وصف تفصيلي للمنتج (اختياري)" className="text-right" rows={4} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label>السعر</Label>
                   <Input type="number" value={formPrice} onChange={(e) => setFormPrice(e.target.value)} placeholder="0.00" className="text-right" />
@@ -472,7 +472,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                 <Label>رابط الصورة</Label>
                 <Input value={formImage} onChange={(e) => setFormImage(e.target.value)} placeholder="URL الصورة (اختياري)" className="text-right" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label>رابط الملف</Label>
                   <Input value={formFileUrl} onChange={(e) => setFormFileUrl(e.target.value)} placeholder="/downloads/file.pdf أو رابط خارجي" className="text-right" />
@@ -486,17 +486,17 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
               </div>
               <div>
                 <Label>الميزات (ميزة في كل سطر)</Label>
-                <Textarea value={formFeatures} onChange={(e) => setFormFeatures(e.target.value)} placeholder="إدارة حجوزات الغرف بشكل ذكي&#10;نظام فوترة ومحاسبة&#10;إرسال الفاتورة تلقائياً" className="text-right" rows={4} />
+                <Textarea value={formFeatures} onChange={(e) => setFormFeatures(e.target.value)} placeholder="إدارة حجوزات الغرف بشكل ذكي&#10;نظام فوترة ومحاسبة متقدمة" className="text-right" rows={4} />
                 <p className="text-xs text-gray-400">اكتب كل ميزة في سطر منفصل</p>
               </div>
             </div>
           </div>
-          <DialogFooter className="gap-2 sm:gap-0 px-6 py-4 border-t">
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+          <DialogFooter className="gap-2 sm:gap-0 border-t pt-4 mt-4">
+            <Button variant="outline" onClick={() => setDialogOpen(false)} className="w-full sm:w-auto">
               <X className="ml-1 h-4 w-4" />
               إلغاء
             </Button>
-            <Button onClick={handleSave} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Button onClick={handleSave} className="bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto">
               <Save className="ml-1 h-4 w-4" />
               {editingProduct ? 'تحديث المنتج' : 'إضافة المنتج'}
             </Button>
@@ -505,11 +505,11 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
       </Dialog>
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent dir="rtl">
+        <AlertDialogContent dir="rtl" className="w-[95vw] sm:max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle>هل أنت متأكد من حذف هذا المنتج؟</AlertDialogTitle>
             <AlertDialogDescription>
-              {'سيتم حذف المنتج (' + (productToDelete?.name || '') + ') نهائياً. هذا الإجراء لا يمكن التراجع عنه.'}
+              {'سيتم حذف المنتج (' + (productToDelete?.name || '') + ') نهائياً. هذا الإجرا�� لا يمكن التراجع عنه.'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2 sm:gap-0">
