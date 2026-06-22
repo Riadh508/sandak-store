@@ -434,24 +434,6 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-lg max-h-[90dvh] overflow-y-auto" dir="rtl">
-          <DialogHeader>
-            <DialogTitle>{editingProduct ? 'تعديل المنتج' : 'إضافة منتج جديد'}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div>
-              <Label>اسم المنتج</Label>
-              <Input value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="أدخل اسم المنتج" className="text-right" />
-            </div>
-            <div>
-              <Label>الوصف المختصر</Label>
-              <Input value={formDesc} onChange={(e) => setFormDesc(e.target.value)} placeholder="وصف مختصر للمنتج" className="text-right" />
-            </div>
-            <div>
-              <Label>الوصف الطويل</Label>
-              <Textarea value={formLongDesc} onChange={(e) => setFormLongDesc(e.target.value)} placeholder="وصف تفصيلي للمنتج (اختياري)" className="text-right" rows={4} />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <DialogContent className="w-[95vw] sm:max-w-2xl max-h-[90vh] flex flex-col overflow-hidden p-4 sm:p-6 rounded-lg" dir="rtl">
           <DialogHeader>
             <DialogTitle>{editingProduct ? 'تعديل المنتج' : 'إضافة منتج جديد'}</DialogTitle>
@@ -463,24 +445,6 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                 <Input value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="أدخل اسم المنتج" className="text-right" />
               </div>
               <div>
-
-                <Label>التصنيف</Label>
-                {renderForm()}
-              </div>
-            </div>
-            <div>
-              <Label>الشارة (Badge)</Label>
-              <Input value={formBadge} onChange={(e) => setFormBadge(e.target.value)} placeholder="مثل: الأكثر مبيعاً" className="text-right" />
-            </div>
-            <div>
-              <Label>رابط الصورة</Label>
-              <Input value={formImage} onChange={(e) => setFormImage(e.target.value)} placeholder="URL الصورة (اختياري)" className="text-right" />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Label>رابط الملف</Label>
-                <Input value={formFileUrl} onChange={(e) => setFormFileUrl(e.target.value)} placeholder="/downloads/file.pdf أو رابط خارجي" className="text-right" />
-                <p className="text-xs text-gray-400 mt-1">يُستخدم لإنشاء رابط تحميل تلقائي بعد الدفع</p>
                 <Label>الوصف المختصر</Label>
                 <Input value={formDesc} onChange={(e) => setFormDesc(e.target.value)} placeholder="وصف مختصر للمنتج" className="text-right" />
               </div>
@@ -543,7 +507,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
           <AlertDialogHeader>
             <AlertDialogTitle>هل أنت متأكد من حذف هذا المنتج؟</AlertDialogTitle>
             <AlertDialogDescription>
-              {'سيتم حذف المنتج (' + (productToDelete?.name || '') + ') نهائياً. هذا الإجرا�� لا يمكن التراجع عنه.'}
+              {'سيتم حذف المنتج (' + (productToDelete?.name || '') + ') نهائياً. هذا الإجراء لا يمكن التراجع عنه.'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2 sm:gap-0">
