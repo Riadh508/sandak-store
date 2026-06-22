@@ -363,41 +363,39 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" onClick={onBack} className="text-gray-600">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <Button variant="ghost" onClick={onBack} className="text-gray-600 shrink-0">
                 <ArrowRight className="ml-2 h-4 w-4" />
-                العودة للمتجر
+                العودة
               </Button>
-              <Separator orientation="vertical" className="h-8" />
-              <div className="flex items-center gap-2">
-                <LayoutDashboard className="h-5 w-5 text-emerald-600" />
-                <h1 className="text-lg font-bold text-gray-900">لوحة التحكم</h1>
+              <Separator orientation="vertical" className="h-8 hidden sm:block" />
+              <div className="flex items-center gap-2 min-w-0">
+                <LayoutDashboard className="h-5 w-5 text-emerald-600 shrink-0" />
+                <h1 className="text-lg font-bold text-gray-900 truncate">لوحة التحكم</h1>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap">
               {user ? (
-                <div className="flex items-center gap-2 text-sm text-gray-500">
+                <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500">
                   <User className="h-4 w-4" />
                   <span>{user.name}</span>
                   <span className="text-gray-300">|</span>
-                  <span className="text-xs">{user.email}</span>
+                  <span className="text-xs truncate max-w-[120px]">{user.email}</span>
                 </div>
               ) : null}
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={fetchProducts} className="border-gray-200">
-                  <RefreshCw className={'ml-1 h-4 w-4 ' + (loading ? 'animate-spin' : '')} />
-                  تحديث
-                </Button>
-                <Button variant="ghost" size="sm" onClick={handleLogout} className="text-red-500 hover:text-red-600 hover:bg-red-50">
-                  <LogOut className="ml-1 h-4 w-4" />
-                  تسجيل الخروج
-                </Button>
-                <Button onClick={openAddDialog} className="bg-emerald-600 hover:bg-emerald-700 text-white" size="sm">
-                  <Plus className="ml-1 h-4 w-4" />
-                  إضافة منتج جديد
-                </Button>
-              </div>
+              <Button variant="outline" size="sm" onClick={fetchProducts} className="border-gray-200">
+                <RefreshCw className={'ml-1 h-4 w-4 ' + (loading ? 'animate-spin' : '')} />
+                <span className="hidden sm:inline">تحديث</span>
+              </Button>
+              <Button variant="ghost" size="sm" onClick={handleLogout} className="text-red-500 hover:text-red-600 hover:bg-red-50">
+                <LogOut className="h-4 w-4 sm:ml-1" />
+                <span className="hidden sm:inline">تسجيل الخروج</span>
+              </Button>
+              <Button onClick={openAddDialog} className="bg-emerald-600 hover:bg-emerald-700 text-white" size="sm">
+                <Plus className="h-4 w-4 sm:ml-1" />
+                <span className="hidden sm:inline">إضافة منتج</span>
+              </Button>
             </div>
           </div>
         </div>
@@ -436,7 +434,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-lg" dir="rtl">
+        <DialogContent className="sm:max-w-lg max-h-[90dvh] overflow-y-auto" dir="rtl">
           <DialogHeader>
             <DialogTitle>{editingProduct ? 'تعديل المنتج' : 'إضافة منتج جديد'}</DialogTitle>
           </DialogHeader>
@@ -453,7 +451,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
               <Label>الوصف الطويل</Label>
               <Textarea value={formLongDesc} onChange={(e) => setFormLongDesc(e.target.value)} placeholder="وصف تفصيلي للمنتج (اختياري)" className="text-right" rows={4} />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label>السعر</Label>
                 <Input type="number" value={formPrice} onChange={(e) => setFormPrice(e.target.value)} placeholder="0.00" className="text-right" />
@@ -471,7 +469,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
               <Label>رابط الصورة</Label>
               <Input value={formImage} onChange={(e) => setFormImage(e.target.value)} placeholder="URL الصورة (اختياري)" className="text-right" />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label>رابط الملف</Label>
                 <Input value={formFileUrl} onChange={(e) => setFormFileUrl(e.target.value)} placeholder="/downloads/file.pdf أو رابط خارجي" className="text-right" />
