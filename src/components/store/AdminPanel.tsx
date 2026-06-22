@@ -366,9 +366,6 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3 w-full sm:w-auto">
               <Button variant="ghost" onClick={onBack} className="text-gray-600 shrink-0">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" onClick={onBack} className="text-gray-600">
                 <ArrowRight className="ml-2 h-4 w-4" />
                 العودة
               </Button>
@@ -381,14 +378,6 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap">
               {user ? (
                 <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500">
-              <div className="flex items-center gap-2">
-                <LayoutDashboard className="h-5 w-5 text-emerald-600" />
-                <h1 className="text-lg font-bold text-gray-900">لوحة التحكم</h1>
-              </div>
-            </div>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
-              {user ? (
-                <div className="flex items-center gap-2 text-sm text-gray-500 hidden sm:flex">
                   <User className="h-4 w-4" />
                   <span>{user.name}</span>
                   <span className="text-gray-300">|</span>
@@ -403,24 +392,10 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                 <LogOut className="h-4 w-4 sm:ml-1" />
                 <span className="hidden sm:inline">تسجيل الخروج</span>
               </Button>
-              <Button onClick={openAddDialog} className="bg-emerald-600 hover:bg-emerald-700 text-white" size="sm">
+              <Button onClick={openAddDialog} className="bg-emerald-600 hover:bg-emerald-700 text-white" size="sm" disabled={loading}>
                 <Plus className="h-4 w-4 sm:ml-1" />
                 <span className="hidden sm:inline">إضافة منتج</span>
               </Button>
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                <Button variant="outline" size="sm" onClick={fetchProducts} className="border-gray-200 flex-1 sm:flex-none">
-                  <RefreshCw className={'ml-1 h-4 w-4 ' + (loading ? 'animate-spin' : '')} />
-                  تحديث
-                </Button>
-                <Button variant="ghost" size="sm" onClick={handleLogout} className="text-red-500 hover:text-red-600 hover:bg-red-50 flex-1 sm:flex-none">
-                  <LogOut className="ml-1 h-4 w-4" />
-                  خروج
-                </Button>
-                <Button onClick={openAddDialog} className="bg-emerald-600 hover:bg-emerald-700 text-white" size="sm" disabled={loading}>
-                  <Plus className="ml-1 h-4 w-4" />
-                  منتج جديد
-                </Button>
-              </div>
             </div>
           </div>
         </div>
