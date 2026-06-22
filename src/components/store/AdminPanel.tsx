@@ -363,20 +363,16 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
-<<<<<<< HEAD
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3 w-full sm:w-auto">
               <Button variant="ghost" onClick={onBack} className="text-gray-600 shrink-0">
-=======
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <Button variant="ghost" onClick={onBack} className="text-gray-600">
->>>>>>> e1e7bf91aac927133a6ce47701b9a394126feaa6
                 <ArrowRight className="ml-2 h-4 w-4" />
                 العودة
               </Button>
               <Separator orientation="vertical" className="h-8 hidden sm:block" />
-<<<<<<< HEAD
               <div className="flex items-center gap-2 min-w-0">
                 <LayoutDashboard className="h-5 w-5 text-emerald-600 shrink-0" />
                 <h1 className="text-lg font-bold text-gray-900 truncate">لوحة التحكم</h1>
@@ -385,7 +381,6 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
             <div className="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap">
               {user ? (
                 <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500">
-=======
               <div className="flex items-center gap-2">
                 <LayoutDashboard className="h-5 w-5 text-emerald-600" />
                 <h1 className="text-lg font-bold text-gray-900">لوحة التحكم</h1>
@@ -394,14 +389,12 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
               {user ? (
                 <div className="flex items-center gap-2 text-sm text-gray-500 hidden sm:flex">
->>>>>>> e1e7bf91aac927133a6ce47701b9a394126feaa6
                   <User className="h-4 w-4" />
                   <span>{user.name}</span>
                   <span className="text-gray-300">|</span>
                   <span className="text-xs truncate max-w-[120px]">{user.email}</span>
                 </div>
               ) : null}
-<<<<<<< HEAD
               <Button variant="outline" size="sm" onClick={fetchProducts} className="border-gray-200">
                 <RefreshCw className={'ml-1 h-4 w-4 ' + (loading ? 'animate-spin' : '')} />
                 <span className="hidden sm:inline">تحديث</span>
@@ -414,7 +407,6 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                 <Plus className="h-4 w-4 sm:ml-1" />
                 <span className="hidden sm:inline">إضافة منتج</span>
               </Button>
-=======
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <Button variant="outline" size="sm" onClick={fetchProducts} className="border-gray-200 flex-1 sm:flex-none">
                   <RefreshCw className={'ml-1 h-4 w-4 ' + (loading ? 'animate-spin' : '')} />
@@ -429,7 +421,6 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                   منتج جديد
                 </Button>
               </div>
->>>>>>> e1e7bf91aac927133a6ce47701b9a394126feaa6
             </div>
           </div>
         </div>
@@ -468,7 +459,6 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-<<<<<<< HEAD
         <DialogContent className="sm:max-w-lg max-h-[90dvh] overflow-y-auto" dir="rtl">
           <DialogHeader>
             <DialogTitle>{editingProduct ? 'تعديل المنتج' : 'إضافة منتج جديد'}</DialogTitle>
@@ -487,7 +477,6 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
               <Textarea value={formLongDesc} onChange={(e) => setFormLongDesc(e.target.value)} placeholder="وصف تفصيلي للمنتج (اختياري)" className="text-right" rows={4} />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-=======
         <DialogContent className="w-[95vw] sm:max-w-2xl max-h-[90vh] flex flex-col overflow-hidden p-4 sm:p-6 rounded-lg" dir="rtl">
           <DialogHeader>
             <DialogTitle>{editingProduct ? 'تعديل المنتج' : 'إضافة منتج جديد'}</DialogTitle>
