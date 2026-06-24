@@ -32,8 +32,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import {
   Loader2,
-  ArrowRight,
-  LayoutDashboard,
   LogOut,
   User,
   ShoppingCart,
@@ -252,7 +250,7 @@ export default function AdminOrdersPage() {
 
   if (!checked || authLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex items-center justify-center py-16">
         <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
       </div>
     );
@@ -261,61 +259,46 @@ export default function AdminOrdersPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50" dir="rtl">
-      {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.push('/admin')}
-                className="text-gray-500"
-              >
-                <ArrowRight className="h-4 w-4 ml-1" />
-                العودة
-              </Button>
-              <div className="flex items-center gap-2">
-                <ShoppingCart className="h-5 w-5 text-emerald-600" />
-                <h1 className="text-lg font-bold text-gray-900">إدارة الطلبات</h1>
-              </div>
+    <div dir="rtl">
+      {/* Page Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2">
+          <ShoppingCart className="h-5 w-5 text-emerald-600" />
+          <h1 className="text-lg font-bold text-gray-900">إدارة الطلبات</h1>
+        </div>
+        <div className="flex items-center gap-3">
+          {user && (
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <User className="h-4 w-4" />
+              <span>{user.name}</span>
             </div>
-            <div className="flex items-center gap-3">
-              {user && (
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <User className="h-4 w-4" />
-                  <span>{user.name}</span>
-                </div>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={fetchOrders}
-                className="border-gray-200"
-              >
-                <RefreshCw className={`ml-1 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-                تحديث
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={async () => {
-                  await logout();
-                  window.location.href = '/admin/login';
-                }}
-                className="text-red-500 hover:text-red-600 hover:bg-red-50"
-              >
-                <LogOut className="ml-1 h-4 w-4" />
-                تسجيل الخروج
-              </Button>
-            </div>
-          </div>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={fetchOrders}
+            className="border-gray-200"
+          >
+            <RefreshCw className={`ml-1 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            تحديث
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={async () => {
+              await logout();
+              window.location.href = '/admin/login';
+            }}
+            className="text-red-500 hover:text-red-600 hover:bg-red-50"
+          >
+            <LogOut className="ml-1 h-4 w-4" />
+            تسجيل الخروج
+          </Button>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="container mx-auto px-4 py-6">
+      <div className="mb-6">
         <div className="grid gap-4 sm:grid-cols-4 mb-6">
           {[
             { label: 'إجمالي الطلبات', value: totalOrders, icon: ShoppingCart, color: 'bg-emerald-100 text-emerald-600' },

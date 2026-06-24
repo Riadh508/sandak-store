@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, ShoppingCart, FileText, Users, Store, Settings, Menu } from "lucide-react"
+import { LayoutDashboard, ShoppingCart, FileText, Users, Store, Settings } from "lucide-react"
 
 import {
   Sidebar,
@@ -17,7 +17,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 
 const navItems = [
@@ -103,11 +102,7 @@ export default function AdminLayout({
         </Sidebar>
         <main className="flex flex-1 flex-col">
           <header className="flex h-14 items-center gap-2 border-b px-4 md:px-6">
-            <SidebarTrigger asChild={false}>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SidebarTrigger>
+            <SidebarTrigger className="md:hidden" />
           </header>
           <div className="flex-1 p-4 md:p-6">{children}</div>
         </main>
