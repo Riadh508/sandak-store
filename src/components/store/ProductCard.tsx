@@ -115,8 +115,8 @@ export function ProductCard({ product, index }: { product: Product; index: numbe
             <div className="text-2xl font-extrabold text-emerald-600">
               {"$"}{product.price}
             </div>
-            {product.priceLabel && (
-              <div className="text-[11px] text-gray-400">{product.priceLabel}</div>
+            {product.badge && (
+              <div className="text-[11px] text-gray-400">{product.badge}</div>
             )}
           </div>
           <div className="flex gap-2">

@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     const whereClause = showAll ? '' : 'WHERE "isActive" = true';
     const rows = await db.$queryRawUnsafe<
       Array<Record<string, unknown>>
-    >(`SELECT "id", "name", "description", "longDescription", "price", "category", "image", "features", "badge", "priceLabel", "fileUrl", "fileSize", "isActive", "sortOrder", "createdAt", "updatedAt" FROM "Product" ${whereClause} ORDER BY "sortOrder" ASC`);
+    >(`SELECT "id", "name", "description", "longDescription", "price", "category", "image", "features", "badge", "fileUrl", "fileSize", "isActive", "sortOrder", "createdAt", "updatedAt" FROM "Product" ${whereClause} ORDER BY "sortOrder" ASC`);
 
     const formatted = rows.map((p) => ({
       ...p,
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { name, description, longDescription, price, category, image, features, badge, priceLabel, fileUrl, fileSize, isActive, sortOrder } = body;
+    const { name, description, longDescription, price, category, image, features, badge, fileUrl, fileSize, isActive, sortOrder } = body;
 
     if (!name || !description || !price || !category) {
       return NextResponse.json({ success: false, error: 'الاسم والوصف والسعر والفئة مطلوبة' }, { status: 400 });
@@ -50,8 +50,8 @@ export async function POST(request: Request) {
 
     const productId = `c${Date.now().toString(36)}${generateSecureToken(16).toLowerCase()}`.slice(0, 25);
     const product = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
-      `INSERT INTO "Product" ("id", "name", "description", "longDescription", "price", "category", "image", "features", "badge", "priceLabel", "fileUrl", "fileSize", "isActive", "sortOrder", "createdAt", "updatedAt")
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW(), NOW())
+      `INSERT INTO "Product" ("id", "name", "description", "longDescription", "price", "category", "image", "features", "badge", "fileUrl", "fileSize", "isActive", "sortOrder", "createdAt", "updatedAt")
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW(), NOW())
        RETURNING *`,
       productId,
       String(name).slice(0, 200),
@@ -62,7 +62,6 @@ export async function POST(request: Request) {
       String(image || '').slice(0, 500),
       JSON.stringify(sanitizedFeatures),
       String(badge || '').slice(0, 100),
-      String(priceLabel || '').slice(0, 100),
       String(fileUrl || '').slice(0, 500),
       parseInt(fileSize) || 0,
       isActive !== undefined ? isActive : true,
@@ -101,7 +100,6 @@ export async function PUT(request: Request) {
     if (data.image !== undefined) { sets.push(`"image" = $${idx++}`); values.push(String(data.image).slice(0, 500)); }
     if (data.features !== undefined) { sets.push(`"features" = $${idx++}`); values.push(JSON.stringify(Array.isArray(data.features) ? data.features : [])); }
     if (data.badge !== undefined) { sets.push(`"badge" = $${idx++}`); values.push(String(data.badge).slice(0, 100)); }
-    if (data.priceLabel !== undefined) { sets.push(`"priceLabel" = $${idx++}`); values.push(String(data.priceLabel).slice(0, 100)); }
     if (data.isActive !== undefined) { sets.push(`"isActive" = $${idx++}`); values.push(data.isActive); }
     if (data.sortOrder !== undefined) { sets.push(`"sortOrder" = $${idx++}`); values.push(data.sortOrder); }
     if (data.fileUrl !== undefined) { sets.push(`"fileUrl" = $${idx++}`); values.push(String(data.fileUrl).slice(0, 500)); }

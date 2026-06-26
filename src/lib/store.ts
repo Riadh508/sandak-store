@@ -15,7 +15,6 @@ export interface Product {
   image: string;
   features: string[];
   badge?: string;
-  priceLabel?: string;
   fileUrl?: string;
   fileSize?: number;
 }

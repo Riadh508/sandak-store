@@ -59,7 +59,6 @@ interface ProductDB {
   image: string;
   features: string[];
   badge: string;
-  priceLabel: string;
   fileUrl: string;
   fileSize: number;
   isActive: boolean;
@@ -83,7 +82,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
   const [formPrice, setFormPrice] = useState('');
   const [formCategory, setFormCategory] = useState('ebook');
   const [formBadge, setFormBadge] = useState('');
-  const [formPriceLabel, setFormPriceLabel] = useState('');
+  const [formBadgeMode, setFormBadgeMode] = useState('none');
   const [formFeatures, setFormFeatures] = useState('');
   const [formActive, setFormActive] = useState(true);
   const [formImage, setFormImage] = useState('');
@@ -121,7 +120,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     setFormPrice('');
     setFormCategory('ebook');
     setFormBadge('');
-    setFormPriceLabel('');
+    setFormBadgeMode('none');
     setFormFeatures('');
     setFormActive(true);
     setFormImage('');
@@ -144,7 +143,16 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     setFormPrice(product.price.toString());
     setFormCategory(product.category);
     setFormBadge(product.badge || '');
-    setFormPriceLabel(product.priceLabel || '');
+    if (product.badge) {
+      const knownBadges = ['الأكثر مبيعاً', 'دفعة واحدة', 'ترخيص دائم', 'دفعة واحدة - ترخيص دائم'];
+      if (knownBadges.includes(product.badge)) {
+        setFormBadgeMode(product.badge);
+      } else {
+        setFormBadgeMode('custom');
+      }
+    } else {
+      setFormBadgeMode('none');
+    }
     const feat = product.features || [];
     if (feat.length === 0) {
       setFeaturesMode('none');
@@ -192,8 +200,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
       longDescription: formLongDesc.trim(),
       price: parseFloat(formPrice),
       category: formCategory,
-      badge: formBadge.trim(),
-      priceLabel: formPriceLabel,
+      badge: formBadgeMode === 'none' ? '' : formBadgeMode === 'custom' ? formBadge.trim() : formBadgeMode,
       features: featuresArray,
       isActive: formActive,
       image: formImage.trim(),
@@ -487,31 +494,43 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                 </div>
               </div>
               <div>
-                <Label>الشارة (Badge)</Label>
-                <Input value={formBadge} onChange={(e) => setFormBadge(e.target.value)} placeholder="مثل: الأكثر مبيعاً" className="text-right" />
-              </div>
-              <div>
-                <Label>وصف السعر</Label>
+                <Label>الشارة / وصف السعر</Label>
                 <div className="flex items-center gap-2 mt-1 mb-2 flex-wrap">
-                  {['', 'دفعة واحدة', 'ترخيص دائم', 'دفعة واحدة - ترخيص دائم'].map((opt) => (
-                    <Button
-                      key={opt}
-                      type="button"
-                      variant={formPriceLabel === opt ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setFormPriceLabel(opt)}
-                      className={
-                        formPriceLabel === opt
-                          ? opt === '' ? 'bg-gray-600 hover:bg-gray-700 text-white'
-                            : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                          : 'border-gray-200'
-                      }
-                    >
-                      {opt || 'بدون'}
-                    </Button>
-                  ))}
+                  {['none', 'الأكثر مبيعاً', 'دفعة واحدة', 'ترخيص دائم', 'دفعة واحدة - ترخيص دائم', 'custom'].map((opt) => {
+                    const isActive = formBadgeMode === opt;
+                    let label: string;
+                    if (opt === 'none') label = 'بدون';
+                    else if (opt === 'custom') label = 'مخصص';
+                    else label = opt;
+                    return (
+                      <Button
+                        key={opt}
+                        type="button"
+                        variant={isActive ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setFormBadgeMode(opt)}
+                        className={
+                          isActive
+                            ? opt === 'none' ? 'bg-gray-600 hover:bg-gray-700 text-white'
+                              : opt === 'custom' ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                              : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                            : 'border-gray-200'
+                        }
+                      >
+                        {label}
+                      </Button>
+                    );
+                  })}
                 </div>
-                <p className="text-xs text-gray-400">يظهر بجانب السعر في البطاقة والنافذة</p>
+                {formBadgeMode === 'custom' && (
+                  <Input value={formBadge} onChange={(e) => setFormBadge(e.target.value)} placeholder="نص مخصص للشارة" className="text-right mt-2" />
+                )}
+                {formBadgeMode !== 'none' && formBadgeMode !== 'custom' && (
+                  <p className="text-xs text-gray-400 mt-1">يظهر على الصورة وبجانب السعر</p>
+                )}
+                {formBadgeMode === 'none' && (
+                  <p className="text-xs text-gray-400">بدون شارة أو وصف سعر</p>
+                )}
               </div>
               <div>
                 <Label>رابط الصورة</Label>
