@@ -96,8 +96,8 @@ export function ProductDetailDialog() {
           {/* Price */}
           <div className="mb-4">
             <span className="text-3xl font-extrabold text-emerald-600">{"$"}{selectedProduct.price}</span>
-            {selectedProduct.category === 'software' && (
-              <span className="text-sm text-gray-400 mr-2">دفعة واحدة - ترخيص دائم</span>
+            {selectedProduct.priceLabel && (
+              <span className="text-sm text-gray-400 mr-2">{selectedProduct.priceLabel}</span>
             )}
           </div>
 

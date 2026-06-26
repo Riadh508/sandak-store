@@ -20,6 +20,7 @@ model Product {
   image           String            @default("")
   features        String            @default("[]")
   badge           String            @default("")
+  priceLabel      String            @default("")
   fileUrl         String            @default("")
   fileSize        Int               @default(0)
   isActive        Boolean           @default(true)

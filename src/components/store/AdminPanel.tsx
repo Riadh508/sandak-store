@@ -59,6 +59,7 @@ interface ProductDB {
   image: string;
   features: string[];
   badge: string;
+  priceLabel: string;
   fileUrl: string;
   fileSize: number;
   isActive: boolean;
@@ -82,6 +83,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
   const [formPrice, setFormPrice] = useState('');
   const [formCategory, setFormCategory] = useState('ebook');
   const [formBadge, setFormBadge] = useState('');
+  const [formPriceLabel, setFormPriceLabel] = useState('');
   const [formFeatures, setFormFeatures] = useState('');
   const [formActive, setFormActive] = useState(true);
   const [formImage, setFormImage] = useState('');
@@ -119,6 +121,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     setFormPrice('');
     setFormCategory('ebook');
     setFormBadge('');
+    setFormPriceLabel('');
     setFormFeatures('');
     setFormActive(true);
     setFormImage('');
@@ -141,6 +144,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     setFormPrice(product.price.toString());
     setFormCategory(product.category);
     setFormBadge(product.badge || '');
+    setFormPriceLabel(product.priceLabel || '');
     const feat = product.features || [];
     if (feat.length === 0) {
       setFeaturesMode('none');
@@ -189,6 +193,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
       price: parseFloat(formPrice),
       category: formCategory,
       badge: formBadge.trim(),
+      priceLabel: formPriceLabel,
       features: featuresArray,
       isActive: formActive,
       image: formImage.trim(),
@@ -484,6 +489,29 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
               <div>
                 <Label>الشارة (Badge)</Label>
                 <Input value={formBadge} onChange={(e) => setFormBadge(e.target.value)} placeholder="مثل: الأكثر مبيعاً" className="text-right" />
+              </div>
+              <div>
+                <Label>وصف السعر</Label>
+                <div className="flex items-center gap-2 mt-1 mb-2 flex-wrap">
+                  {['', 'دفعة واحدة', 'ترخيص دائم', 'دفعة واحدة - ترخيص دائم'].map((opt) => (
+                    <Button
+                      key={opt}
+                      type="button"
+                      variant={formPriceLabel === opt ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setFormPriceLabel(opt)}
+                      className={
+                        formPriceLabel === opt
+                          ? opt === '' ? 'bg-gray-600 hover:bg-gray-700 text-white'
+                            : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                          : 'border-gray-200'
+                      }
+                    >
+                      {opt || 'بدون'}
+                    </Button>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-400">يظهر بجانب السعر في البطاقة والنافذة</p>
               </div>
               <div>
                 <Label>رابط الصورة</Label>
