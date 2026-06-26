@@ -87,6 +87,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
   const [formImage, setFormImage] = useState('');
   const [formFileUrl, setFormFileUrl] = useState('');
   const [formFileSize, setFormFileSize] = useState('');
+  const [featuresMode, setFeaturesMode] = useState<'none' | 'list' | 'custom'>('none');
 
   const adminHeaders = (): HeadersInit => {
     return { 'Content-Type': 'application/json' };
@@ -123,6 +124,7 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     setFormImage('');
     setFormFileUrl('');
     setFormFileSize('');
+    setFeaturesMode('none');
     setEditingProduct(null);
   };
 
@@ -139,7 +141,17 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
     setFormPrice(product.price.toString());
     setFormCategory(product.category);
     setFormBadge(product.badge || '');
-    setFormFeatures((product.features || []).join('\n'));
+    const feat = product.features || [];
+    if (feat.length === 0) {
+      setFeaturesMode('none');
+      setFormFeatures('');
+    } else if (feat.length === 1 && feat[0].includes('\n') === false) {
+      setFeaturesMode('custom');
+      setFormFeatures(feat[0]);
+    } else {
+      setFeaturesMode('list');
+      setFormFeatures(feat.join('\n'));
+    }
     setFormActive(product.isActive);
     setFormImage(product.image || '');
     setFormFileUrl(product.fileUrl || '');
@@ -158,10 +170,17 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
       return;
     }
 
-    const featuresArray = formFeatures
-      .split('\n')
-      .map((f) => f.trim())
-      .filter((f) => f.length > 0);
+    let featuresArray: string[];
+    if (featuresMode === 'none') {
+      featuresArray = [];
+    } else if (featuresMode === 'custom') {
+      featuresArray = formFeatures.trim() ? [formFeatures.trim()] : [];
+    } else {
+      featuresArray = formFeatures
+        .split('\n')
+        .map((f) => f.trim())
+        .filter((f) => f.length > 0);
+    }
 
     const productData = {
       name: formName.trim(),
@@ -483,9 +502,51 @@ export function AdminPanel({ onBack }: { onBack: () => void }) {
                 </div>
               </div>
               <div>
-                <Label>الميزات (ميزة في كل سطر)</Label>
-                <Textarea value={formFeatures} onChange={(e) => setFormFeatures(e.target.value)} placeholder="إدارة حجوزات الغرف بشكل ذكي&#10;نظام فوترة ومحاسبة متقدمة" className="text-right" rows={4} />
-                <p className="text-xs text-gray-400">اكتب كل ميزة في سطر منفصل</p>
+                <Label>الميزات</Label>
+                <div className="flex items-center gap-2 mt-1 mb-2">
+                  <Button
+                    type="button"
+                    variant={featuresMode === 'none' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFeaturesMode('none')}
+                    className={featuresMode === 'none' ? 'bg-gray-600 hover:bg-gray-700 text-white' : 'border-gray-200'}
+                  >
+                    بدون
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={featuresMode === 'list' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFeaturesMode('list')}
+                    className={featuresMode === 'list' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'border-gray-200'}
+                  >
+                    إضافة ميزات
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={featuresMode === 'custom' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setFeaturesMode('custom')}
+                    className={featuresMode === 'custom' ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'border-gray-200'}
+                  >
+                    نص مخصص
+                  </Button>
+                </div>
+                {featuresMode === 'list' && (
+                  <>
+                    <Textarea value={formFeatures} onChange={(e) => setFormFeatures(e.target.value)} placeholder="إدارة حجوزات الغرف بشكل ذكي&#10;نظام فوترة ومحاسبة متقدمة" className="text-right" rows={4} />
+                    <p className="text-xs text-gray-400 mt-1">اكتب كل ميزة في سطر منفصل</p>
+                  </>
+                )}
+                {featuresMode === 'custom' && (
+                  <>
+                    <Textarea value={formFeatures} onChange={(e) => setFormFeatures(e.target.value)} placeholder="نص الميزة المخصصة..." className="text-right" rows={2} />
+                    <p className="text-xs text-gray-400 mt-1">نص يظهر كميزة واحدة للمنتج</p>
+                  </>
+                )}
+                {featuresMode === 'none' && (
+                  <p className="text-xs text-gray-400">بدون ميزات</p>
+                )}
               </div>
             </div>
           </div>

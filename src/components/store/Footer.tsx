@@ -63,6 +63,7 @@ export function Footer() {
               <li><button onClick={() => navigate('products')} className="hover:text-emerald-400 transition-colors">المنتجات</button></li>
               <li><button onClick={() => navigate('products', 'ebook')} className="hover:text-emerald-400 transition-colors">الكتب الإلكترونية</button></li>
               <li><button onClick={() => navigate('products', 'software')} className="hover:text-emerald-400 transition-colors">البرمجيات والأنظمة</button></li>
+              <li><a href="/my-orders" className="hover:text-emerald-400 transition-colors">مشترياتي</a></li>
             </ul>
           </div>
 

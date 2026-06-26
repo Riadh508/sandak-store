@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const orderNumber = searchParams.get('orderNumber');
+    const phone = searchParams.get('phone');
 
     // Public lookup by orderNumber (used by /order/[orderNumber] page)
     if (orderNumber) {
@@ -45,6 +46,39 @@ export async function GET(request: NextRequest) {
           downloads,
         },
       });
+    }
+
+    // Public lookup by phone (used by /my-orders page)
+    if (phone) {
+      const safePhone = String(phone).slice(0, 30);
+      const orders = await db.$queryRawUnsafe<Array<Record<string, unknown>>>(
+        `SELECT "id", "orderNumber", "customerName", "customerPhone", "customerEmail",
+                "paymentMethod", "items", "subtotal", "tax", "total", "status",
+                "paymentRef", "verifiedAt", "verifiedBy", "notes",
+                "createdAt", "updatedAt"
+         FROM "Order" WHERE "customerPhone" = $1 ORDER BY "createdAt" DESC`,
+        safePhone
+      );
+
+      if (!Array.isArray(orders) || orders.length === 0) {
+        return NextResponse.json({ success: false, error: 'لا توجد طلبات لهذا الرقم' }, { status: 404 });
+      }
+
+      const formatted = orders.map((o) => {
+        const parsedItems = typeof o.items === 'string' ? JSON.parse(o.items) : o.items || [];
+        const downloads = (Array.isArray(parsedItems) ? parsedItems : []).filter((i: Record<string, unknown>) => i.token).map((i: Record<string, unknown>) => ({
+          token: i.token,
+          productName: i.productName || i.name || '',
+          fileUrl: i.fileUrl || '',
+          fileName: i.fileName || '',
+          downloaded: i.downloaded || false,
+          downloadedAt: i.downloadedAt || null,
+          createdAt: i.createdAt || null,
+        }));
+        return { ...o, items: parsedItems, downloads };
+      });
+
+      return NextResponse.json({ success: true, data: formatted });
     }
 
     // Admin only: list all orders

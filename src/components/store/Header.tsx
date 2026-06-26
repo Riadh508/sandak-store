@@ -1,7 +1,7 @@
 'use client';
 
 import { useStore } from '@/lib/store';
-import { ShoppingCart, Menu, Store } from 'lucide-react';
+import { ShoppingCart, Menu, Store, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -62,6 +62,15 @@ export function Header() {
             >
               البرمجيات
             </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => window.location.href = '/my-orders'}
+              className="text-gray-600"
+            >
+              <History className="h-4 w-4 ml-1" />
+              مشترياتي
+            </Button>
           </nav>
 
           {/* Cart + Mobile Menu */}
@@ -119,6 +128,14 @@ export function Header() {
                     onClick={() => { setCategoryFilter('software'); setCurrentView('products'); }}
                   >
                     البرمجيات
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-end"
+                    onClick={() => window.location.href = '/my-orders'}
+                  >
+                    <History className="h-4 w-4 ml-1" />
+                    مشترياتي
                   </Button>
                 </nav>
               </SheetContent>
