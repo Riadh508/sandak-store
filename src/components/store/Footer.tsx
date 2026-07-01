@@ -71,8 +71,9 @@ export function Footer() {
           <div>
             <h3 className="mb-4 text-sm font-bold text-white">المنتجات</h3>
             <ul className="space-y-2 text-sm">
-              <li><button onClick={() => navigate('products', 'software')} className="hover:text-emerald-400 transition-colors">البرمجيات والأنظمة</button></li>
-              <li><button onClick={() => navigate('products', 'ebook')} className="hover:text-emerald-400 transition-colors">الكتب الإلكترونية</button></li>
+              <li><button onClick={() => navigate('products', 'software')} className="hover:text-emerald-400 transition-colors">نظام إدارة الفنادق</button></li>
+              <li><button onClick={() => navigate('products', 'software')} className="hover:text-emerald-400 transition-colors">نظام الفواتير الاحترافي</button></li>
+              <li><button onClick={() => navigate('products', 'ebook')} className="hover:text-emerald-400 transition-colors">دليل الذكاء الاصطناعي</button></li>
               <li><button onClick={() => navigate('products')} className="hover:text-emerald-400 transition-colors">جميع المنتجات</button></li>
             </ul>
           </div>

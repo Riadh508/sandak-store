@@ -174,6 +174,18 @@ export const useStore = create<StoreState>((set, get) => ({
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
         set({ products: data.data, productsError: null });
+        if (data.data.length === 0) {
+          try {
+            await fetch('/api/products/seed', { method: 'POST', cache: 'no-store' });
+            const retryRes = await fetch('/api/products', { cache: 'no-store' });
+            const retryData = await retryRes.json();
+            if (retryData.success && Array.isArray(retryData.data)) {
+              set({ products: retryData.data });
+            }
+          } catch (seedErr) {
+            logger.warn('Auto-seed failed (may need admin auth):', seedErr);
+          }
+        }
       } else {
         set({ productsError: data.error || 'فشل تحميل المنتجات' });
       }
