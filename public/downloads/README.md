@@ -24,21 +24,27 @@
 | 16 | كتاب فن الخطابة والتحدث أمام الجمهور | public-speaking.pdf | 164 KB |
 | 17 | كتاب عادات النجاح والتطوير الذاتي | success-habits.pdf | 243 KB |
 | 18 | الدليل الشامل للذكاء الاصطناعي التوليدي | comprehensive-ai-guide.pdf | 284 KB |
-| 19 | الدليل الكامل للذكاء الاصطناعي (نسخة موسعة) | ai-complete-guide.pdf | 151 KB |
+| 19 | الدليل الكامل للذكاء الاصطناعي (نسخة موسعة) | ai-complete-guide.pdf | 386 KB |
 | 20 | كتاب نظام Amazon - دليل التجارة على أمازون | amazon-trading.pdf | 181 KB |
 | 21 | كتاب برومبتات المدير التنفيذي - 500+ برومبت | ceo-prompts.pdf | 2.7 MB |
 | 22 | كتاب قوالب كانفا الاحترافية | canva-designs.pdf | 2.6 MB |
 
-## الأنظمة البرمجية (EXE/ZIP)
+## الأنظمة البرمجية
 
-| # | اسم النظام | الملف | الحجم |
-|---|-----------|-------|------|
-| 19 | نظام إدارة الفنادق الشامل | HotelSystem_v2.1.0_Setup.exe | ~14 MB |
-| 20 | نظام الفواتير الاحترافي | InvoiceSystem_v1.5.0_Setup.exe | ~94 MB |
-| 21 | نظام نقاط البيع POS | POSSystem_v2.0.0_Setup.exe | ~105 MB |
-| 22 | نظام المحاسبة الشامل | AccountingSystem_v3.0.0_Setup.exe | ~115 MB |
-| 23 | نظام إدارة المدارس والتعليم | SchoolSystem_v2.5.0_Setup.exe | ~134 MB |
-| 27 | متجر سندك v4 (نظام المتجر الإلكتروني) | sandak-store-v4.zip | ~52 MB |
+| # | اسم النظام | ملف الإعداد (EXE) | ملف المصدر (ZIP) | الحجم |
+|---|-----------|-------------------|-------------------|-------|
+| 23 | نظام إدارة الفنادق الشامل | HotelSystem_v2.1.0_Setup.exe | HotelSystem_v3.0.0_Setup.zip | 13.6 MB / 49 KB |
+| 24 | نظام المحاسبة الشامل | AccountingSystem_v3.0.0_Setup.exe | AccountingSystem_v2.1.0_Setup.zip | 4.5 KB / 53 KB |
+| 25 | نظام الفواتير الاحترافي | InvoiceSystem_v1.5.0_Setup.exe | InvoiceSystem_v2.5.0_Setup.zip | 4.5 KB / 68 KB |
+| 26 | نظام إدارة المدارس | SchoolSystem_v2.5.0_Setup.exe | SchoolSystem_v1.5.0_Setup.zip | 4.5 KB / 71 KB |
+| 27 | نظام نقاط البيع POS | POSSystem_v2.0.0_Setup.exe | POSSystem_v2.0.0_Setup.zip | 87.4 MB / 58 KB |
+| 28 | متجر سندك v4 (نظام المتجر الإلكتروني) | - | sandak-store-v4.zip | 5.5 MB |
+
+> **ملاحظة:** الأنظمة هي تطبيقات ويب حديثة (Next.js). لتشغيلها:
+> 1. ثبّت Node.js من https://nodejs.org
+> 2. فك ضغط ملف الـ ZIP
+> 3. شغّل `setup.bat` داخل المجلد
+> 4. افتح المتصفح على الرابط الذي يظهر
 
 ## ملاحظات هامة
 
