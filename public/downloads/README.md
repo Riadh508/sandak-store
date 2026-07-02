@@ -6,27 +6,28 @@
 
 | # | اسم الكتاب | الملف | الحجم |
 |---|------------|-------|------|
-| 1 | كتاب تعلم البرمجة من الصفر حتى الاحتراف | learn-programming.pdf | ~15 MB |
-| 2 | كتاب التسويق الرقمي الاحترافي | digital-marketing.pdf | ~13 MB |
-| 3 | كتاب تطوير تطبيقات الويب الحديثة | web-development.pdf | ~19 MB |
-| 4 | كتاب إدارة المشاريع الفعالة | project-management.pdf | ~12 MB |
-| 5 | كتاب تصميم واجهات المستخدم UI/UX | ui-ux-design.pdf | ~17 MB |
-| 6 | كتاب دليل الذكاء الاصطناعي الشامل | ai-guide.pdf | ~22 MB |
-| 7 | كتاب إدارة الوقت وزيادة الإنتاجية | time-management.pdf | ~10 MB |
-| 8 | كتاب التجارة الإلكترونية الاحترافية | ecommerce.pdf | ~15 MB |
-| 9 | كتاب الربح من الإنترنت بطرق حقيقية | online-earning.pdf | ~14 MB |
-| 10 | كتاب الأمن السيبراني والحماية الرقمية | cybersecurity.pdf | ~18 MB |
-| 11 | كتاب ريادة الأعمال وبناء مشاريع ناجحة | entrepreneurship.pdf | ~13 MB |
-| 12 | كتاب التصميم الجرافيكي الاحترافي | graphic-design.pdf | ~20 MB |
-| 13 | كتاب كتابة المحتوى الإبداعي | content-writing.pdf | ~12 MB |
-| 14 | كتاب التسويق عبر وسائل التواصل الاجتماعي | social-media-marketing.pdf | ~14 MB |
-| 15 | كتاب الاستثمار المالي وإدارة الثروة | financial-investment.pdf | ~17 MB |
-| 16 | كتاب فن الخطابة والتحدث أمام الجمهور | public-speaking.pdf | ~10 MB |
-| 17 | كتاب عادات النجاح والتطوير الذاتي | success-habits.pdf | ~9 MB |
-| 18 | الدليل الشامل للذكاء الاصطناعي التوليدي | comprehensive-ai-guide.pdf | ~24 MB |
-| 24 | كتاب نظام Amazon - دليل التجارة على أمازون | amazon-trading.pdf | ~19 MB |
-| 25 | كتاب برومبتات المدير التنفيذي - 500+ برومبت | ceo-prompts.pdf | ~7 MB |
-| 26 | كتاب قوالب كانفا الاحترافية | canva-designs.pdf | ~16 MB |
+| 1 | كتاب تعلم البرمجة من الصفر حتى الاحتراف | learn-programming.pdf | 181 KB |
+| 2 | كتاب التسويق الرقمي الاحترافي | digital-marketing.pdf | 184 KB |
+| 3 | كتاب تطوير تطبيقات الويب الحديثة | web-development.pdf | 142 KB |
+| 4 | كتاب إدارة المشاريع الفعالة | project-management.pdf | 152 KB |
+| 5 | كتاب تصميم واجهات المستخدم UI/UX | ui-ux-design.pdf | 136 KB |
+| 6 | كتاب دليل الذكاء الاصطناعي الشامل | ai-guide.pdf | 173 KB |
+| 7 | كتاب إدارة الوقت وزيادة الإنتاجية | time-management.pdf | 161 KB |
+| 8 | كتاب التجارة الإلكترونية الاحترافية | ecommerce.pdf | 218 KB |
+| 9 | كتاب الربح من الإنترنت بطرق حقيقية | online-earning.pdf | 168 KB |
+| 10 | كتاب الأمن السيبراني والحماية الرقمية | cybersecurity.pdf | 144 KB |
+| 11 | كتاب ريادة الأعمال وبناء مشاريع ناجحة | entrepreneurship.pdf | 150 KB |
+| 12 | كتاب التصميم الجرافيكي الاحترافي | graphic-design.pdf | 194 KB |
+| 13 | كتاب كتابة المحتوى الإبداعي | content-writing.pdf | 165 KB |
+| 14 | كتاب التسويق عبر وسائل التواصل الاجتماعي | social-media-marketing.pdf | 198 KB |
+| 15 | كتاب الاستثمار المالي وإدارة الثروة | financial-investment.pdf | 160 KB |
+| 16 | كتاب فن الخطابة والتحدث أمام الجمهور | public-speaking.pdf | 164 KB |
+| 17 | كتاب عادات النجاح والتطوير الذاتي | success-habits.pdf | 243 KB |
+| 18 | الدليل الشامل للذكاء الاصطناعي التوليدي | comprehensive-ai-guide.pdf | 284 KB |
+| 19 | الدليل الكامل للذكاء الاصطناعي (نسخة موسعة) | ai-complete-guide.pdf | 151 KB |
+| 20 | كتاب نظام Amazon - دليل التجارة على أمازون | amazon-trading.pdf | 181 KB |
+| 21 | كتاب برومبتات المدير التنفيذي - 500+ برومبت | ceo-prompts.pdf | 2.7 MB |
+| 22 | كتاب قوالب كانفا الاحترافية | canva-designs.pdf | 2.6 MB |
 
 ## الأنظمة البرمجية (EXE/ZIP)
 
