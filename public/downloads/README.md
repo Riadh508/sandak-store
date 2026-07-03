@@ -37,7 +37,7 @@
 | 24 | نظام المحاسبة الشامل | AccountingSystem_v3.0.0_Setup.exe | AccountingSystem_v2.1.0_Setup.zip | 4.5 KB / 53 KB |
 | 25 | نظام الفواتير الاحترافي | InvoiceSystem_v1.5.0_Setup.exe | InvoiceSystem_v2.5.0_Setup.zip | 4.5 KB / 68 KB |
 | 26 | نظام إدارة المدارس | SchoolSystem_v2.5.0_Setup.exe | SchoolSystem_v1.5.0_Setup.zip | 4.5 KB / 71 KB |
-| 27 | نظام نقاط البيع POS | POSSystem_v2.0.0_Setup.exe | POSSystem_v2.0.0_Setup.zip | 87.4 MB / 58 KB |
+| 27 | نظام نقاط البيع POS | POSSystem_v2.0.0_Setup.exe (1) | POSSystem_v2.0.0_Setup.zip | 87.4 MB / 58 KB |
 | 28 | متجر سندك v4 (نظام المتجر الإلكتروني) | - | sandak-store-v4.zip | 5.5 MB |
 
 > **ملاحظة:** الأنظمة هي تطبيقات ويب حديثة (Next.js). لتشغيلها:
@@ -45,6 +45,8 @@
 > 2. فك ضغط ملف الـ ZIP
 > 3. شغّل `setup.bat` داخل المجلد
 > 4. افتح المتصفح على الرابط الذي يظهر
+>
+> (1) ملف EXE كبير جداً (87 MB) ولا يمكن رفعه على GitHub. يمكنك تشغيل النظام عبر ملف ZIP بدلاً من ذلك.
 
 ## ملاحظات هامة
 
