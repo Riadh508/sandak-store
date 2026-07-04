@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f093fb"/>
+      <stop offset="100%" style="stop-color:#f5576c"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <circle cx="100" cy="100" r="120" fill="#ffffff" opacity="0.05"/>
+  <circle cx="700" cy="420" r="180" fill="#ffffff" opacity="0.04"/>
+  <g transform="translate(310, 60)">
+    <rect x="0" y="0" width="180" height="130" rx="12" fill="#ffffff" opacity="0.95"/>
+    <rect x="10" y="10" width="160" height="110" rx="6" fill="#667eea" opacity="0.1"/>
+    <circle cx="30" cy="25" r="4" fill="#e74c3c"/>
+    <circle cx="45" cy="25" r="4" fill="#f39c12"/>
+    <circle cx="60" cy="25" r="4" fill="#2ecc71"/>
+    <rect x="15" y="38" width="100" height="8" rx="4" fill="#667eea" opacity="0.3"/>
+    <rect x="15" y="52" width="80" height="8" rx="4" fill="#667eea" opacity="0.2"/>
+    <rect x="15" y="70" width="150" height="50" rx="6" fill="#764ba2" opacity="0.15"/>
+    <rect x="20" y="78" width="40" height="12" rx="3" fill="#667eea" opacity="0.4"/>
+    <rect x="20" y="95" width="30" height="8" rx="3" fill="#667eea" opacity="0.25"/>
+    <rect x="70" y="78" width="40" height="12" rx="3" fill="#f093fb" opacity="0.4"/>
+    <rect x="70" y="95" width="30" height="8" rx="3" fill="#f093fb" opacity="0.25"/>
+  </g>
+  <text x="400" y="260" font-family="Traditional Arabic, Arial, sans-serif" font-size="36" fill="#ffffff" text-anchor="middle" font-weight="bold">تصميم واجهات المستخدم UI/UX</text>
+  <text x="400" y="305" font-family="Traditional Arabic, Arial, sans-serif" font-size="20" fill="#f093fb" text-anchor="middle">من الصفر حتى الاحتراف مع Figma</text>
+  <rect x="300" y="330" width="200" height="3" rx="1.5" fill="url(#accent)"/>
+  <text x="400" y="365" font-family="Traditional Arabic, Arial, sans-serif" font-size="16" fill="#ffffff" opacity="0.6" text-anchor="middle">Figma · User Research · Prototyping · Design Systems</text>
+  <text x="400" y="400" font-family="Arial, sans-serif" font-size="12" fill="#ffffff" opacity="0.3" text-anchor="middle">10 مشاريع عملية · مكتبة مكونات مجانية</text>
+</svg>

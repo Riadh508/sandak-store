@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1b1b2f"/>
+      <stop offset="50%" style="stop-color:#162447"/>
+      <stop offset="100%" style="stop-color:#1f4068"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e43f5a"/>
+      <stop offset="100%" style="stop-color:#e94560"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <circle cx="650" cy="420" r="250" fill="#ffffff" opacity="0.02"/>
+  <circle cx="150" cy="80" r="150" fill="#ffffff" opacity="0.03"/>
+  <g transform="translate(280, 55)">
+    <rect x="0" y="0" width="240" height="150" rx="10" fill="#ffffff" opacity="0.95"/>
+    <rect x="0" y="0" width="240" height="35" rx="10" fill="#e94560"/>
+    <rect x="0" y="25" width="240" height="10" fill="#e94560"/>
+    <text x="120" y="24" font-family="Arial, sans-serif" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">فاتورة ضريبية</text>
+    <rect x="15" y="45" width="80" height="6" rx="3" fill="#1b1b2f" opacity="0.15"/>
+    <rect x="15" y="56" width="60" height="6" rx="3" fill="#1b1b2f" opacity="0.1"/>
+    <rect x="15" y="72" width="210" height="1" fill="#1b1b2f" opacity="0.08"/>
+    <rect x="15" y="80" width="210" height="8" rx="3" fill="#1b1b2f" opacity="0.08"/>
+    <rect x="15" y="93" width="210" height="8" rx="3" fill="#1b1b2f" opacity="0.06"/>
+    <rect x="15" y="106" width="210" height="8" rx="3" fill="#1b1b2f" opacity="0.06"/>
+    <rect x="15" y="125" width="210" height="1" fill="#1b1b2f" opacity="0.08"/>
+    <rect x="130" y="132" width="95" height="10" rx="3" fill="#e94560" opacity="0.8"/>
+    <text x="177" y="140" font-family="Arial, sans-serif" font-size="8" fill="#ffffff" text-anchor="middle">$ 1,234.56</text>
+  </g>
+  <text x="400" y="260" font-family="Traditional Arabic, Arial, sans-serif" font-size="38" fill="#ffffff" text-anchor="middle" font-weight="bold">نظام الفواتير الاحترافي</text>
+  <text x="400" y="305" font-family="Traditional Arabic, Arial, sans-serif" font-size="20" fill="#e94560" text-anchor="middle">برنامج متكامل لإدارة الفواتير والمبيعات</text>
+  <rect x="300" y="330" width="200" height="3" rx="1.5" fill="url(#accent)"/>
+  <text x="400" y="365" font-family="Traditional Arabic, Arial, sans-serif" font-size="16" fill="#ffffff" opacity="0.6" text-anchor="middle">إصدار فواتير · تقارير · إدارة عملاء · ضرائب</text>
+  <text x="400" y="400" font-family="Arial, sans-serif" font-size="12" fill="#ffffff" opacity="0.3" text-anchor="middle">ترخيص دائم · تحديثات مجانية · دعم فني</text>
+</svg>

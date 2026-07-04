@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#134e5e"/>
+      <stop offset="100%" style="stop-color:#71b280"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f7971e"/>
+      <stop offset="100%" style="stop-color:#ffd200"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <circle cx="120" cy="380" r="220" fill="#ffffff" opacity="0.04"/>
+  <circle cx="680" cy="100" r="150" fill="#ffffff" opacity="0.03"/>
+  <g transform="translate(330, 60)">
+    <circle cx="70" cy="55" r="40" fill="#ffd200" opacity="0.15"/>
+    <text x="70" y="65" font-family="Arial, sans-serif" font-size="36" fill="#ffd200" text-anchor="middle">$</text>
+    <text x="70" y="115" font-family="Arial, sans-serif" font-size="11" fill="#ffffff" opacity="0.5" text-anchor="middle">income</text>
+  </g>
+  <g transform="translate(80, 70)">
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="13" fill="#ffffff" opacity="0.5">📱 Freelancing</text>
+    <text x="0" y="45" font-family="Arial, sans-serif" font-size="13" fill="#ffffff" opacity="0.4">📝 Affiliate</text>
+    <text x="0" y="70" font-family="Arial, sans-serif" font-size="13" fill="#ffffff" opacity="0.4">🎥 YouTube</text>
+    <text x="0" y="95" font-family="Arial, sans-serif" font-size="13" fill="#ffffff" opacity="0.3">📦 Dropshipping</text>
+  </g>
+  <g transform="translate(580, 70)">
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="13" fill="#ffffff" opacity="0.4">📚 كتب</text>
+    <text x="0" y="45" font-family="Arial, sans-serif" font-size="13" fill="#ffffff" opacity="0.3">🎨 تصميم</text>
+    <text x="0" y="70" font-family="Arial, sans-serif" font-size="13" fill="#ffffff" opacity="0.4">💻 برمجة</text>
+    <text x="0" y="95" font-family="Arial, sans-serif" font-size="13" fill="#ffffff" opacity="0.5">📊 تسويق</text>
+  </g>
+  <text x="400" y="255" font-family="Traditional Arabic, Arial, sans-serif" font-size="38" fill="#ffffff" text-anchor="middle" font-weight="bold">الربح من الإنترنت بطرق حقيقية</text>
+  <text x="400" y="300" font-family="Traditional Arabic, Arial, sans-serif" font-size="20" fill="#ffd200" text-anchor="middle">أكثر من 30 طريقة مجربة ومضمونة للربح من المنزل</text>
+  <rect x="300" y="325" width="200" height="3" rx="1.5" fill="url(#accent)"/>
+  <text x="400" y="360" font-family="Traditional Arabic, Arial, sans-serif" font-size="16" fill="#ffffff" opacity="0.6" text-anchor="middle">Freelancing · Affiliate · منتجات رقمية · يوتيوب</text>
+  <text x="400" y="395" font-family="Arial, sans-serif" font-size="12" fill="#ffffff" opacity="0.3" text-anchor="middle">بدون رأس مال · قصص نجاح عربية</text>
+</svg>

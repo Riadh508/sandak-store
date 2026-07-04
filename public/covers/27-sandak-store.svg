@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#004d40"/>
+      <stop offset="50%" style="stop-color:#00897b"/>
+      <stop offset="100%" style="stop-color:#004d40"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffb300"/>
+      <stop offset="100%" style="stop-color:#ff8f00"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <circle cx="150" cy="100" r="180" fill="#ffffff" opacity="0.04"/>
+  <circle cx="650" cy="400" r="220" fill="#ffffff" opacity="0.03"/>
+  <g transform="translate(310, 50)">
+    <rect x="0" y="5" width="180" height="120" rx="15" fill="#ffffff" opacity="0.95"/>
+    <rect x="15" y="15" width="150" height="8" rx="4" fill="#00897b" opacity="0.8"/>
+    <rect x="15" y="28" width="120" height="8" rx="4" fill="#00897b" opacity="0.5"/>
+    <rect x="15" y="42" width="150" height="1" fill="#004d40" opacity="0.08"/>
+    <rect x="15" y="50" width="150" height="6" rx="3" fill="#004d40" opacity="0.06"/>
+    <rect x="15" y="60" width="150" height="6" rx="3" fill="#004d40" opacity="0.06"/>
+    <rect x="15" y="70" width="150" height="6" rx="3" fill="#004d40" opacity="0.06"/>
+    <rect x="15" y="82" width="150" height="1" fill="#004d40" opacity="0.08"/>
+    <rect x="15" y="90" width="60" height="8" rx="3" fill="#ffb300" opacity="0.6"/>
+    <rect x="85" y="90" width="60" height="8" rx="3" fill="#ffb300" opacity="0.3"/>
+    <rect x="15" y="105" width="150" height="10" rx="5" fill="url(#accent)" opacity="0.8"/>
+  </g>
+  <text x="400" y="230" font-family="Traditional Arabic, Arial, sans-serif" font-size="38" fill="#ffffff" text-anchor="middle" font-weight="bold">متجر سندك v4</text>
+  <text x="400" y="270" font-family="Traditional Arabic, Arial, sans-serif" font-size="20" fill="#ffb300" text-anchor="middle">نظام متجر إلكتروني متكامل — جاهز للإطلاق</text>
+  <rect x="300" y="295" width="200" height="3" rx="1.5" fill="url(#accent)"/>
+  <text x="400" y="330" font-family="Traditional Arabic, Arial, sans-serif" font-size="16" fill="#ffffff" opacity="0.7" text-anchor="middle">Next.js · TypeScript · Prisma · PostgreSQL · RTL</text>
+  <text x="400" y="360" font-family="Traditional Arabic, Arial, sans-serif" font-size="14" fill="#ffffff" opacity="0.4" text-anchor="middle">لوحة تحكم · طلبات · فواتير · مستخدمين · كود كامل</text>
+  <g transform="translate(320, 390)">
+    <rect x="0" y="0" width="160" height="35" rx="8" fill="#ffffff" opacity="0.15"/>
+    <text x="80" y="23" font-family="Traditional Arabic, Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">الإصدار الرابع 2026</text>
+  </g>
+</svg>

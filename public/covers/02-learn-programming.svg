@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0c29"/>
+      <stop offset="50%" style="stop-color:#302b63"/>
+      <stop offset="100%" style="stop-color:#24243e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d2ff"/>
+      <stop offset="100%" style="stop-color:#3a7bd5"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <circle cx="200" cy="120" r="200" fill="#ffffff" opacity="0.03"/>
+  <circle cx="600" cy="400" r="150" fill="#ffffff" opacity="0.02"/>
+  <g transform="translate(80, 70)">
+    <rect x="20" y="0" width="120" height="90" rx="8" fill="#1a1a3e" stroke="#3a7bd5" stroke-width="1.5"/>
+    <text x="50" y="25" font-family="monospace" font-size="12" fill="#00d2ff">&lt;html&gt;</text>
+    <text x="45" y="40" font-family="monospace" font-size="12" fill="#ffffff">&lt;body&gt;</text>
+    <text x="60" y="55" font-family="monospace" font-size="11" fill="#f39c12">Hello,</text>
+    <text x="60" y="68" font-family="monospace" font-size="11" fill="#2ecc71">World!</text>
+    <text x="45" y="82" font-family="monospace" font-size="12" fill="#ffffff">&lt;/body&gt;</text>
+  </g>
+  <g transform="translate(560, 60)">
+    <text x="0" y="15" font-family="monospace" font-size="10" fill="#00d2ff" opacity="0.5">function</text>
+    <text x="0" y="30" font-family="monospace" font-size="10" fill="#ffffff" opacity="0.5">  learn() {</text>
+    <text x="0" y="45" font-family="monospace" font-size="10" fill="#f39c12" opacity="0.5">    return</text>
+    <text x="0" y="60" font-family="monospace" font-size="10" fill="#2ecc71" opacity="0.5">    "Code"</text>
+    <text x="0" y="75" font-family="monospace" font-size="10" fill="#ffffff" opacity="0.5">  }</text>
+  </g>
+  <text x="400" y="250" font-family="Traditional Arabic, Arial, sans-serif" font-size="38" fill="#ffffff" text-anchor="middle" font-weight="bold">تعلم البرمجة من الصفر حتى الاحتراف</text>
+  <text x="400" y="295" font-family="Traditional Arabic, Arial, sans-serif" font-size="20" fill="#00d2ff" text-anchor="middle">دليلك الشامل لتعلم البرمجة خطوة بخطوة</text>
+  <rect x="300" y="320" width="200" height="3" rx="1.5" fill="url(#accent)"/>
+  <text x="400" y="355" font-family="Traditional Arabic, Arial, sans-serif" font-size="16" fill="#ffffff" opacity="0.6" text-anchor="middle">Python · JavaScript · Java · OOP · Algorithms</text>
+  <text x="400" y="390" font-family="Arial, sans-serif" font-size="12" fill="#ffffff" opacity="0.3" text-anchor="middle">500+ صفحة · 200+ مثال عملي</text>
+</svg>
