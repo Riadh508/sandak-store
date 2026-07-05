@@ -19,13 +19,13 @@ interface SeedProduct {
 const defaultProducts: SeedProduct[] = [
   {
     name: 'كتاب تعلم البرمجة من الصفر حتى الاحتراف',
-    description: 'دليلك الشامل لتعلم البرمجة من الصفر المطلق حتى الاحتراف مع أكثر من 500 صفحة من المحتوى التعليمي المفصل وأمثلة عملية تطبيقية',
+    description: 'دليلك الشامل لتعلم البرمجة من الصفر المطلق حتى الاحتراف مع أمثلة عملية تطبيقية وتمارين تفاعلية',
     longDescription: 'كتاب شامل ومتكامل يأخذ بيدك خطوة بخطوة في رحلة تعلم البرمجة من الصفر المطلق حتى المستوى المتقدم. يبدأ الكتاب بشرح ماهية البرمجة وكيف يفكر الحاسوب، ثم ينتقل بك عبر إعداد بيئة العمل على أنظمة Windows و macOS و Linux. يغطي الكتاب بالتفصيل أساسيات البرمجة: المتغيرات، الشروط، الحلقات، الدوال، المصفوفات، والكائنات، بأسلوب مبسط وأمثلة واقعية من الحياة اليومية. ثم يتدرج بك إلى المفاهيم المتقدمة: البرمجة كائنية التوجه (OOP)، هياكل البيانات (Data Structures)، الخوارزميات (Algorithms) مع تحليل التعقيد الزمني والمكاني، أنماط التصميم (Design Patterns)، إدارة الذاكرة، والتعامل مع قواعد البيانات.\n\nيغطي الكتاب ثلاث لغات برمجة رئيسية: Python للقواعد والأتمتة والذكاء الاصطناعي، JavaScript لتطوير الويب والواجهات الأمامية والخلفية، Java للأنظمة الكبيرة وتطبيقات Android. يحتوي على أكثر من 200 مثال عملي قابل للتطبيق، و50 تمرين تطبيقي مع حلول مفصلة خطوة بخطوة. كما يتضمن مشاريع كاملة: بناء آلة حاسبة متقدمة، تطبيق قائمة مهام، مدونة شخصية، متجر إلكتروني مصغر، ولعبة بسيطة.\n\nالكتاب مصمم ليكون مرجعك الشامل: يحتوي على فهرس تفصيلي، ملخصات لكل فصل، أسئلة مراجعة، ومشاريع تطبيقية في نهاية كل قسم. سواء كنت طالباً جامعياً أو موظفاً يريد تغيير مساره المهني أو رائد أعمال يريد فهم التقنية، ستجد في هذا الكتاب ما تحتاجه للبدء والتميز.',
     price: 25,
     category: 'ebook',
     image: '/covers/02-learn-programming.svg',
     features: [
-      'أكثر من 500 صفحة من المحتوى التعليمي المفصل',
+      'كتاب إلكتروني شامل ومتكامل لتعلم البرمجة',
       'شرح مبسط خطوة بخطوة يناسب المبتدئين تماماً',
       'أكثر من 200 مثال عملي قابل للتطبيق والتجربة',
       '50 تمرين تطبيقي مع حلول مفصلة خطوة بخطوة',
@@ -38,7 +38,7 @@ const defaultProducts: SeedProduct[] = [
     ],
     badge: '',
     fileUrl: '/downloads/learn-programming.pdf',
-    fileSize: 185569,
+    fileSize: 62713,
     sortOrder: 1,
   },
   {
@@ -62,7 +62,7 @@ const defaultProducts: SeedProduct[] = [
     ],
     badge: '',
     fileUrl: '/downloads/digital-marketing.pdf',
-    fileSize: 12582912,
+    fileSize: 60434,
     sortOrder: 2,
   },
   {
@@ -134,7 +134,7 @@ const defaultProducts: SeedProduct[] = [
     ],
     badge: 'مميز',
     fileUrl: '/downloads/ui-ux-design.pdf',
-    fileSize: 16777216,
+    fileSize: 52665,
     sortOrder: 5,
   },
   {
@@ -206,7 +206,7 @@ const defaultProducts: SeedProduct[] = [
     ],
     badge: 'جديد',
     fileUrl: '/downloads/ecommerce.pdf',
-    fileSize: 14680064,
+    fileSize: 50661,
     sortOrder: 8,
   },
   {
@@ -230,7 +230,7 @@ const defaultProducts: SeedProduct[] = [
     ],
     badge: '',
     fileUrl: '/downloads/online-earning.pdf',
-    fileSize: 13631488,
+    fileSize: 52877,
     sortOrder: 9,
   },
   {
@@ -493,8 +493,8 @@ const defaultProducts: SeedProduct[] = [
       'نسخة ويب ونسخة سطح مكتب',
     ],
     badge: '',
-    fileUrl: '/downloads/InvoiceSystem_v1.5.0_Setup.zip',
-    fileSize: 73090,
+    fileUrl: '/downloads/InvoiceSystem_v2.5.0_Setup.zip',
+    fileSize: 69753,
     sortOrder: 20,
   },
   {
@@ -541,8 +541,8 @@ const defaultProducts: SeedProduct[] = [
       'تكامل مع أنظمة POS والمتاجر الإلكترونية',
     ],
     badge: 'جديد',
-    fileUrl: '/downloads/AccountingSystem_v3.0.0_Setup.zip',
-    fileSize: 50334,
+    fileUrl: '/downloads/AccountingSystem_v2.1.0_Setup.zip',
+    fileSize: 54280,
     sortOrder: 22,
   },
   {
@@ -565,8 +565,8 @@ const defaultProducts: SeedProduct[] = [
       'سوق إلكتروني لعرض وبيع الدورات',
     ],
     badge: 'جديد',
-    fileUrl: '/downloads/SchoolSystem_v2.5.0_Setup.zip',
-    fileSize: 69753,
+    fileUrl: '/downloads/SchoolSystem_v1.5.0_Setup.zip',
+    fileSize: 73090,
     sortOrder: 23,
   },
   {
@@ -685,8 +685,8 @@ const defaultProducts: SeedProduct[] = [
       'دعم التعلم عن بعد والحصص الافتراضية',
     ],
     badge: '',
-    fileUrl: '/downloads/SchoolSystem_v2.5.0_Setup.zip',
-    fileSize: 69753,
+    fileUrl: '/downloads/SchoolSystem_v1.5.0_Setup.zip',
+    fileSize: 73090,
     sortOrder: 28,
   },
 ];
