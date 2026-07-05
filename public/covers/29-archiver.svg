@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#0f172a"/>
+  <rect x="30" y="20" width="1220" height="60" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="60" y="58" fill="#f59e0b" font-size="22" font-weight="bold" font-family="sans-serif">📦 Archiver</text>
+  <text x="1000" y="58" fill="#94a3b8" font-size="14" font-family="sans-serif">لوحة التحكم</text>
+  <text x="1100" y="58" fill="#94a3b8" font-size="14" font-family="sans-serif">الأرشيفات</text>
+  <text x="1190" y="58" fill="#94a3b8" font-size="14" font-family="sans-serif">الإعدادات</text>
+  <rect x="30" y="100" width="290" height="130" rx="14" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="175" y="145" text-anchor="middle" fill="#f59e0b" font-size="32" font-weight="bold" font-family="sans-serif">42</text>
+  <text x="175" y="170" text-anchor="middle" fill="#94a3b8" font-size="14" font-family="sans-serif">إجمالي الأرشيفات</text>
+  <text x="175" y="190" text-anchor="middle" fill="#475569" font-size="12" font-family="sans-serif">✓ نشط</text>
+  <rect x="340" y="100" width="290" height="130" rx="14" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="485" y="145" text-anchor="middle" fill="#f59e0b" font-size="32" font-weight="bold" font-family="sans-serif">2.4 GB</text>
+  <text x="485" y="170" text-anchor="middle" fill="#94a3b8" font-size="14" font-family="sans-serif">الحجم الإجمالي</text>
+  <rect x="650" y="100" width="290" height="130" rx="14" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="795" y="145" text-anchor="middle" fill="#f59e0b" font-size="32" font-weight="bold" font-family="sans-serif">3</text>
+  <text x="795" y="170" text-anchor="middle" fill="#94a3b8" font-size="14" font-family="sans-serif">المستخدمين</text>
+  <rect x="960" y="100" width="290" height="130" rx="14" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="1105" y="145" text-anchor="middle" fill="#f59e0b" font-size="32" font-weight="bold" font-family="sans-serif">نشط</text>
+  <text x="1105" y="170" text-anchor="middle" fill="#94a3b8" font-size="14" font-family="sans-serif">حالة الترخيص</text>
+  <rect x="30" y="250" width="1220" height="450" rx="14" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="60" y="290" fill="#f8fafc" font-size="18" font-weight="bold" font-family="sans-serif">آخر الأرشيفات</text>
+  <rect x="60" y="310" width="1170" height="40" rx="8" fill="#334155"/>
+  <text x="80" y="336" fill="#94a3b8" font-size="13" font-family="sans-serif">الاسم</text>
+  <text x="350" y="336" fill="#94a3b8" font-size="13" font-family="sans-serif">الحجم</text>
+  <text x="550" y="336" fill="#94a3b8" font-size="13" font-family="sans-serif">التاريخ</text>
+  <text x="800" y="336" fill="#94a3b8" font-size="13" font-family="sans-serif">النوع</text>
+  <line x1="60" y1="360" x2="1230" y2="360" stroke="#334155" stroke-width="1"/>
+  <text x="80" y="390" fill="#e2e8f0" font-size="14" font-family="sans-serif">docs-backup.zip</text><text x="350" y="390" fill="#94a3b8" font-size="14" font-family="sans-serif">245 MB</text><text x="550" y="390" fill="#94a3b8" font-size="14" font-family="sans-serif">2026-06-27</text><text x="800" y="390" fill="#22c55e" font-size="14" font-family="sans-serif">zip</text>
+  <line x1="60" y1="405" x2="1230" y2="405" stroke="#1e293b" stroke-width="1"/>
+  <text x="80" y="435" fill="#e2e8f0" font-size="14" font-family="sans-serif">projects.tar.gz</text><text x="350" y="435" fill="#94a3b8" font-size="14" font-family="sans-serif">1.2 GB</text><text x="550" y="435" fill="#94a3b8" font-size="14" font-family="sans-serif">2026-06-26</text><text x="800" y="435" fill="#22c55e" font-size="14" font-family="sans-serif">gztar</text>
+  <line x1="60" y1="450" x2="1230" y2="450" stroke="#1e293b" stroke-width="1"/>
+  <text x="80" y="480" fill="#e2e8f0" font-size="14" font-family="sans-serif">images.bztar</text><text x="350" y="480" fill="#94a3b8" font-size="14" font-family="sans-serif">890 MB</text><text x="550" y="480" fill="#94a3b8" font-size="14" font-family="sans-serif">2026-06-25</text><text x="800" y="480" fill="#22c55e" font-size="14" font-family="sans-serif">bztar</text>
+</svg>
