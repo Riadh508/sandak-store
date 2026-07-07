@@ -117,8 +117,8 @@ const defaultProducts: SetupProduct[] = [
     image: '/covers/20-invoice-system.svg',
     features: ['إنشاء فواتير احترافية', 'تتبع المدفوعات', 'تقارير مالية'],
     badge: '',
-    fileUrl: '/downloads/InvoiceSystem_v2.5.0_Setup.zip',
-    fileSize: 69753,
+    fileUrl: '/downloads/InvoiceSystem_v1.5.0_Setup.exe',
+    fileSize: 1992435,
     sortOrder: 8,
   },
   {
@@ -130,8 +130,8 @@ const defaultProducts: SetupProduct[] = [
     image: '/covers/22-accounting-system.png',
     features: ['القيود اليومية', 'قائمة الدخل', 'تقارير مالية'],
     badge: 'جديد',
-    fileUrl: '/downloads/AccountingSystem_v2.1.0_Setup.zip',
-    fileSize: 54280,
+    fileUrl: '/downloads/AccountingSystem_v3.0.0_Setup.exe',
+    fileSize: 1982255,
     sortOrder: 9,
   },
   {

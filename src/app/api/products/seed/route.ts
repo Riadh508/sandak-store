@@ -493,8 +493,8 @@ const defaultProducts: SeedProduct[] = [
       'نسخة ويب ونسخة سطح مكتب',
     ],
     badge: '',
-    fileUrl: '/downloads/InvoiceSystem_v2.5.0_Setup.zip',
-    fileSize: 69753,
+    fileUrl: '/downloads/InvoiceSystem_v1.5.0_Setup.exe',
+    fileSize: 1992435,
     sortOrder: 20,
   },
   {
@@ -541,8 +541,8 @@ const defaultProducts: SeedProduct[] = [
       'تكامل مع أنظمة POS والمتاجر الإلكترونية',
     ],
     badge: 'جديد',
-    fileUrl: '/downloads/AccountingSystem_v2.1.0_Setup.zip',
-    fileSize: 54280,
+    fileUrl: '/downloads/AccountingSystem_v3.0.0_Setup.exe',
+    fileSize: 1982255,
     sortOrder: 22,
   },
   {
@@ -566,7 +566,7 @@ const defaultProducts: SeedProduct[] = [
     ],
     badge: 'جديد',
     fileUrl: '/downloads/SchoolSystem_v2.5.0_Setup.exe',
-    fileSize: 4608,
+    fileSize: 1989093,
     sortOrder: 23,
   },
   {
