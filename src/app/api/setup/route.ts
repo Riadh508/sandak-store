@@ -79,7 +79,7 @@ const defaultProducts: SetupProduct[] = [
     features: ['دليل إنشاء متجر إلكتروني', 'اختيار المنتجات الرابحة', 'شرح Shopify و WooCommerce'],
     badge: 'جديد',
     fileUrl: '/downloads/ecommerce.pdf',
-    fileSize: 51475,
+    fileSize: 79244,
     sortOrder: 5,
   },
   {

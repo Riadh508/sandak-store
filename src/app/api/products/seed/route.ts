@@ -206,7 +206,7 @@ const defaultProducts: SeedProduct[] = [
     ],
     badge: 'جديد',
     fileUrl: '/downloads/ecommerce.pdf',
-    fileSize: 51475,
+    fileSize: 79244,
     sortOrder: 8,
   },
   {
