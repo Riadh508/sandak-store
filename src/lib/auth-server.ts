@@ -23,17 +23,11 @@ export async function comparePassword(password: string, hash: string): Promise<b
 }
 
 export function signToken(payload: { userId: string; email: string; role: string }): string {
-  if (!process.env.JWT_SECRET && !process.env.ADMIN_API_KEY) {
-    throw new Error('Cannot sign tokens: JWT_SECRET/ADMIN_API_KEY not configured');
-  }
   return jwt.sign(payload, JWT_SECRET_FINAL, { expiresIn: TOKEN_EXPIRY });
 }
 
 export function verifyToken(token: string): { userId: string; email: string; role: string } | null {
   try {
-    if (!process.env.JWT_SECRET && !process.env.ADMIN_API_KEY) {
-      return null;
-    }
     return jwt.verify(token, JWT_SECRET_FINAL) as { userId: string; email: string; role: string };
   } catch {
     return null;
