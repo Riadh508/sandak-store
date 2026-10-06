@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth-server';
+import type { NextRequest } from 'next/server';
 
-export function requireAdmin(request: Request) {
+export function requireAdmin(request: Request | NextRequest) {
   const envKey = process.env.ADMIN_API_KEY;
 
   const apiKey = request.headers.get('x-api-key');
@@ -9,10 +10,25 @@ export function requireAdmin(request: Request) {
     return null;
   }
 
-  const cookieHeader = request.headers.get('cookie') || '';
-  const tokenMatch = cookieHeader.match(/auth_token=([^;]+)/);
+  // try NextRequest cookies API first (works in app router)
+  let token: string | null = null;
 
-  if (!tokenMatch) {
+  try {
+    // If request is a NextRequest it will have cookies.get
+    // We use a safe access pattern to avoid runtime errors in plain Request
+    if (typeof (request as any).cookies === 'object' && typeof (request as any).cookies.get === 'function') {
+      const c = (request as any).cookies.get('auth_token');
+      token = c?.value || null;
+    } else {
+      const cookieHeader = request.headers.get('cookie') || '';
+      const match = cookieHeader.match(/auth_token=([^;]+)/);
+      token = match ? match[1] : null;
+    }
+  } catch (err) {
+    token = null;
+  }
+
+  if (!token) {
     return NextResponse.json(
       {
         success: false,
@@ -24,7 +40,6 @@ export function requireAdmin(request: Request) {
     );
   }
 
-  const token = tokenMatch[1];
   const payload = verifyToken(token);
 
   if (!payload) {
