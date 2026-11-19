@@ -26,6 +26,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ success: true, data: user });
   } catch (error) {
-    return NextResponse.json({ success: false, error: 'حدث خطأ' }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'حدث خطأ أثناء التحقق من الجلسة' }, { status: 500 });
   }
 }
