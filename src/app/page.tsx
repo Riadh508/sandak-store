@@ -13,11 +13,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
 
 export default function StorePage() {
-  const { currentView, setCurrentView, fetchProducts, products, productsLoading } = useStore();
+  const { currentView, fetchProducts, products, productsLoading, fetchSettings } = useStore();
 
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
+    fetchSettings();
+  }, [fetchProducts, fetchSettings]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -59,7 +60,6 @@ export default function StorePage() {
       </main>
 
       <Footer />
-
       <ProductDetailDialog />
       <CartDrawer />
     </div>

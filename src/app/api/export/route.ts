@@ -2,8 +2,12 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { requireAdmin } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
+  const auth = requireAdmin(request);
+  if (auth) return auth;
+
   try {
     const zipPath = path.join(process.cwd(), 'public', 'downloads', 'sandak-store-v4.zip');
     try {
@@ -26,7 +30,7 @@ export async function GET(request: NextRequest) {
         'Content-Length': String(stat.size),
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, error: 'حدث خطأ أثناء التحميل' },
       { status: 500 }
