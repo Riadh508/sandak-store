@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 import { comparePassword, signToken, getTokenCookie } from '@/lib/auth-server';
 
@@ -13,7 +14,6 @@ export async function POST(request: Request) {
     if (!email || !password) {
       return NextResponse.json({ success: false, error: 'الرجاء ملء جميع الحقول' }, { status: 400 });
     }
-
     if (!EMAIL_REGEX.test(email)) {
       return NextResponse.json({ success: false, error: 'البريد الإلكتروني غير صالح' }, { status: 400 });
     }
@@ -22,11 +22,9 @@ export async function POST(request: Request) {
     if (!user) {
       return NextResponse.json({ success: false, error: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' }, { status: 401 });
     }
-
     if (!user.isActive) {
       return NextResponse.json({ success: false, error: 'الحساب غير مفعل' }, { status: 403 });
     }
-
     if (user.role !== 'admin') {
       return NextResponse.json({ success: false, error: 'هذا الحساب ليس حساب أدمن' }, { status: 403 });
     }
@@ -43,7 +41,7 @@ export async function POST(request: Request) {
     });
     response.headers.set('Set-Cookie', getTokenCookie(token));
     return response;
-  } catch (error) {
+  } catch {
     return NextResponse.json({ success: false, error: 'حدث خطأ أثناء تسجيل الدخول' }, { status: 500 });
   }
 }
